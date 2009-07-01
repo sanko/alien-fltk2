@@ -13,7 +13,8 @@ package MBX::Alien::FLTK::Win32;
         my ($self) = @_;
 
         # Safe
-        return $self->SUPER::configure() if MBX::Alien::FLTK::Utility::can_run('sh');
+        return $self->SUPER::configure()
+            if MBX::Alien::FLTK::Utility::can_run('sh');
 
         # Stupid
         open(my $CONFIGH_IN, '<', 'configh.in')
@@ -35,9 +36,9 @@ package MBX::Alien::FLTK::Win32;
             U16     => '',
             U32     => '',
             U64     => '',
-            HAVE_GL => (
-                      MBX::Alien::FLTK::Utility::find_h('gl.h') ? '#define HAVE_GL 1'
-                      : '#undef HAVE_GL'
+            HAVE_GL => (MBX::Alien::FLTK::Utility::find_h('gl.h')
+                        ? '#define HAVE_GL 1'
+                        : '#undef HAVE_GL'
             ),
             HAVE_GL_GLU_H => (MBX::Alien::FLTK::Utility::find_h('gl/glu.h')
                               ? '#define HAVE_GL_GLU_H 1'
@@ -96,6 +97,9 @@ END
         }
 
         #
+        $config =~ s[#undef U16][$define{'U16'}];
+        $config =~ s[#undef U32][$define{'U32'}];
+        $config =~ s[#undef U64][$define{'U64'}];
         $config =~ s[#define\s+WORDS_BIGENDIAN.+][$define{'WORDS_BIGENDIAN'}];
         $config =~ s[#define\s+HAVE_GL\s.+]      [$define{'HAVE_GL'}];
         $config =~ s[#define\s+HAVE_GL_GLU_H.+]  [$define{'HAVE_GL_GLU_H'}];

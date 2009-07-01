@@ -73,8 +73,8 @@ Your system/compiler combination may not be supported. Using defaults.
 
     sub ACTION_configure_fltk2 {  # XXX - if!(-f'config.h'&&-f'config.status')
         my ($self) = @_;
-        chdir fltk_dir($self)
-            or die q[failed to cd to fltk's base directory: ] . $!;
+        chdir $self->fltk_dir()
+            or die sprintf 'failed to cd to %s: %s' , $self->fltk_dir(), $!;
         if (!-f _dir($self->fltk_dir() . '/config.h')) {
             print 'Creating config.h...';
             chdir($self->fltk_dir())
@@ -86,7 +86,7 @@ Your system/compiler combination may not be supported. Using defaults.
 
     sub ACTION_build_fltk2 {
         my ($self) = @_;
-        chdir fltk_dir($self)
+        chdir $self->fltk_dir()
             or die q[failed to cd to fltk's base directory];
         my @lib = $self->{'stash'}{'_compiler'}->build_fltk($self);
         die sprintf 'Failed to return to %s', $self->base_dir()
@@ -118,7 +118,7 @@ Your system/compiler combination may not be supported. Using defaults.
 
     sub copy_headers {
         my ($self) = @_;
-        chdir _dir(fltk_dir($self) . '/fltk')
+        chdir _dir($self->fltk_dir() . '/fltk')
             or die q[failed to cd to fltk's include directory];
         my $top = $self->base_dir();
         find {

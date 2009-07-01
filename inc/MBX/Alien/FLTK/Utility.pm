@@ -65,7 +65,6 @@ package MBX::Alien::FLTK::Utility;
 
     sub find_h {
         my $file = rel2abs(File::Spec->catfile($Config{'incpath'}, shift));
-        die $file;
         my $found;
         find(
             sub {    # XXX - Some platforms are touchy about case
