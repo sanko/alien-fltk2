@@ -74,7 +74,7 @@ Your system/compiler combination may not be supported. Using defaults.
     sub ACTION_configure_fltk2 {  # XXX - if!(-f'config.h'&&-f'config.status')
         my ($self) = @_;
         chdir $self->fltk_dir()
-            or die sprintf 'failed to cd to %s: %s' , $self->fltk_dir(), $!;
+            or die sprintf 'failed to cd to %s: %s', $self->fltk_dir(), $!;
         if (!-f _dir($self->fltk_dir() . '/config.h')) {
             print 'Creating config.h...';
             chdir($self->fltk_dir())
@@ -102,16 +102,6 @@ Your system/compiler combination may not be supported. Using defaults.
             qw;
             fltk2        fltk2_gl   fltk2_glut  fltk2_forms
             fltk2_images fltk2_jpeg fltk2_png   fltk2_z;;
-        $self->notes('~libs'      => \@lib);
-        $self->notes(libs         => [map { _file($_) } @lib]);
-        $self->notes(library_path => $self->_archdir('libs'));
-        $self->notes(
-               'fltk2-config' => {
-                   cflags   => $self->{'stash'}{'_compiler'}->cflags($self),
-                   cxxflags => $self->{'stash'}{'_compiler'}->cxxflags($self),
-                   ldflags  => $self->{'stash'}{'_compiler'}->ldflags($self),
-               }
-        );
         chdir $self->base_dir() || die q[You can't go home again!];
         return 1;
     }
@@ -164,7 +154,8 @@ Your system/compiler combination may not be supported. Using defaults.
         require File::Fetch;
         my $path;
     MIRROR: for my $mirror (keys %mirrors) {
-            for my $prot (qw[ ftp http]) {
+
+            for my $prot (qw[ftp http]) {
                 my $from
                     = sprintf
                     '%s://%s/pub/fltk/snapshots/fltk-2.0.x-r%s.tar.gz',
@@ -173,6 +164,7 @@ Your system/compiler combination may not be supported. Using defaults.
                     "Fetching FLTK 2.0.x source from %s mirror\n    %s...\n",
                     $mirrors{$mirror}, $from;
                 $path = File::Fetch->new(uri => $from)->fetch(to => $dest);
+
                 # XXX - verify with md5
                 last MIRROR if $path;
             }
@@ -218,40 +210,6 @@ Your system/compiler combination may not be supported. Using defaults.
         die 'Failed to find sh; to run "make" bye!'
             if !MBX::Alien::FLTK::Utility::can_run('make');
         return MBX::Alien::FLTK::Utility::run(qw[make]);
-    }
-
-    # Flags
-    sub cflags {
-        my ($self, $build) = @_;
-        chdir _dir($build->fltk_dir())
-            or die q[failed to cd to fltk's directory: ] . $!;
-        die 'Failed to find sh; to run "sh ./fltk-config" bye!'
-            if !MBX::Alien::FLTK::Utility::can_run('sh');
-        my $cflags = qx[sh ./fltk2-config --cflags];
-        chomp $cflags;
-        return $cflags;
-    }
-
-    sub cxxflags {
-        my ($self, $build) = @_;
-        chdir _dir($build->fltk_dir())
-            or die q[failed to cd to fltk's directory: ] . $!;
-        die 'Failed to find sh; to run "sh ./fltk-config" bye!'
-            if !MBX::Alien::FLTK::Utility::can_run('sh');
-        my $cxxflags = qx[sh ./fltk2-config --cxxflags];
-        chomp $cxxflags;
-        return $cxxflags;
-    }
-
-    sub ldflags {
-        my ($self, $build) = @_;
-        chdir _dir($build->fltk_dir())
-            or die q[failed to cd to fltk's directory: ] . $!;
-        die 'Failed to find sh; to run "sh ./fltk-config" bye!'
-            if !MBX::Alien::FLTK::Utility::can_run('sh');
-        my $ldflags = qx[sh ./fltk2-config --ldflags];
-        chomp $ldflags;
-        return $ldflags;
     }
 
     # shortcuts
@@ -313,18 +271,15 @@ Your system/compiler combination may not be supported. Using defaults.
         print STDERR "$command\n" if $args->{'verbose'};
         return () if system($command);
         return wantarray ? ($dll, ($args->{'import'} ? _a($dll) : ())) : $dll;
-
     }
 
     sub archive {
         my ($self, $args) = @_;
         die if !$args->{'output'};
         my $arch = $args->{'output'};
-        my @cmd = (
-            qw[ar cr],
-            $arch, @{$args->{'objects'}});
-        print STDERR "@cmd\n"         if $args->{'verbose'};
-        return                        if !MBX::Alien::FLTK::Utility::run(@cmd);
+        my @cmd = (qw[ar cr], $arch, @{$args->{'objects'}});
+        print STDERR "@cmd\n" if $args->{'verbose'};
+        return if !MBX::Alien::FLTK::Utility::run(@cmd);
         print STDERR "ranlib $arch\n" if $args->{'verbose'};
         return MBX::Alien::FLTK::Utility::run('ranlib', $arch) ? $arch : ();
     }
@@ -433,7 +388,6 @@ Your system/compiler combination may not be supported. Using defaults.
     }
     1;
 }
-
 __END__
 
 $Id$
