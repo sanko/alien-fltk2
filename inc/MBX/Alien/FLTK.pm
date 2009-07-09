@@ -25,7 +25,7 @@ package MBX::Alien::FLTK;
         $self->_find_compiler(@_);
         return $self;
     }
-    sub VERBOSE { shift->config_data('verbose') }
+    sub VERBOSE { shift->notes('verbose') }
 
     sub _find_compiler {
         my ($self, %args) = @_;
@@ -102,10 +102,10 @@ Your system/compiler combination may not be supported. Using defaults.
             qw;
             fltk2        fltk2_gl   fltk2_glut  fltk2_forms
             fltk2_images fltk2_jpeg fltk2_png   fltk2_z;;
-        $self->config_data('~libs'      => \@lib);
-        $self->config_data(libs         => [map { _file($_) } @lib]);
-        $self->config_data(library_path => $self->_archdir('libs'));
-        $self->config_data(
+        $self->notes('~libs'      => \@lib);
+        $self->notes(libs         => [map { _file($_) } @lib]);
+        $self->notes(library_path => $self->_archdir('libs'));
+        $self->notes(
                'fltk2-config' => {
                    cflags   => $self->{'stash'}{'_compiler'}->cflags($self),
                    cxxflags => $self->{'stash'}{'_compiler'}->cxxflags($self),
@@ -140,7 +140,7 @@ Your system/compiler combination may not be supported. Using defaults.
             "Installing FLTK2.x includes and FLTK1.1 emulation includes...\n";
         die sprintf 'Failed to return to %s', $self->base_dir()
             if !chdir $self->base_dir();
-        $self->config_data(include_path => $self->_archdir('include'));
+        $self->notes(include_path => $self->_archdir('include'));
         return 1;
     }
 
@@ -156,7 +156,7 @@ Your system/compiler combination may not be supported. Using defaults.
         my $dest = 'snapshots';
         $self->notes('archive_path' =>
                          rel2abs(      'snapshots/fltk-2.0.x-r'
-                                     . $self->config_data('fltk_svn')
+                                     . $self->notes('fltk_svn')
                                      . '.tar.gz'
                          )
         );
@@ -168,7 +168,7 @@ Your system/compiler combination may not be supported. Using defaults.
                 my $from
                     = sprintf
                     '%s://%s/pub/fltk/snapshots/fltk-2.0.x-r%s.tar.gz',
-                    $prot, $mirror, $self->config_data('fltk_svn');
+                    $prot, $mirror, $self->notes('fltk_svn');
                 printf
                     "Fetching FLTK 2.0.x source from %s mirror\n    %s...\n",
                     $mirrors{$mirror}, $from;
@@ -200,7 +200,7 @@ Your system/compiler combination may not be supported. Using defaults.
         $self->notes(
                'fltk_dir' =>
                    rel2abs(sprintf '%s/src/fltk-2.0.x-r%d', $self->base_dir(),
-                           $self->config_data('fltk_svn')
+                           $self->notes('fltk_svn')
                    )
         );
         return _dir($self->notes('fltk_dir'));
