@@ -37,16 +37,13 @@ syswrite($FH, <<'') || die '...'; close $FH;
       }
 
 my $obj = $CC->compile(source               => $source,
-                       include_dirs         => [Alien::FLTK->include_path()],
-                       extra_compiler_flags => Alien::FLTK->cxxflags()
-);
+                       extra_compiler_flags => Alien::FLTK->cxxflags());
 my $exe = $CC->link_executable(
-    objects => [        $obj    ],
-    extra_linker_flags => [Alien::FLTK->ldstaticflags(),
-                           '-L"' . Alien::FLTK->library_path() . '"',
+                      objects            => $obj,
+                      extra_linker_flags => [
+                           Alien::FLTK->ldflags(qw[static]),
                            $Config{'archlib'} . '/CORE/' . $Config{'libperl'},
-    ]
+                      ]
 );
-
-printf system($exe) ? 'Aww...' : 'Yay! %s bytes' , -s $exe;
+printf system($exe) ? 'Aww...' : 'Yay! %s bytes', -s $exe;
 END { unlink grep defined, $source, $obj, $exe; }
