@@ -43,11 +43,11 @@ package Alien::FLTK;
 
     sub ldflags {
         my ($self, @args) = @_;
-        my ($LDLIBS, $GLLIB);
+        my $LDLIBS = my $GLLIB = '';
         {
             local $_ = ($Config{'osname'} || $^O);
             if (m[MSWin32]) {
-                $LDLIBS # basic
+                $LDLIBS    # basic
                     = '-mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32 -lsupc++';
                 $GLLIB = "-lopengl32"
                     if _find_h('GL/gl.h');    # XXX only if use_gl
@@ -58,7 +58,7 @@ package Alien::FLTK;
                 $GLLIB  = '-framework AGL -framework OpenGL';
             }
             else {                # All others are UNIX/X11...
-                $LDLIBS # basic
+                $LDLIBS           # basic
                     = '-lX11 -lXi -lXcursor -lpthread -lm -lXext -lsupc++';
                 if (_find_h('GL/gl.h')) {
                     $GLLIB = _find_lib('MesaGL') ? '-lMesaGL' : '-lGL';
@@ -138,38 +138,37 @@ C<2.0.x> branch of the FLTK GUI toolkit.
 
 =head1 Synopsis
 
-  use Alien::FLTK;
-  use ExtUtils::CBuilder;
-  my $CC     = ExtUtils::CBuilder->new();
-  my $source = 'hello_world.cxx';
-  open(my $FH, '>', $source) || die '...';
-  syswrite($FH, <<'') || die '...'; close $FH;
-    #include <fltk/Window.h>
-    #include <fltk/Widget.h>
-    #include <fltk/run.h>
-    using namespace fltk;
-    int main(int argc, char **argv) {
-      Window *window = new Window(300, 180);
-      window->begin();
-      Widget *box = new Widget(20, 40, 260, 100, "Hello, World!");
-      box->box(UP_BOX);
-      box->labelfont(HELVETICA_BOLD_ITALIC);
-      box->labelsize(36);
-      box->labeltype(SHADOW_LABEL);
-      window->end();
-      window->show(argc, argv);
-      return run();
-    }
+    use Alien::FLTK;
+    use ExtUtils::CBuilder;
+    my $CC     = ExtUtils::CBuilder->new();
+    my $source = 'hello_world.cxx';
+    open(my $FH, '>', $source) || die '...';
+    syswrite($FH, <<'') || die '...'; close $FH;
+      #include <fltk/Window.h>
+      #include <fltk/Widget.h>
+      #include <fltk/run.h>
+      using namespace fltk;
+      int main(int argc, char **argv) {
+        Window *window = new Window(300, 180);
+        window->begin();
+        Widget *box = new Widget(20, 40, 260, 100, "Hello, World!");
+        box->box(UP_BOX);
+        box->labelfont(HELVETICA_BOLD_ITALIC);
+        box->labelsize(36);
+        box->labeltype(SHADOW_LABEL);
+        window->end();
+        window->show(argc, argv);
+        return run();
+      }
 
-  my $obj = $CC->compile(source       => $source,
-                         extra_compiler_flags => Alien::FLTK->cxxflags()
-  );
-  my $exe = $CC->link_executable(
-        objects => [$obj],
-        extra_linker_flags => Alien::FLTK->ldflags()
-  );
-  print system($exe) ? 'Aww...' : 'Yay!';
-  END { unlink grep defined, $source, $obj, $exe; }
+    my $obj = $CC->compile(source               => $source,
+                           extra_compiler_flags => Alien::FLTK->cxxflags());
+    my $exe = $CC->link_executable(
+                                  objects            => $obj,
+                                  extra_linker_flags => Alien::FLTK->ldflags()
+    );
+    print system($exe) ? 'Aww...' : 'Yay!';
+    END { unlink grep defined, $source, $obj, $exe; }
 
 =head1 Methods
 
@@ -198,6 +197,48 @@ Returns additional C compiler flags to be used.
     my $cxxflags = Alien::FLTK->cxxflags;
 
 Returns additional C++ compiler flags to be used.
+to compile C++ using FLTK
+
+=head2 C<cxxflags>
+
+    my $cxxflags = Alien::FLTK->ldflags(qw[gl images]);
+
+Returns additional linker flags to be used. This method can automatically
+add appropriate flags based on how you plan on linking to fltk. Acceptable
+arguments are:
+
+=over
+
+=item C<static>
+
+Returns flags to link against a static FLTK library.
+
+I<FLTK's license allows static linking, btw.>
+
+=item C<gl>
+
+Include flags to use GL.
+
+I<This is an experimental option. Depending on your system, this may also
+include OpenGL or MesaGL.>
+
+=item C<images>
+
+Include flags to use extra image formats (PNG, JPEG).
+
+=begin TODO
+
+=item C<glut>
+
+Include flags to use FLTK's glut compatibility layer.
+
+=item C<forms>
+
+Include flags to use FLTK's forms compatibility layer.
+
+=end TODO
+
+=back
 
 =head2 C<revision>
 
