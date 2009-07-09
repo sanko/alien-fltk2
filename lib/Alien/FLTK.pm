@@ -2,76 +2,127 @@ package Alien::FLTK;
 {
     use strict;
     use warnings;
-    use File::Spec::Functions qw[catdir rel2abs];
-    our $VERSION = 1.00000;
-    use Alien::FLTK::ConfigData;
-    sub revision { return Alien::FLTK::ConfigData->config('fltk_svn'); }
+    use Config qw[%Config];
+    use File::Spec::Functions qw[catdir rel2abs canonpath];
+    use File::Basename;
+    use File::Find qw[find];
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6793; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    sub revision { return $FLTK_SVN; }
 
     sub include_path {
         my @include = map { -d $_ ? $_ : () } (
-                            rel2abs(catdir(qw[blib arch Alien FLTK include])),
-                            Alien::FLTK::ConfigData->config('include_path')
+                 rel2abs(catdir(qw[blib arch Alien FLTK include])),
+                 rel2abs(catdir(dirname(rel2abs(__FILE__)), qw[FLTK include]))
         );
         return $include[0];
     }
 
     sub library_path {
         my @libs = map { -d $_ ? $_ : () } (
-                               rel2abs(catdir(qw[blib arch Alien FLTK libs])),
-                               Alien::FLTK::ConfigData->config('library_path')
+                    rel2abs(catdir(qw[blib arch Alien FLTK libs])),
+                    rel2abs(catdir(dirname(rel2abs(__FILE__)), qw[FLTK libs]))
         );
         return $libs[0];
     }
-    sub _TODO_libs      { Alien::FLTK::ConfigData->config('libs') }
-    sub _TODO_use_gl    { Alien::FLTK::ConfigData->config('use_gl') }
-    sub _TODO_use_forms { Alien::FLTK::ConfigData->config('use_forms') }
-    sub _TODO_use_glut  { Alien::FLTK::ConfigData->config('use_glut') }
-    sub _TODO_use_cairo { Alien::FLTK::ConfigData->config('use_cairo') }
-    sub _TODO_use_x     { Alien::FLTK::ConfigData->config('use_x') }
-    sub _TODO_cxx { Alien::FLTK::ConfigData->config('fltk2-config')->{'cxx'} }
 
     sub cflags {
-        my ($class, $args) = @_;
-        return Alien::FLTK::ConfigData->config('fltk2-config')->{'cflags'};
+        my $CFLAGS = '-I' . Alien::FLTK->include_path();
+        if (($Config{'osname'} || $^O) =~ m[MSWin32]) {
+            $CFLAGS = "$CFLAGS -mwindows -DWIN32";
+        }
+        return $CFLAGS;
     }
 
     sub cxxflags {
-        my ($class, $args) = @_;
-        return Alien::FLTK::ConfigData->config('fltk2-config')->{'cxxflags'};
+        my $CXXFLAGS = Alien::FLTK->cflags();
+        if (($Config{'osname'} || $^O) =~ m[MSWin32]) {
+            $CXXFLAGS = "$CXXFLAGS -Wno-non-virtual-dtor";
+        }
+        return $CXXFLAGS;
     }
 
     sub ldflags {
-        my ($class, $args) = @_;
-        my @flags;
-        push @flags, qw[-lfltk2_gl -lglu32 -lopengl32]
-            if $args->{'gl'} || $args->{'glut'};
-        push @flags,
-            qw[-lfltk2_images -lfltk2_png -lfltk2_z -lfltk2_images -lfltk2_jpeg]
-            if $args->{'images'};
-        push @flags, qw[-lfltk2_forms] if $args->{'forms'};
-        push @flags,
-            Alien::FLTK::ConfigData->config('fltk2-config')->{'ldflags'};
-        return wantarray ? @flags : join ' ', @flags;
+        my ($self, @args) = @_;
+        my ($LDLIBS, $GLLIB);
+        {
+            local $_ = ($Config{'osname'} || $^O);
+            if (m[MSWin32]) {
+                $LDLIBS # basic
+                    = '-mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32 -lsupc++';
+                $GLLIB = "-lopengl32"
+                    if _find_h('GL/gl.h');    # XXX only if use_gl
+                $GLLIB = "-lglu32 $GLLIB" if _find_h('GL/glu.h');
+            }
+            elsif (m[MacOS]) {    # MacOS X uses Carbon for graphics...
+                $LDLIBS = '-framework Carbon -framework ApplicationServices';
+                $GLLIB  = '-framework AGL -framework OpenGL';
+            }
+            else {                # All others are UNIX/X11...
+                $LDLIBS # basic
+                    = '-lX11 -lXi -lXcursor -lpthread -lm -lXext -lsupc++';
+                if (_find_h('GL/gl.h')) {
+                    $GLLIB = _find_lib('MesaGL') ? '-lMesaGL' : '-lGL';
+                    if (_find_h('GL/glu.h')) {
+                        $GLLIB = "-lGLU $GLLIB"     if _find_lib('GLU');
+                        $GLLIB = "-lMesaGLU $GLLIB" if _find_lib('MesaGL');
+                    }
+                }
+            }
+        }
+
+        #
+        my $libdir = Alien::FLTK->library_path();
+
+        # Calculate needed libraries
+        my $SHAREDSUFFIX = $Config{'_a'};
+        my $LDSTATIC     = "-L$libdir $libdir/libfltk2$SHAREDSUFFIX $LDLIBS";
+        my $LDFLAGS      = "-L$libdir -lfltk2 $LDLIBS";
+        my $LIBS         = "$libdir/libfltk2$SHAREDSUFFIX";
+        my $IMAGELIBS = " -lfltk2_png -lfltk2_z -lfltk2_images -lfltk2_jpeg ";
+        if (grep {m[forms]} @args) {
+            $LDFLAGS  = "-lfltk2_forms $LDFLAGS";
+            $LDSTATIC = "$libdir/libfltk2_forms$SHAREDSUFFIX $LDSTATIC";
+            $LIBS     = "$LIBS $libdir/libfltk2_forms$SHAREDSUFFIX";
+        }
+        if (grep {m[gl]} @args) {
+            $LDFLAGS  = "-lfltk2_gl $GLLIB $LDFLAGS";
+            $LDSTATIC = "$libdir/libfltk2_gl$SHAREDSUFFIX $GLLIB $LDSTATIC";
+            $LIBS     = "$LIBS $libdir/libfltk2_gl$SHAREDSUFFIX";
+        }
+        if (grep {m[images]} @args) {
+            $LDFLAGS = "-lfltk2_images $IMAGELIBS $LDFLAGS";
+            $LDSTATIC
+                = "$libdir/libfltk2_images$SHAREDSUFFIX $LDSTATIC $IMAGELIBS";
+        }
+        return ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS);
     }
 
-    sub ldstaticflags {
-        my ($class, $args) = @_;
-        my @flags = $class->ldflags($args);
-        require Config;
-        my $dir = $class->library_path();
-        my $_a  = $Config::Config{'_a'};
-        map {
-            s[-l(fltk2_?\w*)]['"'.catdir($dir . '/lib' . $1 . $_a) . '"']eg;
-        } @flags;
-        return wantarray ? @flags : join ' ', @flags;
+    sub _find_lib {
+        my ($find) = @_;
+        $find =~ s[([\+\*\.])][\\$1]g;
+        my $lib;
+        find(
+            sub {
+                $lib = $File::Find::name
+                    if $_ =~ qr[lib$find$Config{'_a'}];
+            },
+            split ' ',
+            $Config{'libpth'}
+        );
+        return $lib;
     }
 
-    sub _TODO_post {    # MacOS needs post
-        return $^O eq 'MacOS'
-            ? catdir(shift->include_path() . '/fltk/mac.r')
-            : ();
+    sub _find_h {
+        my $file = rel2abs(catdir($Config{'incpath'}, shift));
+        my $found = 0;
+        find(
+            sub {
+                $found = 1 if canonpath($File::Find::name) eq $file;
+            },
+            $Config{'incpath'}
+        );
+        return $found;
     }
-    1;
 }
 
 =pod
@@ -111,13 +162,11 @@ C<2.0.x> branch of the FLTK GUI toolkit.
     }
 
   my $obj = $CC->compile(source       => $source,
-                         include_dirs => [Alien::FLTK->include_path()],
                          extra_compiler_flags => Alien::FLTK->cxxflags()
   );
   my $exe = $CC->link_executable(
         objects => [$obj],
-        extra_linker_flags =>
-            [Alien::FLTK->ldflags(), '-L"' . Alien::FLTK->library_path() . '"']
+        extra_linker_flags => Alien::FLTK->ldflags()
   );
   print system($exe) ? 'Aww...' : 'Yay!';
   END { unlink grep defined, $source, $obj, $exe; }
@@ -188,6 +237,14 @@ TODO
 
 TODO
 
+=head1 To Do
+
+=over
+
+=item Cache the _find_h() and _find_lib() stuff
+
+=back
+
 =head1 See Also
 
 L<Alien::FLTK::ConfigData|Alien::FLTK::ConfigData>
@@ -224,6 +281,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 L<C<Alien::FLTK>|Alien::FLTK> is based in part on the work of the FLTK
 project. See http://www.fltk.org/.
 
-=for git $Id: FLTK.pm 9d6ef4c 2009-06-08 01:19:45Z sanko@cpan.org $
+=for git $Id$
 
 =cut
