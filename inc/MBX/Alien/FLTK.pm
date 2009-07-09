@@ -205,7 +205,7 @@ Your system/compiler combination may not be supported. Using defaults.
         return MBX::Alien::FLTK::Utility::run(qw[sh ./configure]);
     }
 
-    sub build_fltk {
+    sub build_fltk {    # TODO: Try $Config{'make'} (first)
         my ($self, $build) = @_;
         die 'Failed to find sh; to run "make" bye!'
             if !MBX::Alien::FLTK::Utility::can_run('make');

@@ -1,12 +1,13 @@
 #!perl
 use strict;
 use warnings;
-use Alien::FLTK;
-use ExtUtils::CBuilder;
-my $CC     = ExtUtils::CBuilder->new();
-my $source = 'hello_world.cxx';
-open(my $FH, '>', $source) || die '...';
-syswrite($FH, <<'') || die '...'; close $FH;
+{
+    use Alien::FLTK;
+    use ExtUtils::CBuilder;
+    my $CC     = ExtUtils::CBuilder->new();
+    my $source = 'hello_world.cxx';
+    open(my $FH, '>', $source) || die '...';
+    syswrite($FH, <<'') || die '...'; close $FH;
       #include <fltk/Window.h>
       #include <fltk/Widget.h>
       #include <fltk/run.h>
@@ -24,9 +25,12 @@ syswrite($FH, <<'') || die '...'; close $FH;
         return run();
       }
 
-my $obj = $CC->compile(source               => $source,
-                       extra_compiler_flags => Alien::FLTK->cxxflags());
-my $exe = $CC->link_executable(objects            => $obj,
-                               extra_linker_flags => Alien::FLTK->ldflags());
-print system($exe) ? 'Aww...' : 'Yay!';
-END { unlink grep defined, $source, $obj, $exe; }
+    my $obj = $CC->compile(source               => $source,
+                           extra_compiler_flags => Alien::FLTK->cxxflags());
+    my $exe = $CC->link_executable(
+                                  objects            => $obj,
+                                  extra_linker_flags => Alien::FLTK->ldflags()
+    );
+    print system($exe) ? 'Aww...' : 'Yay!';
+    END { unlink grep defined, $source, $obj, $exe; }
+}

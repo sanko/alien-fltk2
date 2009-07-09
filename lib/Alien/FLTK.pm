@@ -6,7 +6,7 @@ package Alien::FLTK;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     use File::Basename;
     use File::Find qw[find];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6793; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6793; our $UNSTABLE_RELEASE = 1; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
 
     sub include_path {
@@ -47,7 +47,7 @@ package Alien::FLTK;
         {
             local $_ = ($Config{'osname'} || $^O);
             if (m[MSWin32]) {
-                $LDLIBS    # basic
+                $LDLIBS
                     = '-mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32 -lsupc++';
                 $GLLIB = "-lopengl32"
                     if _find_h('GL/gl.h');    # XXX only if use_gl
@@ -58,7 +58,7 @@ package Alien::FLTK;
                 $GLLIB  = '-framework AGL -framework OpenGL';
             }
             else {                # All others are UNIX/X11...
-                $LDLIBS           # basic
+                $LDLIBS
                     = '-lX11 -lXi -lXcursor -lpthread -lm -lXext -lsupc++';
                 if (_find_h('GL/gl.h')) {
                     $GLLIB = _find_lib('MesaGL') ? '-lMesaGL' : '-lGL';
