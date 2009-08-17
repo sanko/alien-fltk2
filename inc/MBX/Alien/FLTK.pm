@@ -126,6 +126,13 @@ Your system/compiler combination may not be supported. Using defaults.
             no_chdir => 1
             },
             '.';
+        chdir _dir($self->fltk_dir())
+            or die q[failed to cd to fltk's include directory];
+        $self->copy_if_modified(
+             from => 'config.h',
+             to =>
+                 rel2abs($top . '/blib/arch/Alien/FLTK/include/fltk/config.h')
+        );
         print
             "Installing FLTK2.x includes and FLTK1.1 emulation includes...\n";
         die sprintf 'Failed to return to %s', $self->base_dir()
