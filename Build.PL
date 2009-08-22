@@ -89,13 +89,13 @@ my $mb = $class->new(
 print sub { my ($x) = @_; chomp $x if !$mb->args('messy'); $x; }
     ->(<<'#END');
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    Buliding FLTK requires a functioning C++ compiler.  Hold on a sec
+    Building FLTK requires a functioning C++ compiler.  Hold on a sec
     while I check some stuff...
 #END
 if (!$mb->test_exe({verbose => $mb->args('messy')})) {
     print <<'#END'; exit 0; }
 
-    Oops!  I failed to find working compier so I this is where you and I
+    Oops!  I failed to find working complier so I this is where you and I
     part ways.  It's been real.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 #END
@@ -141,6 +141,58 @@ BEGIN {    # Tired of getting FAIL-mail from outdated build environments
         exit 0;
     }
 }
-__END__
 
-$Id$
+=pod
+
+=head1 NAME
+
+Build.PL - Module::Build based install
+
+=head1 Description
+
+C<Build.PL> creates the 'Build' script which... meh, you know what C<Build.PL>
+is for.
+
+Anyway, when this one decides that it is being run by an L<Alien::FLTK>
+Developer (or just some random person who checked out the source from git) it
+loads a "special" L<Module::Build|Module::Build> subclass filled with useless
+things I've wasted my time pasting together. Otherwise, it loads a rather tame
+subclass which works well enough for most end users.
+
+=head1 Requirements
+
+=over
+
+=item L<Alien::FLTK|Alien::FLTK> is licensed under the Artistic License 2.0
+(see the L<License and Legal|/"License and Legal"> section) so this
+C<Build.PL> requires at least L<Module::Build|Module::Build> C<0.3>.
+
+=item I've set an arbitrary minimum perl version at 5.8.8 not because I've
+tested L<Alien::FLTK|Alien::FLTK> with anything lower than that and failed,
+but because I really don't care for test reports from ancient builds.
+
+=back
+
+=head1 Author
+
+Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
+
+CPAN ID: SANKO
+
+=head1 License and Legal
+
+Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of The Artistic License 2.0. See the F<LICENSE> file included with
+this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
+clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
+
+When separated from the distribution, all POD documentation is covered by the
+Creative Commons Attribution-Share Alike 3.0 License. See
+http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
+clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+
+=for git $Id$
+
+=cut
