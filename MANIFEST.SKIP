@@ -1,0 +1,49 @@
+# Avoid version control files.
+\B\.git\b
+\B\.gitnore$
+.gitignore$
+.gitattributes
+.gitclean.pl
+.gitignore
+.gitsmudge.pl
+
+# Avoid self
+^MANIFEST\.SKIP$
+
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\bBuild.bat$
+\b_build
+\bBuild.COM$
+\bBUILD.COM$
+\bbuild.com$
+\bblib
+
+# Avoid Devel::Cover generated files
+\bcover_db
+
+# Avoid temp and backup files.
+~$
+^~.*
+\.tmp$
+\.old$
+\.bak$
+\#$
+\.#
+\.rej$
+
+# Avoid OS-specific files/dirs
+#   Mac OSX metadata
+\B\.DS_Store
+#   Mac OSX SMB mount metadata files
+\B\._
+
+# Dist related stuff
+\bFLTK-[\d\.\_]+
+src/
+snapshots/
+
+# Don't include these developer only files
+inc/MBX/Alien/FLTK/Developer.pm
+
+# $ID$

@@ -1,4 +1,3 @@
-use strict;
 use warnings;
 use Config qw[%Config];
 use File::Find qw[find];
