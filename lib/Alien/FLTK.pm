@@ -195,8 +195,7 @@ Returns additional C compiler flags to be used.
 
     my $cxxflags = Alien::FLTK->cxxflags;
 
-Returns additional C++ compiler flags to be used.
-to compile C++ using FLTK
+Returns additional flags to be used to when compiling C++ using FLTK.
 
 =head2 C<ldflags>
 
