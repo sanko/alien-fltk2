@@ -289,15 +289,19 @@ http://github.com/sanko/alien-fltk/ and you are invited to fork it.
 
 =back
 
-=head2 Dependencies
+=head2 Requirements
+
+Once installed, L<Alien::FLTK> depends on:
 
 =over
 
-=item L<File::Spec::Functions|File::Spec::Functions>
+=item L<Config|Config>
 
-=item L<Module::Build|Module::Build>
+=item L<File::Spec::Functions>
 
-=item L<ExtUtils::CBuilder|ExtUtils::CBuilder>
+=item L<File::Basename>
+
+=item L<File::Find>
 
 =back
 

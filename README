@@ -120,11 +120,6 @@ Notes
 
         http://github.com/sanko/alien-fltk/ and you are invited to fork it.
 
-  Dependencies
-    File::Spec::Functions
-    Module::Build
-    ExtUtils::CBuilder
-
   Installation
     This distribution requires a functioning C++ compiler and (to make life
     easy) a version of make.
