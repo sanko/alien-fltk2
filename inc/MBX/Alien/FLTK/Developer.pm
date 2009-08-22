@@ -21,11 +21,13 @@ package MBX::Alien::FLTK::Developer;
         return 1;
     }
 
-    sub ACTION_distmeta {
-        my ($self) = @_;
-        $self->SUPER::depends_on('changelog');
-        $self->SUPER::depends_on('RCS');
-        $self->SUPER::ACTION_distmeta(@_);
+    sub ACTION_distdir {
+        my ($self, $args) = @_;
+        if (!$self->notes('no_rcs')) {
+            $self->SUPER::depends_on('changelog');
+            $self->SUPER::depends_on('RCS');
+        }
+        $self->SUPER::ACTION_distdir(@_);
     }
 
     sub ACTION_changelog {
