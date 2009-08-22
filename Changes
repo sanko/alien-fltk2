@@ -1,19 +1,7 @@
-Version 0.0XX | Distant future | ecfdb18
-    API Changes/Compatibility Information:
-     * It actually exists
-
-     Resolved Issues/Bug Fixes:
-     * ...see above
-
-    Internal/Behavioral Changes:
-     * ...see above
-
+Version 0.0XX | Distant future | 9d2e5ca
     Documentation/Sample Code/Test Suite:
      * ldflags was mislabeled in POD
-
-    Notes:
-     * Meanwhile...
-         - ...stuff is going on.
+     * License info added to various files
 
 Version 0.068410 | 2009-08-22 07:10:42Z (Sat, 22 Aug 2009) | ecfdb18
     API Changes/Compatibility Information:
