@@ -82,7 +82,7 @@ Methods
         Include flags to use extra image formats (PNG, JPEG).
 
   "revision"
-        my $revision = Alien::wxWidgets->revision;
+        my $revision = Alien::FLTK->revision;
 
     Returns the SVN revision number of the source "Alien::FLTK" was built
     with.

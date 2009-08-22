@@ -241,7 +241,7 @@ Include flags to use FLTK's forms compatibility layer.
 
 =head2 C<revision>
 
-    my $revision = Alien::wxWidgets->revision;
+    my $revision = Alien::FLTK->revision;
 
 Returns the SVN revision number of the source L<C<Alien::FLTK>|Alien::FLTK>
 was built with.
