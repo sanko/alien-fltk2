@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-FLTK::Todo - TODO list for Perl module Alien::FLTK
+Alien::FLTK::Todo - TODO list for Perl module Alien::FLTK
 
 =head1 High priorities
 
@@ -38,6 +38,6 @@ CPAN ID: SANKO
 
 Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
-=for git $Id: TODO.pod 1f401e3 2009-06-07 22:24:52Z sanko@cpan.org $ for got=
+=for git $Id$ for got=
 
 =cut

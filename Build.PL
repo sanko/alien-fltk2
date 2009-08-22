@@ -65,13 +65,12 @@ my $mb = MBX::Alien::FLTK->new(
         keywords =>
             [qw[Alien FLTK Fast Light Toolkit widget FL GUI UI window 2.0.x]],
         resources => {
-            bugtracker => q[http://github.com/sanko/alien-fltk/issues],
-            ChangeLog => q[http://github.com/sanko/alien-fltk/commits/master],
-            homepage  => q[http://sankorobinson.com/fltk/],
-            license => q[http://www.perlfoundation.org/artistic_license_2_0],
-
+            bugtracker => 'http://github.com/sanko/alien-fltk/issues',
+            ChangeLog => 'http://github.com/sanko/alien-fltk/commits/master',
+            homepage  => 'http://sankorobinson.com/fltk/',
+            license => 'http://www.perlfoundation.org/artistic_license_2_0',
             #MailingList => 'TODO',
-            repository => q[http://github.com/sanko/alien-fltk/]
+            repository => 'http://github.com/sanko/alien-fltk/'
         }
     },
     get_options => {'interactive!' => {},

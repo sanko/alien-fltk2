@@ -251,44 +251,86 @@ L<C<Alien::FLTK>|Alien::FLTK> was built with.
 
 Numerous, I'm sure.
 
-TODO
-
 =head1 Notes
 
 =head2 Support Links
 
-TODO
+=over
+
+=item * Issue Tracker
+
+http://github.com/sanko/alien-fltk/issues
+
+Please only report L<Alien::FLTK|Alien::FLTK> related bugs to this tracker.
+For L<FLTK|FLTK> issues, use http://github.com/sanko/fltk-perl/issues/
+
+=item * Commit Log
+
+http://github.com/sanko/alien-fltk/commits/master
+
+=item * Homepage:
+
+http://sanko.github.com/fltk-perl/ is the homepage of the L<FLTK|FLTK>
+project.
+
+=item * License:
+
+http://www.perlfoundation.org/artistic_license_2_0
+
+See the L<License and Legal|/"License and Legal"> section of this document.
+
+=item * Mailing List
+
+Once I find someone to host a list for the L<FLTK|FLTK> project, I'll use it
+for L<Alien::FLTK|Alien::FLTK> too.
+
+=item * Repository
+
+http://github.com/sanko/alien-fltk/ and you are invited to fork it.
+
+=back
 
 =head2 Dependencies
 
 =over
 
-=item L<C<File::Spec::Functions>|File::Spec::Functions>
+=item L<File::Spec::Functions|File::Spec::Functions>
 
-=item L<C<Alien::FLTK::ConfigData>|Alien::FLTK::ConfigData> which is
-created and installed by L<C<Module::Build>|Module::Build>
+=item L<Module::Build|Module::Build>
+
+=item L<ExtUtils::CBuilder|ExtUtils::CBuilder>
 
 =back
 
 =head2 Examples
 
-TODO
+Please see the L<Synopsis|/"Synopsis"> and the files in the C</example/>.
 
 =head2 Installation
 
-TODO
+This distribution requires a functioning C++ compiler and (to make life easy)
+a version of make.
+
+The distribution is based on L<Module::Build|Module::Build> and
+L<ExtUtils::CBuilder|ExtUtils::CBuilder>, so use the following procedure:
+
+  perl Build.PL
+  ./Build
+  ./Build test
+  ./Build install
+
+=head3 Win32
+
+An attempt has been made to work around the lack of proper build tools on
+Windows machines. Consider it alpha at best.
 
 =head1 To Do
 
-=over
-
-=item Cache the _find_h() and _find_lib() stuff
-
-=back
+Please see L<Alien::FLTK::Todo|Alien::FLTK::Todo>
 
 =head1 See Also
 
-L<Alien::FLTK::ConfigData|Alien::FLTK::ConfigData>
+L<FLTK|FLTK>
 
 =head1 Acknowledgments
 
@@ -308,14 +350,13 @@ CPAN ID: SANKO
 
 Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of The Artistic License 2.0.  See the F<LICENSE>
-file included with this distribution or
-http://www.perlfoundation.org/artistic_license_2_0.  For
+This program is free software; you can redistribute it and/or modify it under
+the terms of The Artistic License 2.0. See the F<LICENSE> file included with
+this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
 clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
 
-When separated from the distribution, all POD documentation is covered
-by the Creative Commons Attribution-Share Alike 3.0 License.  See
+When separated from the distribution, all POD documentation is covered by the
+Creative Commons Attribution-Share Alike 3.0 License. See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
