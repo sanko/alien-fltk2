@@ -1,4 +1,8 @@
-Version 0.0XX | Distant future | 9d2e5ca
+Version 0.0XX | Distant future | 04ade31
+    Internal/Behavioral Changes:
+     * Alternatives are presented when we fail to download fltk's source due
+       to some connectivity problem (firewall, etc.)
+
     Documentation/Sample Code/Test Suite:
      * ldflags was mislabeled in POD
      * License info added to various files
