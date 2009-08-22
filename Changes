@@ -1,5 +1,21 @@
-Version 0.068410 | 2009-08-22 05:38:21Z (Sat, 22 Aug 2009) | eac9de5
+Version 0.0XX | Distant future | ecfdb18
+    API Changes/Compatibility Information:
+     * It actually exists
 
+     Resolved Issues/Bug Fixes:
+     * ...see above
+
+    Internal/Behavioral Changes:
+     * ...see above
+
+    Documentation/Sample Code/Test Suite:
+     * ldflags was mislabeled in POD
+
+    Notes:
+     * Meanwhile...
+         - ...stuff is going on.
+
+Version 0.068410 | 2009-08-22 07:10:42Z (Sat, 22 Aug 2009) | ecfdb18
     API Changes/Compatibility Information:
      * It actually exists
 

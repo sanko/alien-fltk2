@@ -9,8 +9,9 @@ my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{RELEASE_TESTING} ? 1 : 0);
 my @tests;
 find \&find_cb, qw[t/0000_use];
 @tests = sort @tests;
+my $class
+    = $is_developer ? 'MBX::Alien::FLTK::Developer' : 'MBX::Alien::FLTK';
 
-my $class = $is_developer ? 'MBX::Alien::FLTK::Developer' : 'MBX::Alien::FLTK';
 if (!eval "require $class") {
     printf 'Failed to load %s: %s This ain\'t good, so... bye!', $class, $@;
     exit 0;
@@ -63,7 +64,7 @@ my $mb = $class->new(
                              '.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'}
                        )
     ],
-    no_index => {directory => [qw[examples inc]]},
+    no_index   => {directory => [qw[examples inc]]},
     test_files => \@tests,
     meta_merge => {
         generated_by => 'Conversion, software version 7.0',
@@ -71,9 +72,10 @@ my $mb = $class->new(
             [qw[Alien FLTK Fast Light Toolkit widget FL GUI UI window 2.0.x]],
         resources => {
             bugtracker => 'http://github.com/sanko/alien-fltk/issues',
-            ChangeLog => 'http://github.com/sanko/alien-fltk/commits/master',
-            homepage  => 'http://sankorobinson.com/fltk/',
+            ChangeLog  => 'http://github.com/sanko/alien-fltk/commits/master',
+            homepage   => 'http://sanko.github.com/fltk-perl/',
             license => 'http://www.perlfoundation.org/artistic_license_2_0',
+
             #MailingList => 'TODO',
             repository => 'http://github.com/sanko/alien-fltk/'
         }

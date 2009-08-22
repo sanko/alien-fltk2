@@ -6,7 +6,7 @@ package Alien::FLTK;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     use File::Basename;
     use File::Find qw[find];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6841; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6841; our $UNSTABLE_RELEASE = 2; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
 
     sub include_path {
@@ -176,8 +176,7 @@ C<2.0.x> branch of the FLTK GUI toolkit.
 
     my $include_path = Alien::FLTK->include_path;
 
-Returns the location of the headers installed during the build
-process.
+Returns the location of the headers installed during the build process.
 
 =head2 C<library_path>
 
@@ -199,12 +198,12 @@ Returns additional C compiler flags to be used.
 Returns additional C++ compiler flags to be used.
 to compile C++ using FLTK
 
-=head2 C<cxxflags>
+=head2 C<ldflags>
 
-    my $cxxflags = Alien::FLTK->ldflags(qw[gl images]);
+    my $ldflags = Alien::FLTK->ldflags(qw[gl images]);
 
-Returns additional linker flags to be used. This method can automatically
-add appropriate flags based on how you plan on linking to fltk. Acceptable
+Returns additional linker flags to be used. This method can automatically add
+appropriate flags based on how you plan on linking to fltk. Acceptable
 arguments are:
 
 =over
@@ -244,8 +243,8 @@ Include flags to use FLTK's forms compatibility layer.
 
     my $revision = Alien::wxWidgets->revision;
 
-Returns the SVN revision number of the source
-L<C<Alien::FLTK>|Alien::FLTK> was built with.
+Returns the SVN revision number of the source L<C<Alien::FLTK>|Alien::FLTK>
+was built with.
 
 =head1 Bugs
 
@@ -308,21 +307,20 @@ Please see the L<Synopsis|/"Synopsis"> and the files in the C</example/>.
 
 =head2 Installation
 
-This distribution requires a functioning C++ compiler and (to make life easy)
-a version of make.
+Building the fltk2 libs requires a functioning C++ compiler, bash, and (to
+make life easy) a version of make.
 
-The distribution is based on L<Module::Build|Module::Build> and
-L<ExtUtils::CBuilder|ExtUtils::CBuilder>, so use the following procedure:
+The distribution is based on L<Module::Build|Module::Build>, so use the
+following procedure:
 
   perl Build.PL
   ./Build
   ./Build test
   ./Build install
 
-=head3 Win32
-
-An attempt has been made to work around the lack of proper build tools on
-Windows machines. Consider it alpha at best.
+An attempt has been made to work around an incomplete set of build tools. This
+fallback requires L<ExtUtils::CBuilder|ExtUtils::CBuilder> and plenty of
+begging. Consider it alpha at best.
 
 =head1 To Do
 

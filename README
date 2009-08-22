@@ -1,4 +1,3 @@
-NAME
     Alien::FLTK - Build and use the Fast Light Toolkit binaries
 
 Description
@@ -61,8 +60,8 @@ Methods
     Returns additional C++ compiler flags to be used. to compile C++ using
     FLTK
 
-  "cxxflags"
-        my $cxxflags = Alien::FLTK->ldflags(qw[gl images]);
+  "ldflags"
+        my $ldflags = Alien::FLTK->ldflags(qw[gl images]);
 
     Returns additional linker flags to be used. This method can
     automatically add appropriate flags based on how you plan on linking to
