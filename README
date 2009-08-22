@@ -6,40 +6,37 @@ Description
     "2.0.x" branch of the FLTK GUI toolkit.
 
 Synopsis
-      use Alien::FLTK;
-      use ExtUtils::CBuilder;
-      my $CC     = ExtUtils::CBuilder->new();
-      my $source = 'hello_world.cxx';
-      open(my $FH, '>', $source) || die '...';
-      syswrite($FH, <<'') || die '...'; close $FH;
-        #include <fltk/Window.h>
-        #include <fltk/Widget.h>
-        #include <fltk/run.h>
-        using namespace fltk;
-        int main(int argc, char **argv) {
-          Window *window = new Window(300, 180);
-          window->begin();
-          Widget *box = new Widget(20, 40, 260, 100, "Hello, World!");
-          box->box(UP_BOX);
-          box->labelfont(HELVETICA_BOLD_ITALIC);
-          box->labelsize(36);
-          box->labeltype(SHADOW_LABEL);
-          window->end();
-          window->show(argc, argv);
-          return run();
-        }
+        use Alien::FLTK;
+        use ExtUtils::CBuilder;
+        my $CC     = ExtUtils::CBuilder->new();
+        my $source = 'hello_world.cxx';
+        open(my $FH, '>', $source) || die '...';
+        syswrite($FH, <<'') || die '...'; close $FH;
+          #include <fltk/Window.h>
+          #include <fltk/Widget.h>
+          #include <fltk/run.h>
+          using namespace fltk;
+          int main(int argc, char **argv) {
+            Window *window = new Window(300, 180);
+            window->begin();
+            Widget *box = new Widget(20, 40, 260, 100, "Hello, World!");
+            box->box(UP_BOX);
+            box->labelfont(HELVETICA_BOLD_ITALIC);
+            box->labelsize(36);
+            box->labeltype(SHADOW_LABEL);
+            window->end();
+            window->show(argc, argv);
+            return run();
+          }
 
-      my $obj = $CC->compile(source       => $source,
-                             include_dirs => [Alien::FLTK->include_path()],
-                             extra_compiler_flags => Alien::FLTK->cxxflags()
-      );
-      my $exe = $CC->link_executable(
-            objects => [$obj],
-            extra_linker_flags =>
-                [Alien::FLTK->ldflags(), '-L"' . Alien::FLTK->library_path() . '"']
-      );
-      print system($exe) ? 'Aww...' : 'Yay!';
-      END { unlink grep defined, $source, $obj, $exe; }
+        my $obj = $CC->compile(source               => $source,
+                               extra_compiler_flags => Alien::FLTK->cxxflags());
+        my $exe = $CC->link_executable(
+                                      objects            => $obj,
+                                      extra_linker_flags => Alien::FLTK->ldflags()
+        );
+        print system($exe) ? 'Aww...' : 'Yay!';
+        END { unlink grep defined, $source, $obj, $exe; }
 
 Methods
   "include_path"
@@ -61,7 +58,29 @@ Methods
   "cxxflags"
         my $cxxflags = Alien::FLTK->cxxflags;
 
-    Returns additional C++ compiler flags to be used.
+    Returns additional C++ compiler flags to be used. to compile C++ using
+    FLTK
+
+  "cxxflags"
+        my $cxxflags = Alien::FLTK->ldflags(qw[gl images]);
+
+    Returns additional linker flags to be used. This method can
+    automatically add appropriate flags based on how you plan on linking to
+    fltk. Acceptable arguments are:
+
+    "static"
+        Returns flags to link against a static FLTK library.
+
+        *FLTK's license allows static linking, btw.*
+
+    "gl"
+        Include flags to use GL.
+
+        *This is an experimental option. Depending on your system, this may
+        also include OpenGL or MesaGL.*
+
+    "images"
+        Include flags to use extra image formats (PNG, JPEG).
 
   "revision"
         my $revision = Alien::wxWidgets->revision;
@@ -69,28 +88,55 @@ Methods
     Returns the SVN revision number of the source "Alien::FLTK" was built
     with.
 
-Bugs
-    Numerous, I'm sure.
-
-    TODO
-
 Notes
   Support Links
-    TODO
+    *   Issue Tracker
+
+        http://github.com/sanko/alien-fltk/issues
+
+        Please only report Alien::FLTK related bugs to this tracker. For
+        FLTK issues, use http://github.com/sanko/fltk-perl/issues/
+
+    *   Commit Log
+
+        http://github.com/sanko/alien-fltk/commits/master
+
+    *   Homepage:
+
+        http://sanko.github.com/fltk-perl/ is the homepage of the FLTK
+        project.
+
+    *   License:
+
+        http://www.perlfoundation.org/artistic_license_2_0
+
+        See the License and Legal section of this document.
+
+    *   Mailing List
+
+        Once I find someone to host a list for the FLTK project, I'll use it
+        for Alien::FLTK too.
+
+    *   Repository
+
+        http://github.com/sanko/alien-fltk/ and you are invited to fork it.
 
   Dependencies
-    "File::Spec::Functions"
-    "Alien::FLTK::ConfigData" which is created and installed by
-    "Module::Build"
-
-  Examples
-    TODO
+    File::Spec::Functions
+    Module::Build
+    ExtUtils::CBuilder
 
   Installation
-    TODO
+    This distribution requires a functioning C++ compiler and (to make life
+    easy) a version of make.
 
-See Also
-    Alien::FLTK::ConfigData
+    The distribution is based on Module::Build and ExtUtils::CBuilder, so
+    use the following procedure:
+
+      perl Build.PL
+      ./Build
+      ./Build test
+      ./Build install
 
 Acknowledgments
     The FLTK Team - http://www.fltk.org/
@@ -116,4 +162,3 @@ License and Legal
 
     "Alien::FLTK" is based in part on the work of the FLTK project. See
     http://www.fltk.org/.
-
