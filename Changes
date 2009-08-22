@@ -1,4 +1,4 @@
-Version 0.0XXXX | Distant future | XXXXXXX
+Version 0.0XX | Distant future | 1010c43
 
     API Changes/Compatibility Information:
      * It actually exists
@@ -20,7 +20,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/alien-fltk/commits/master
 
-$Ver$ from git
+$Ver$ from git $Rev$
 $Date$
-$Rev$
 $Url$

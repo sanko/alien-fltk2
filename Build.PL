@@ -10,7 +10,13 @@ my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{RELEASE_TESTING} ? 1 : 0);
 my @tests;
 find \&find_cb, qw[t/0000_use];
 @tests = sort @tests;
-my $mb = MBX::Alien::FLTK->new(
+
+my $class = $is_developer ? 'MBX::Alien::FLTK::Developer' : 'MBX::Alien::FLTK';
+if (!eval "require $class") {
+    printf 'Failed to load %s: %s This ain\'t good, so... bye!', $class, $@;
+    exit 0;
+}
+my $mb = $class->new(
     module_name => 'Alien::FLTK',
     license     => 'artistic_2',
     dist_author => 'Sanko Robinson <sanko@cpan.org>',
@@ -58,7 +64,7 @@ my $mb = MBX::Alien::FLTK->new(
                              '.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'}
                        )
     ],
-    no_index   => {directory => [qw[inc]]},
+    no_index => {directory => [qw[examples inc]]},
     test_files => \@tests,
     meta_merge => {
         generated_by => 'Conversion, software version 7.0',
