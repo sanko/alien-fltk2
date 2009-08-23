@@ -64,7 +64,7 @@ my $mb = $class->new(
                              '.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'}
                        )
     ],
-    no_index   => {directory => [qw[t example inc]], file => [qw[Build.PL]]},
+    no_index   => {directory => [qw[t example inc]]},
     test_files => \@tests,
     meta_merge => {
         generated_by => 'Conversion, software version 7.0',
