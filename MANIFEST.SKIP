@@ -45,5 +45,6 @@ snapshots/
 
 # Don't include these developer only files
 inc/MBX/Alien/FLTK/Developer.pm
+commitlog.txt
 
 # $ID$
