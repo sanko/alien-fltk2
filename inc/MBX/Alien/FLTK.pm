@@ -31,19 +31,20 @@ package MBX::Alien::FLTK;
         my ($self, %args) = @_;
         my $OS = $args{'osname'} || $Config{'osname'} || $^O;
         my $CC = $args{'cc'}     || $Config{'ccname'} || $Config{'cc'};
-        my $type = sprintf 'MBX::Alien::FLTK::%s%s', $OS =~ m[Win32]
-            ? (
-            'Win32',
-            ($CC =~ m[gcc]i
-             ? '::MinGW'
-             : $CC =~ m[cl]i    ? '::MSVC'       # TODO - use proj files?
-             : $CC =~ m[bcc32]i ? '::Borland'    # TODO
-             : $CC =~ m[icl]i   ? '::Intel'      # TODO
-             : ''
-            )
-            )
-            : $OS =~ m[MacOS]i ? ('MacOS', '')    # TODO
-            :                    ('Unix',  '');
+        $OS = 'netbsd';
+        my $type = sprintf 'MBX::Alien::FLTK::%s%s',
+        $OS =~ m[Win32] ? (
+                    'Win32',
+                    (   $CC =~ m[gcc]i   ? '::MinGW'
+                      : $CC =~ m[cl]i    ? '::MSVC'    # TODO - use .proj
+                      : $CC =~ m[bcc32]i ? '::Borland' # TODO
+                      : $CC =~ m[icl]i   ? '::Intel'   # TODO
+                      : ''                             # Hope for the best
+                    )
+                )
+                : $OS =~ m[MacOS]i ? ('MacOS', '')  # TODO
+                : $OS =~ m[BSD$]i  ? ('BSD',  '')   # requires GNUmake (gmake)
+                : ('Unix', '');
         my $compiler;
         eval "use $type;\$compiler = $type->new();";
         if ($@ || !$compiler) {
@@ -51,7 +52,7 @@ package MBX::Alien::FLTK;
 Your system/compiler combination may not be supported. Using defaults.
   Actual error message follows:
 
-            $compiler = $self;                    # Meh?
+            $compiler = $self;    # Meh?
         }
         return $self->{'stash'}{'_compiler'} = $compiler;   # MB is hash based
     }
