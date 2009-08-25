@@ -46,14 +46,14 @@ package Alien::FLTK;
         my $LDLIBS = my $GLLIB = '';
         {
             local $_ = ($Config{'osname'} || $^O);
-            if (m[MSWin32]) {
+            if (m[MSWin32]i) {
                 $LDLIBS
                     = '-mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32 -lsupc++';
                 $GLLIB = "-lopengl32"
                     if _find_h('GL/gl.h');    # XXX only if use_gl
                 $GLLIB = "-lglu32 $GLLIB" if _find_h('GL/glu.h');
             }
-            elsif (m[MacOS]) {    # MacOS X uses Carbon for graphics...
+            elsif (m[darwin]i) {    # MacOS X uses Carbon for graphics...
                 $LDLIBS = '-framework Carbon -framework ApplicationServices';
                 $GLLIB  = '-framework AGL -framework OpenGL';
             }
