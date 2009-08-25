@@ -79,28 +79,26 @@ my $mb = $class->new(
             #MailingList => 'TODO',
             repository => 'http://github.com/sanko/alien-fltk/'
         }
-    },
-    get_options => {'interactive!' => {},
-                    'messy!'       => {}
     }
 );
 
 #
-print sub { my ($x) = @_; chomp $x if !$mb->args('messy'); $x; }
-    ->(<<'#END');
+print <<'#END';
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     Building FLTK requires a functioning C++ compiler.  Hold on a sec
     while I check some stuff...
+
 #END
-if (!$mb->test_exe({verbose => $mb->args('messy')})) {
+if (!$mb->cbuilder->have_compiler()) {
     print <<'#END'; exit 0; }
 
     Oops!  I failed to find working complier so I this is where you and I
     part ways.  It's been real.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 #END
-printf <<'#END', ($mb->args('messy') ? ' ' x 3 : '');
- %sLooks okay here. Moving on.
+print <<'#END';
+
+   Looks okay here. Moving on.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 #END
 
@@ -111,13 +109,11 @@ printf <<'#END', ($mb->args('messy') ? ' ' x 3 : '');
 #$mb->notes(use_forms => 0);           # TODO
 $mb->notes(fltk_svn => $mb->dist_version =~ m[\.0?(\d+)]);
 ##################################################################### TODO ###
-$mb->notes(automated_testing => $automated_testing       ? 1 : 0);
+$mb->notes(automated_testing => $automated_testing     ? 1 : 0);
 $mb->notes(release_testing   => $is_developer);
-$mb->notes(verbose           => $mb->args('messy')       ? 1 : 0);
-$mb->notes(interactive       => $mb->args('interactive') ? 1 : 0);
 $mb->notes(test_suite        => \@tests);
 $mb->notes(gmtime            => scalar gmtime);
-$mb->notes(threads           => $Config{'useithreads'}   ? 1 : 0);
+$mb->notes(threads           => $Config{'useithreads'} ? 1 : 0);
 $mb->create_build_script;
 ##############################################################################
 exit 0;
