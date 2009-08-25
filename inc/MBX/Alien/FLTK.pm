@@ -31,7 +31,6 @@ package MBX::Alien::FLTK;
         my ($self, %args) = @_;
         my $OS = $args{'osname'} || $Config{'osname'} || $^O;
         my $CC = $args{'cc'}     || $Config{'ccname'} || $Config{'cc'};
-        $OS = 'netbsd';
         my $type = sprintf 'MBX::Alien::FLTK::%s%s',
         $OS =~ m[Win32] ? (
                     'Win32',
