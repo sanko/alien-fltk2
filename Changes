@@ -1,4 +1,16 @@
-Version 0.0XX | Distant future | 04ade31
+Version 0.0XX | Distant future | 4e28158
+
+     Resolved Issues/Bug Fixes:
+     * Attempt to find and use gmake on *BSD
+
+    Internal/Behavioral Changes:
+     * Use ExtUtils::CBuilder when testing if system can compile C++
+
+    Documentation/Sample Code/Test Suite:
+     * New GL example: example/0003_gl.pl
+
+Version 0.0XX | Distant future | ddfb492
+
     Internal/Behavioral Changes:
      * Alternatives are presented when we fail to download fltk's source due
        to some connectivity problem (firewall, etc.)
@@ -8,6 +20,7 @@ Version 0.0XX | Distant future | 04ade31
      * License info added to various files
 
 Version 0.068410 | 2009-08-22 07:10:42Z (Sat, 22 Aug 2009) | ecfdb18
+
     API Changes/Compatibility Information:
      * It actually exists
 
