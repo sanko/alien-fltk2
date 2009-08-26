@@ -85,20 +85,20 @@ my $mb = $class->new(
 #
 print <<'#END';
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    Building FLTK requires a functioning C++ compiler.  Hold on a sec
-    while I check some stuff...
+  Building FLTK requires a functioning C++ compiler.  Hold on a sec while I
+  check some stuff...
 
 #END
 if (!$mb->cbuilder->have_compiler()) {
     print <<'#END'; exit 0; }
 
-    Oops!  I failed to find working complier so I this is where you and I
-    part ways.  It's been real.
+  Oops!  I failed to find working complier so I this is where you and I
+  part ways.  It's been real.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 #END
 print <<'#END';
 
-   Looks okay here. Moving on.
+  Looks okay here. Moving on.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 #END
 

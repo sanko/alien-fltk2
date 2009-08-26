@@ -57,7 +57,7 @@ package Alien::FLTK;
                 $LDLIBS = '-framework Carbon -framework ApplicationServices';
                 $GLLIB  = '-framework AGL -framework OpenGL';
             }
-            else {                # All others are UNIX/X11...
+            else {                  # All others are UNIX/X11...
                 $LDLIBS
                     = '-lX11 -lXi -lXcursor -lpthread -lm -lXext -lsupc++';
                 if (_find_h('GL/gl.h')) {

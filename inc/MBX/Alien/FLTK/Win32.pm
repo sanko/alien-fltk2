@@ -191,9 +191,14 @@ END
         my ($self, $build) = @_;
         my @lib;
         for my $dir (sort keys %LIBS) {
-            chdir $build->base_dir() or die q[Can't go home again!];
-            chdir $build->fltk_dir() . "/$dir"
-                or die 'Cannot chdir to ' . $build->fltk_dir() . '/' . $dir;
+            if (!chdir $build->base_dir()) {
+                print '...you can\'t go home again.';
+                exit 0;
+            }
+            if (!chdir $build->fltk_dir() . "/$dir") {
+                print 'Cannot chdir to ' . $build->fltk_dir() . '/' . $dir;
+                exit 0;
+            }
             print "=== making $dir ===\n";
             for my $lib (sort keys %{$LIBS{$dir}}) {
                 my @obj;
@@ -225,7 +230,10 @@ END
                             );
                         }
                         ->();
-                    die sprintf 'Failed to compile %s', $src if !$obj;
+                    if (!$obj) {
+                        printf 'Failed to compile %s', $src;
+                        exit 0;
+                    }
                     push @obj, $obj;
                 }
                 my $_lib = _rel(_dir($build->fltk_dir, 'lib', _a($lib)));
@@ -237,13 +245,17 @@ END
                                       verbose => $build->VERBOSE()
                                      }
                     );
-                die sprintf 'Failed to create %s library', $lib
-                    if !$lib;
+                if (!$lib) {
+                    printf 'Failed to create %s library', $lib;
+                    exit 0;
+                }
                 push @lib, _abs($lib);
             }
         }
-        chdir $build->fltk_dir($self)
-            or die q[failed to cd to fltk's base directory];
+        if (!chdir $build->fltk_dir($self)) {
+            print 'Failed to cd to fltk\'s base directory';
+            exit 0;
+        }
         return @lib ? 1 : 0;
     }
 

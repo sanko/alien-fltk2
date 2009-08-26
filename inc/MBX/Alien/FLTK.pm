@@ -31,19 +31,20 @@ package MBX::Alien::FLTK;
         my ($self, %args) = @_;
         my $OS = $args{'osname'} || $Config{'osname'} || $^O;
         my $CC = $args{'cc'}     || $Config{'ccname'} || $Config{'cc'};
-        my $type = sprintf 'MBX::Alien::FLTK::%s%s',
-        $OS =~ m[Win32] ? (
-                    'Win32',
-                    (   $CC =~ m[gcc]i   ? '::MinGW'
-                      : $CC =~ m[cl]i    ? '::MSVC'    # TODO - use .proj
-                      : $CC =~ m[bcc32]i ? '::Borland' # TODO
-                      : $CC =~ m[icl]i   ? '::Intel'   # TODO
-                      : ''                             # Hope for the best
-                    )
-                )
-                : $OS =~ m[MacOS]i ? ('MacOS', '')  # TODO
-                : $OS =~ m[BSD$]i  ? ('BSD',  '')   # requires GNUmake (gmake)
-                : ('Unix', '');
+        my $type = sprintf 'MBX::Alien::FLTK::%s%s', $OS =~ m[Win32]
+            ? (
+            'Win32',
+            ($CC =~ m[gcc]i
+             ? '::MinGW'
+             : $CC =~ m[cl]i    ? '::MSVC'       # TODO - use .proj
+             : $CC =~ m[bcc32]i ? '::Borland'    # TODO
+             : $CC =~ m[icl]i   ? '::Intel'      # TODO
+             : ''                                # Hope for the best
+            )
+            )
+            : $OS =~ m[MacOS]i ? ('MacOS', '')    # TODO
+            : $OS =~ m[BSD$]i  ? ('BSD',   '')    # requires GNUmake (gmake)
+            :                    ('Unix',  '');
         my $compiler;
         eval "use $type;\$compiler = $type->new();";
         if ($@ || !$compiler) {
@@ -51,7 +52,7 @@ package MBX::Alien::FLTK;
 Your system/compiler combination may not be supported. Using defaults.
   Actual error message follows:
 
-            $compiler = $self;    # Meh?
+            $compiler = $self;                    # Meh?
         }
         return $self->{'stash'}{'_compiler'} = $compiler;   # MB is hash based
     }
@@ -73,26 +74,37 @@ Your system/compiler combination may not be supported. Using defaults.
 
     sub ACTION_configure_fltk2 {  # XXX - if!(-f'config.h'&&-f'config.status')
         my ($self) = @_;
-        chdir $self->fltk_dir()
-            or die sprintf 'failed to cd to %s: %s', $self->fltk_dir(), $!;
+        if (!chdir $self->fltk_dir()) {
+            printf 'Failed to cd to %s: %s', $self->fltk_dir(), $!;
+            exit 0;
+        }
         if (!-f _dir($self->fltk_dir() . '/config.h')) {
             print 'Creating config.h...';
             chdir($self->fltk_dir())
                 || Carp::confess 'Failed to chdir to ' . $self->fltk_dir();
             $self->{'stash'}{'_compiler'}->configure($self);
         }
-        chdir $self->base_dir() || die q[You can't go home again!];
+        if (!chdir $self->base_dir()) {
+            print '...you can\'t go home again.';
+            exit 0;
+        }
     }
 
     sub ACTION_build_fltk2 {
         my ($self) = @_;
-        chdir $self->fltk_dir()
-            or die q[failed to cd to fltk's base directory];
+        if (!chdir $self->fltk_dir()) {
+            print 'Failed to cd to fltk\'s base directory';
+            exit 0;
+        }
         my @lib = $self->{'stash'}{'_compiler'}->build_fltk($self);
-        die sprintf 'Failed to return to %s', $self->base_dir()
-            if !chdir $self->base_dir();
-        chdir _dir($self->fltk_dir() . '/lib')
-            or die q[failed to cd to fltk's base directory];
+        if (!chdir $self->base_dir()) {
+            printf 'Failed to return to %s', $self->base_dir();
+            exit 0;
+        }
+        if (!chdir _dir($self->fltk_dir() . '/lib')) {
+            print 'Failed to cd to fltk\'s base directory';
+            exit 0;
+        }
         $self->copy_if_modified(
               from   => $_,
               to_dir => _dir($self->base_dir() . '/blib/arch/Alien/FLTK/libs')
@@ -102,14 +114,19 @@ Your system/compiler combination may not be supported. Using defaults.
             qw;
             fltk2        fltk2_gl   fltk2_glut  fltk2_forms
             fltk2_images fltk2_jpeg fltk2_png   fltk2_z;;
-        chdir $self->base_dir() || die q[You can't go home again!];
+        if (!chdir $self->base_dir()) {
+            print 'Failed to cd to base directory';
+            exit 0;
+        }
         return 1;
     }
 
     sub copy_headers {
         my ($self) = @_;
-        chdir _dir($self->fltk_dir() . '/fltk')
-            or die q[failed to cd to fltk's include directory];
+        if (!chdir _dir($self->fltk_dir() . '/fltk')) {
+            print 'Failed to cd to fltk\'s include directory';
+            exit 0;
+        }
         my $top = $self->base_dir();
         find {
             wanted => sub {
@@ -126,8 +143,10 @@ Your system/compiler combination may not be supported. Using defaults.
             no_chdir => 1
             },
             '.';
-        chdir _dir($self->fltk_dir())
-            or die q[failed to cd to fltk's include directory];
+        if (!chdir _dir($self->fltk_dir())) {
+            print 'Failed to cd to fltk\'s include directory';
+            exit 0;
+        }
         $self->copy_if_modified(
              from => 'config.h',
              to =>
@@ -135,8 +154,10 @@ Your system/compiler combination may not be supported. Using defaults.
         );
         print
             "Installing FLTK2.x includes and FLTK1.1 emulation includes...\n";
-        die sprintf 'Failed to return to %s', $self->base_dir()
-            if !chdir $self->base_dir();
+        if (!chdir $self->base_dir()) {
+            printf 'Failed to return to %s', $self->base_dir();
+            exit 0;
+        }
         $self->notes(include_path => $self->_archdir('include'));
         return 1;
     }
@@ -229,16 +250,18 @@ END
 
     sub configure {
         my ($self, $build) = @_;
-        die 'Failed to find sh; to run "sh ./configure"; bye!'
-            if !MBX::Alien::FLTK::Utility::can_run('sh');
-        return MBX::Alien::FLTK::Utility::run(qw[sh ./configure]);
+        return MBX::Alien::FLTK::Utility::run(qw[sh ./configure])
+            if MBX::Alien::FLTK::Utility::can_run('sh');
+        print 'Failed to find sh; to run "sh ./configure"; bye!';
+        exit 0;
     }
 
     sub build_fltk {    # TODO: Try $Config{'make'} (first)
         my ($self, $build) = @_;
-        die 'Failed to find sh; to run "make" bye!'
-            if !MBX::Alien::FLTK::Utility::can_run('make');
-        return MBX::Alien::FLTK::Utility::run(qw[make]);
+        return MBX::Alien::FLTK::Utility::run(qw[make])
+            if MBX::Alien::FLTK::Utility::can_run('make');
+        print 'Failed to find sh; to run "make" bye!';
+        exit 0;
     }
 
     # shortcuts
@@ -304,7 +327,6 @@ END
 
     sub archive {
         my ($self, $args) = @_;
-        die if !$args->{'output'};
         my $arch = $args->{'output'};
         my @cmd = (qw[ar cr], $arch, @{$args->{'objects'}});
         print STDERR "@cmd\n" if $args->{'verbose'};

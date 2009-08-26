@@ -83,7 +83,6 @@ package MBX::Alien::FLTK::Utility;
                             $Config{'libpth'}, 'lib' . shift() . $Config{'_a'}
                         )
         );
-        die $file;
         my $found = 0;
         find(
             sub {    # XXX - Some platforms are touchy about case

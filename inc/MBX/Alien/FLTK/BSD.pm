@@ -11,9 +11,10 @@ package MBX::Alien::FLTK::Win32;
 
     sub build_fltk {    # TODO: Try $Config{'make'} second
         my ($self, $build) = @_;
-        die 'Failed to find GNUmake which is required for *BSD'
-            if !MBX::Alien::FLTK::Utility::can_run('gmake');
-        return MBX::Alien::FLTK::Utility::run(qw[gmake]);
+        return MBX::Alien::FLTK::Utility::run(qw[gmake])
+            if MBX::Alien::FLTK::Utility::can_run('gmake');
+        print 'Failed to find GNUmake which is required for *BSD';
+        exit 0;
     }
     1;
 }
