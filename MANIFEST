@@ -6,6 +6,7 @@ example/0002_static.pl
 example/0003_gl.pl
 inc/MBX/Alien/FLTK.pm
 inc/MBX/Alien/FLTK/BSD.pm
+inc/MBX/Alien/FLTK/Solaris.pm
 inc/MBX/Alien/FLTK/Utility.pm
 inc/MBX/Alien/FLTK/Win32.pm
 inc/MBX/Alien/FLTK/Win32/MinGW.pm

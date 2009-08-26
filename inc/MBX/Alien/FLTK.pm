@@ -42,9 +42,10 @@ package MBX::Alien::FLTK;
              : ''                                # Hope for the best
             )
             )
-            : $OS =~ m[MacOS]i ? ('MacOS', '')    # TODO
-            : $OS =~ m[BSD$]i  ? ('BSD',   '')    # requires GNUmake (gmake)
-            :                    ('Unix',  '');
+            : $OS =~ m[Darwin]i  ? ('Darwin',  '')  # Mac OSX
+            : $OS =~ m[BSD$]i    ? ('BSD',     '')  # requires GNUmake (gmake)
+            : $OS =~ m[Solaris]i ? ('Solaris', '')  # requires GNUmake (gmake)
+            :                      ('Unix',    '');
         my $compiler;
         eval "use $type;\$compiler = $type->new();";
         if ($@ || !$compiler) {
@@ -52,7 +53,7 @@ package MBX::Alien::FLTK;
 Your system/compiler combination may not be supported. Using defaults.
   Actual error message follows:
 
-            $compiler = $self;                    # Meh?
+            $compiler = $self;                      # Meh?
         }
         return $self->{'stash'}{'_compiler'} = $compiler;   # MB is hash based
     }
