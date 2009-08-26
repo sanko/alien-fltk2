@@ -1,4 +1,4 @@
-package MBX::Alien::FLTK::Win32;
+package MBX::Alien::FLTK::BSD;
 {
     use strict;
     use warnings;
