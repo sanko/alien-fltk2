@@ -16,13 +16,6 @@ my $test_builder    = Test::More->builder;
 my $build           = Module::Build->current;
 my $release_testing = $build->config_data('release_testing');
 my $verbose         = $build->config_data('verbose');
-$SIG{__WARN__} = (
-    $verbose
-    ? sub {
-        diag(sprintf(q[%02.4f], Time::HiRes::time- $^T), q[ ], shift);
-        }
-    : sub { }
-);
 
 #
 my $mydir = dirname(rel2abs(__FILE__));
