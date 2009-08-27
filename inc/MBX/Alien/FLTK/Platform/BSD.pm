@@ -1,10 +1,10 @@
-package MBX::Alien::FLTK::BSD;
+package MBX::Alien::FLTK::Platform::BSD;
 {
     use strict;
     use warnings;
     use Carp qw[];
     use Config qw[%Config];
-    use lib qw[.. ../../../];
+    use lib qw[.. ../../../..];
     use MBX::Alien::FLTK::Utility qw[_o _a _dir _rel _abs];
     use base 'MBX::Alien::FLTK';
     sub new { bless \$0, shift }

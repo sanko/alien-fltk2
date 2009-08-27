@@ -31,7 +31,7 @@ package MBX::Alien::FLTK;
         my ($self, %args) = @_;
         my $OS = $args{'osname'} || $Config{'osname'} || $^O;
         my $CC = $args{'cc'}     || $Config{'ccname'} || $Config{'cc'};
-        my $type = sprintf 'MBX::Alien::FLTK::%s%s', $OS =~ m[Win32]
+        my $type = sprintf 'MBX::Alien::FLTK::Platform::%s%s', $OS =~ m[Win32]
             ? (
             'Win32',
             ($CC =~ m[gcc]i

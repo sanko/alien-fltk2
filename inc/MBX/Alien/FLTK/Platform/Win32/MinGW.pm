@@ -1,9 +1,9 @@
-package MBX::Alien::FLTK::Win32::MinGW;
+package MBX::Alien::FLTK::Platform::Win32::MinGW;
 {
     use strict;
     use warnings;
     use lib '../../..';
-    use base 'MBX::Alien::FLTK::Win32';
+    use base 'MBX::Alien::FLTK::Platform::Win32';
 
     #
     sub version { return qx[gcc -dumpversion]; }
