@@ -5,16 +5,19 @@ package MBX::Alien::FLTK::Platform::Solaris;
     use Carp qw[];
     use Config qw[%Config];
     use lib qw[.. ../../../..];
-    use MBX::Alien::FLTK::Utility qw[_o _a _dir _rel _abs];
-    use base 'MBX::Alien::FLTK';
-    sub new { bless \$0, shift }
+    use MBX::Alien::FLTK::Utility
+        qw[_o _a _dir _rel _abs find_h find_lib can_run];
+    use MBX::Alien::FLTK;
+    use base 'MBX::Alien::FLTK::Platform::Unix';
+    $|++;
 
-    sub build_fltk {    # TODO: Try $Config{'make'} second
-        my ($self, $build) = @_;
-        return MBX::Alien::FLTK::Utility::run(qw[gmake])
-            if MBX::Alien::FLTK::Utility::can_run('gmake');
-        print 'Failed to find GNUmake which is required for Solaris';
-        exit 0;
+    sub configure {
+        my ($self) = @_;
+        $self->SUPER::configure();    # Get basic config data
+        print "Gathering Solaris specific configuration data...\n";
+        print "(Not using $uname scandir emulation function.)\n";
+        $self->notes('config')->{'HAVE_SCANDIR'} = undef;
+        return 1;
     }
     1;
 }

@@ -34,6 +34,7 @@ use warnings;
     print system($exe) ? 'Aww...' : 'Yay!';
     END { unlink grep defined, $source, $obj, $exe; }
 }
+
 =pod
 
 =head1 Author

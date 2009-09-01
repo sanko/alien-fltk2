@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 use strict;
 use warnings;
 BEGIN { exit 0 if $] < 5.008008 }

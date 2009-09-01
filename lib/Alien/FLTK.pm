@@ -6,8 +6,13 @@ package Alien::FLTK;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     use File::Basename;
     use File::Find qw[find];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6841; our $UNSTABLE_RELEASE = 8; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6841; our $UNSTABLE_RELEASE = 16; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
+    my $_config = eval do { local $/; <DATA> }
+        or warn
+        "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
+    close DATA;
+    sub config { return $_config; }
 
     sub include_path {
         my @include = map { -d $_ ? $_ : () } (
@@ -26,151 +31,50 @@ package Alien::FLTK;
     }
 
     sub cflags {
-        my $CFLAGS = '-I' . Alien::FLTK->include_path();
-        if (($Config{'osname'} || $^O) =~ m[MSWin32]) {
-            $CFLAGS = "$CFLAGS -mwindows -DWIN32";
-        }
-        return $CFLAGS;
+        return $_config->{'cxxflags'} . ' -I' . Alien::FLTK->include_path();
     }
-
-    sub cxxflags {
-        my $CXXFLAGS = Alien::FLTK->cflags();
-        if (($Config{'osname'} || $^O) =~ m[MSWin32]) {
-            $CXXFLAGS = "$CXXFLAGS -Wno-non-virtual-dtor";
-        }
-        return $CXXFLAGS;
-    }
+    sub cxxflags { return Alien::FLTK->cflags() . ' -Wno-non-virtual-dtor'; }
 
     sub ldflags {    # XXX - Cache this
         my ($self, @args) = @_;
-        my $LDLIBS = my $GLLIB = '';
-        {
-            local $_ = ($Config{'osname'} || $^O);
-            if (m[MSWin32]i) {
-                $LDLIBS
-                    = '-mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32 -lsupc++';
-                $GLLIB = "-lopengl32"
-                    if _find_h('GL/gl.h');    # XXX only if use_gl
-                $GLLIB = "-lglu32 $GLLIB" if _find_h('GL/glu.h');
-            }
-            elsif (m[darwin]i) {    # MacOS X uses Carbon for graphics...
-                $LDLIBS = '-framework Carbon -framework ApplicationServices';
-                $GLLIB  = '-framework AGL -framework OpenGL';
-            }
-            else {                  # All others are UNIX/X11...
-                my $XLIB = '';
-                for my $_dir (_x11_()) {    # XXX - Cache this
-                    $_dir =~ s|include|lib|;
-                    $XLIB = _find_lib('X11', $_dir);
-                    last if $XLIB;
-                }
-                $LDLIBS = ($XLIB ? '-L' . $XLIB : '')
-                    . ' -lX11 -lXi -lXcursor -lpthread -lm -lXext -lsupc++';
-                if (_find_h('GL/gl.h')) {
-                    $GLLIB = _find_lib('MesaGL') ? '-lMesaGL' : '-lGL';
-                    if (_find_h('GL/glu.h')) {
-                        $GLLIB = "-lGLU $GLLIB" if _find_lib('GLU');
-                        $GLLIB = "-lMesaGLU $GLLIB"
-                            if _find_lib('MesaGL');
-                    }
-                }
-            }
-        }
 
         #
         my $libdir = Alien::FLTK->library_path();
 
         # Calculate needed libraries
         my $SHAREDSUFFIX = $Config{'_a'};
-        my $LDSTATIC     = "-L$libdir $libdir/libfltk2$SHAREDSUFFIX $LDLIBS";
-        my $LDFLAGS      = "-L$libdir -lfltk2 $LDLIBS";
-        my $LIBS         = "$libdir/libfltk2$SHAREDSUFFIX";
-        my $IMAGELIBS = " -lfltk2_png -lfltk2_z -lfltk2_images -lfltk2_jpeg ";
+        my $LDSTATIC     = "-L$libdir $libdir/libfltk2$SHAREDSUFFIX "
+            . $_config->{'ldflags'};
+        my $LDFLAGS = "-L$libdir " . $_config->{'ldflags'};
+        my $LIBS    = "$libdir/libfltk2$SHAREDSUFFIX";
         if (grep {m[forms]} @args) {
             $LDFLAGS  = "-lfltk2_forms $LDFLAGS";
             $LDSTATIC = "$libdir/libfltk2_forms$SHAREDSUFFIX $LDSTATIC";
             $LIBS     = "$LIBS $libdir/libfltk2_forms$SHAREDSUFFIX";
         }
-        if (grep {m[gl]} @args) {
-            $LDFLAGS  = "-lfltk2_gl $GLLIB $LDFLAGS";
-            $LDSTATIC = "$libdir/libfltk2_gl$SHAREDSUFFIX $GLLIB $LDSTATIC";
+        if ((grep {m[gl]} @args) && $_config->{'GL'}) {
+            my $LIBGL = $_config->{'GL'};
+            $LDFLAGS  = "-lfltk2_gl $LIBGL $LDFLAGS";
+            $LDSTATIC = "$libdir/libfltk2_gl$SHAREDSUFFIX $LIBGL $LDSTATIC";
             $LIBS     = "$LIBS $libdir/libfltk2_gl$SHAREDSUFFIX";
         }
         if (grep {m[images]} @args) {
-            $LDFLAGS = "-lfltk2_images $IMAGELIBS $LDFLAGS";
-            $LDSTATIC
-                = "$libdir/libfltk2_images$SHAREDSUFFIX $LDSTATIC $IMAGELIBS";
+            $LDFLAGS  = $_config->{'image_flags'} . " $LDFLAGS";
+            $LDSTATIC = "$libdir/libfltk2_images$SHAREDSUFFIX $LDSTATIC "
+                . $_config->{'image_flags'};
         }
-        return ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS);
+        return (
+             ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS) . ' -lsupc++');
     }
 
-    sub _find_lib {
-        my ($find, $dir) = @_;
-        $find =~ s[([\+\*\.])][\\$1]g;
-        $dir ||= $Config{'libpth'};
-        $dir = canonpath($dir);
-        my $lib;
-        find(
-            sub {
-                $lib = rel2abs($File::Find::name)
-                    if $_ =~ qr[lib$find$Config{'_a'}];
-            },
-            $dir
-        ) if -d $dir;
-        return $lib;
+    sub capabilities {
+        my @caps;
+        push @caps, 'gl' if $_config->{'config'}{'HAVE_GL'};
+
+        # TODO: images, forms, static(?)
+        return @caps;
     }
-
-    sub _find_h {
-        my ($file, $dir) = @_;
-        $dir ||= $Config{'incpath'};
-        $dir = canonpath($dir);
-        my $found = '';
-        find(
-            sub {
-                $found = $File::Find::dir
-                    if canonpath($File::Find::name) eq
-                        rel2abs(catdir($File::Find::dir, $file));
-            },
-            $dir
-        ) if -d $dir;
-        return $found;
-    }
-
-    sub _x11_ {    # Common directories for X headers. Check X11 before X11R\d
-        return     # because it is often a symlink to the current release.
-            split qr[\s+], <<'' }
-/usr/X11/include
-/usr/X11R7/include
-/usr/X11R6/include
-/usr/X11R5/include
-/usr/X11R4/include
-/usr/include/X11
-/usr/include/X11R7
-/usr/include/X11R6
-/usr/include/X11R5
-/usr/include/X11R4
-/usr/local/X11/include
-/usr/local/X11R7/include
-/usr/local/X11R6/include
-/usr/local/X11R5/include
-/usr/local/X11R4/include
-/usr/local/include/X11
-/usr/local/include/X11R7
-/usr/local/include/X11R6
-/usr/local/include/X11R5
-/usr/local/include/X11R4
-/usr/X386/include
-/usr/x386/include
-/usr/XFree86/include/X11
-/usr/include
-/usr/local/include
-/usr/unsupported/include
-/usr/athena/include
-/usr/local/x11r5/include
-/usr/lpp/Xamples/include
-/usr/openwin/include
-/usr/openwin/share/include
-
+    1
 }
 
 =pod
@@ -415,3 +319,5 @@ project. See http://www.fltk.org/.
 =for git $Id$
 
 =cut
+__DATA__
+do{ my $x = { }; $x; }

@@ -35,7 +35,8 @@ my $mb = $class->new(
         'File::Spec'       => 0,         # used in A::F proper
         'File::Temp'       => 0,
         'Test::More'       => 0.88,
-        'Module::Build'    => 0.3,
+        'Module::Build'    => 0.35,
+        'ExtUtils::CBuilder'=> 0.260301,
         perl               => '5.8.0',
         (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
          : ()
@@ -53,7 +54,8 @@ my $mb = $class->new(
                        'File::Spec'       => 0,
                        'File::Temp'       => 0,
                        'Test::More'       => 0.88,
-                       'Module::Build'    => 0.3,
+                       'Module::Build'    => 0.35,
+                       'ExtUtils::CBuilder'=> 0.260301,
                        perl               => '5.8.0',
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
                         : ()
@@ -79,28 +81,22 @@ my $mb = $class->new(
             #MailingList => 'TODO',
             repository => 'http://github.com/sanko/alien-fltk/'
         }
-    }
+    },
+    quiet => 1
 );
 
 #
-print <<'#END';
+print <<'';if (!$mb->cbuilder->have_compiler()) { print <<''; exit 0 } print <<'';
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
   Building FLTK requires a functioning C++ compiler.  Hold on a sec while I
   check some stuff...
 
-#END
-if (!$mb->cbuilder->have_compiler()) {
-    print <<'#END'; exit 0; }
-
-  Oops!  I failed to find working complier so I this is where you and I
+  Oops!  I failed to find a working complier so I this is where you and I
   part ways.  It's been real.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-#END
-print <<'#END';
 
   Looks okay here. Moving on.
  --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-#END
 
 #$mb->notes(use_cairo => 0);           # TODO - MacOS
 #$mb->notes(use_x     => 0);           # TODO - find_lib

@@ -1,20 +1,29 @@
-package MBX::Alien::FLTK::Platform::BSD;
+package MBX::Alien::FLTK::Platform::Darwin;
 {
     use strict;
     use warnings;
     use Carp qw[];
     use Config qw[%Config];
     use lib qw[.. ../../../..];
-    use MBX::Alien::FLTK::Utility qw[_o _a _dir _rel _abs];
-    use base 'MBX::Alien::FLTK';
-    sub new { bless \$0, shift }
+    use MBX::Alien::FLTK::Utility
+        qw[_o _a _dir _rel _abs find_h find_lib can_run];
+    use MBX::Alien::FLTK;
+    use base 'MBX::Alien::FLTK::Platform::Unix';
+    $|++;
 
-    sub build_fltk {    # TODO: Try $Config{'make'} second
-        my ($self, $build) = @_;
-        return MBX::Alien::FLTK::Utility::run(qw[gmake])
-            if MBX::Alien::FLTK::Utility::can_run('gmake');
-        print 'Failed to find GNUmake which is required for *BSD';
-        exit 0;
+    sub configure {
+        my ($self) = @_;
+        $self->SUPER::configure(qw[no_gl no_x11]);    # Get basic config data
+        print "Gathering Solaris specific configuration data...\n";
+
+        # Asssumed true since this is *nix
+        print "have pthread... yes (assumed)\n";
+        $self->notes('config')->{'HAVE_PTHREAD'} = 1;
+        $self->notes(
+                ldflags => '-framework Carbon -framework ApplicationServices '
+                    . $self->notes('ldflags'));
+        $self->notes(GL => '-framework AGL -framework OpenGL');
+        return 1;
     }
     1;
 }

@@ -3,12 +3,12 @@ package MBX::Alien::FLTK::Utility;
     use strict;
     use warnings;
     use Config qw[%Config];
-    use File::Spec::Functions qw[splitpath catpath rel2abs];
+    use File::Spec::Functions qw[splitpath catpath catdir rel2abs canonpath];
     use File::Basename qw[];
     use File::Find qw[find];
     use Exporter qw[import];
     our @EXPORT_OK
-        = qw[can_run run _o _a _exe _dll find_h _dir _abs _rel _file];
+        = qw[can_run run _o _a _exe _dll find_h find_lib _dir _abs _rel _file];
 
     sub can_run {    # Snagged from IPC::CMD and trimmed for my use
         my ($prog) = @_;
@@ -63,39 +63,52 @@ package MBX::Alien::FLTK::Utility;
     sub _rel  { File::Spec->abs2rel(@_) }
     sub _file { File::Basename::fileparse(shift); }
 
-    sub find_h {
-        my $file = rel2abs(File::Spec->catfile($Config{'incpath'}, shift));
-        my $found;
-        find(
-            sub {    # XXX - Some platforms are touchy about case
-                $found = File::Spec->canonpath($File::Find::name)
-                    if lc File::Spec->canonpath($File::Find::name) eq
-                        lc $file;
-            },
-            $Config{'incpath'}
-        );
-        return $found;
+    sub _find_lib {
+        my ($file, $dir) = @_;
+
+        #$file =~ s[([\+\*\.])][\\$1]g;
+        $file = 'lib' . $file . $Config{'_a'};
+        $dir = join ' ', ($dir || ''), $Config{'libpth'};
+        $dir =~ s|\s+| |g;
+        warn $dir;
+        for my $test (split m[\s+]m, $dir) {
+            warn '    =>' . canonpath($test . '/' . $file) . '<=';
+            die 'Worked!' if -e canonpath($dir . '/' . $file);
+            return canonpath($test) if -e canonpath($dir . '/' . $file);
+        }
+        return;
     }
 
     sub find_lib {
-        my $file = rel2abs(
-                        File::Spec->catfile(
-                            $Config{'libpth'}, 'lib' . shift() . $Config{'_a'}
-                        )
-        );
-        my $found = 0;
+        my ($find, $dir) = @_;
+        no warnings 'File::Find';
+        $find =~ s[([\+\*\.])][\\$1]g;
+        $dir ||= $Config{'libpth'};
+        $dir = canonpath($dir);
+        my $lib;
         find(
-            sub {    # XXX - Some platforms are touchy about case
-                $found = File::Spec->canonpath($File::Find::name)
-                    if lc File::Spec->canonpath($File::Find::name) eq
-                        lc $file;
+            sub {
+                $lib = canonpath(rel2abs($File::Find::dir))
+                    if $_ =~ qr[lib$find$Config{'_a'}];
             },
-            $Config{'libpth'}
-        );
-        return $found;
+            split ' ',
+            $dir
+        ) if $dir;
+        return $lib;
+    }
+
+    sub find_h {
+        my ($file, $dir) = @_;
+        $dir = join ' ', ($dir || ''), $Config{'incpath'}, $Config{'usrinc'};
+        $dir =~ s|\s+| |g;
+        for my $test (split m[\s+]m, $dir) {
+            return canonpath($test) if -e canonpath($test . '/' . $file);
+        }
+        return;
     }
     1;
 }
+
 =pod
 
 =head1 Author

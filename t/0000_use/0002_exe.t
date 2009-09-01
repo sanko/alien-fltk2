@@ -60,6 +60,7 @@ END
     ok($exe, ucfirst $link . 'ally link exe with fltk');
     ok(!system($exe), sprintf 'Run exe we %sally linked with fltk', $link);
 }
+
 =pod
 
 =head1 Author

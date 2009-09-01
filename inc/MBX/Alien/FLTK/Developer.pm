@@ -10,7 +10,6 @@ package MBX::Alien::FLTK::Developer;
     use File::Find qw[find];
     use File::Path 2.07 qw[make_path];
     use base 'MBX::Alien::FLTK';
-    use Alien::FLTK;
 
     sub make_tarball {
         my ($self, $dir, $file, $quiet) = @_;
@@ -24,6 +23,7 @@ package MBX::Alien::FLTK::Developer;
     sub ACTION_distdir {
         my ($self, $args) = @_;
         if ($self->notes('do_rcs')) {
+            $self->SUPER::depends_on('clear_config');
             $self->SUPER::depends_on('changelog');
             $self->SUPER::depends_on('RCS');
         }
@@ -31,10 +31,31 @@ package MBX::Alien::FLTK::Developer;
         $self->SUPER::ACTION_distdir(@_);
     }
 
+    sub ACTION_clear_config {
+        my ($self) = @_;
+        print 'Cleaning Alien::FLTK config... ';
+        my $me = rel2abs($self->base_dir() . '/lib/Alien/FLTK.pm');
+        require IO::File;
+        my $mode_orig = (stat $me)[2] & 07777;
+        chmod($mode_orig | 0222, $me);    # Make it writeable
+        my $fh = IO::File->new($me, 'r+')
+            or die "Can't rewrite $me: $!";
+        seek($fh, 0, 0);
+        while (<$fh>) { last if /^__DATA__$/; }
+        die "Couldn't find __DATA__ token in $me" if eof($fh);
+        seek($fh, tell($fh), 0);
+        $fh->print('do{ my $x = { }; $x; }');
+        truncate($fh, tell($fh));
+        $fh->close;
+        chmod($mode_orig, $me)
+            or warn "Couldn't restore permissions on $me: $!";
+        print "okay\n";
+    }
+
     sub ACTION_changelog {
         my ($self) = @_;
         require POSIX;
-        print 'Update Changes file... ';
+        print 'Updating Changes file... ';
 
         # open and lock the file
         sysopen(my ($CHANGES_R), 'Changes', Fcntl::O_RDONLY())
@@ -54,12 +75,16 @@ package MBX::Alien::FLTK::Developer;
         my $Date = POSIX::strftime('%Y-%m-%d %H:%M:%SZ (%a, %d %b %Y)',
                                    gmtime($bits[0]));
         my $Commit = $bits[1];
-        my $dist = sprintf('Version %s | %s | %s',
-                           ($self->dist_version()->is_alpha()
-                            ? ('0.0XX', 'Distant future')
-                            : ($self->dist_version()->numify, $Date)
-                           ),
-                           $bits[2]
+        my $dist = sprintf(
+            'Version %s | %s | %s',
+            ($self->dist_version()
+                 =~ m[_]
+
+                 #$self->dist_version()->is_alpha
+             ? ('0.0XX', 'Distant future')
+             : ($self->dist_version()->numify, $Date)
+            ),
+            $bits[2]
         );
 
         # start changing the data around
@@ -96,13 +121,13 @@ END
         # unlock the file and close it
         flock $CHANGES_W, Fcntl::LOCK_UN();
         close($CHANGES_W) || die 'Failed to close Changes';
-        printf "Done.\r\n    (%s)\r\n", $dist;
+        printf "okay (%s)\n", $dist;
     }
 
     sub ACTION_RCS {
         my ($self) = @_;
         require POSIX;
-        print 'Fake RCS...';
+        print 'Running fake RCS...';
         my @manifest_files = sort keys %{$self->_read_manifest('MANIFEST')};
     FILE: for my $file (@manifest_files, __FILE__) {
             print '.';
@@ -179,11 +204,71 @@ END
             close($CHANGES_W) || die 'Failed to close Changes';
             chmod($mode, $file);
         }
-        print "Done.\r\n";
+        print "okay\n";
+        return 1;
+    }
+
+    sub ACTION_tidy {
+        my ($self) = @_;
+        unless (Module::Build::ModuleInfo->find_module_by_name('Perl::Tidy'))
+        {   warn("Cannot run tidy action unless Perl::Tidy is installed.\n");
+            return;
+        }
+        require Perl::Tidy;
+        my $demo_files
+            = $self->rscan_dir(File::Spec->catdir('example'), qr[\.pl$]);
+        my $inst_files
+            = $self->rscan_dir(File::Spec->catdir('inc'), qr[\.pm$]);
+        for my $files ([keys(%{$self->script_files})],       # scripts first
+                       [values(%{$self->find_pm_files})],    # modules
+                       [@{$self->find_test_files}],          # test suite next
+                       [@{$inst_files}],                     # installer files
+                       [@{$demo_files}]                      # demos last
+            )
+        {   $files = [sort map { File::Spec->rel2abs('./' . $_) } @{$files}];
+
+            # One at a time...
+            for my $file (@$files) {
+                printf "Running perltidy on '%s' ...\n",
+                    File::Spec->abs2rel($file);
+                $self->add_to_cleanup($file . '.tidy');
+                Perl::Tidy::perltidy(argv => <<'END' . $file); } }
+--brace-tightness=2
+--block-brace-tightness=1
+--block-brace-vertical-tightness=2
+--paren-tightness=2
+--paren-vertical-tightness=2
+--square-bracket-tightness=2
+--square-bracket-vertical-tightness=2
+--brace-tightness=2
+--brace-vertical-tightness=2
+
+--delete-old-whitespace
+--no-indent-closing-brace
+--line-up-parentheses
+--no-outdent-keywords
+--no-outdent-long-quotes
+--no-space-for-semicolon
+--swallow-optional-blank-lines
+
+--continuation-indentation=4
+--maximum-line-length=78
+
+--want-break-before='% + - * / x != == >= <= =~ !~ < > | & >= < = **= += *= &= <<= &&= -= /= |= \ >>= ||= .= %= ^= x= ? :'
+
+--standard-error-output
+--warning-output
+
+--backup-and-modify-in-place
+--backup-file-extension=tidy
+
+END
+        $self->depends_on('code');
         return 1;
     }
 }
 1;
+
 =pod
 
 =head1 Author

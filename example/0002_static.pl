@@ -33,6 +33,7 @@ my $exe = $CC->link_executable(
 );
 printf system($exe) ? 'Aww...' : 'Yay! %s bytes', -s $exe;
 END { unlink grep defined, $source, $obj, $exe; }
+
 =pod
 
 =head1 Author

@@ -27,6 +27,7 @@ $SIG{__WARN__} = (
 #
 use lib qw[blib/lib inc];
 use_ok('Alien::FLTK');
+
 =pod
 
 =head1 Author
