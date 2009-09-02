@@ -24,6 +24,7 @@ package MBX::Alien::FLTK::Platform::Unix;
         );
 
         # Asssumed true since this is *nix
+        $self->notes('config')->{'USE_X11'} = 1;
         print "have pthread... yes (assumed)\n";
         $self->notes('config')->{'HAVE_PTHREAD'} = 1;
         $self->notes('ldflags' => $self->notes('ldflags') . ' -lpthread ');
@@ -73,6 +74,7 @@ int main ( ) {
 
         #
         if (!grep {m[^no_x11$]} @args) {
+            my $X11_okay = 0;
 
             # Guess where to find include files, by looking for Xlib.h. First,
             # try using that file with no special directory specified.
@@ -111,7 +113,7 @@ int main ( ) {
                                    extra_linker_flags => "-L$X11_lib -lX11"
                                   }
                             );
-                        $self->notes('config')->{'USE_X11'} = `$exe`
+                        $X11_okay = `$exe`
                             || undef;
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
                                      . " -I$Xlib_h ");
@@ -120,7 +122,7 @@ int main ( ) {
                     }
                 }
             }
-            if (!defined $self->notes('config')->{'USE_X11'}) {
+            if (!$X11_okay) {
                 print <<''; exit 0; }
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
   Failed to find the X11 libs.
