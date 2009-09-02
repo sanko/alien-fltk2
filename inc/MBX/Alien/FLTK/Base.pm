@@ -174,12 +174,8 @@ package MBX::Alien::FLTK::Base;
             config => {
                 FLTK_DATADIR => '',    # unused
                 FLTK_DOCDIR  => '',    # unused
-                WORDS_BIGENDIAN => (
-                               join(' ',
-                                   map { sprintf '%#02x', $_ }
-                                       unpack('W*', pack('L', 0x12345678))) eq
-                                   '0x12 0x34 0x56 0x78' ? 1 : 0
-                ),
+                WORDS_BIGENDIAN =>
+                    ((unpack('h*', pack('s', 1)) =~ /01/) ? 1 : undef),
                 U16                    => undef,
                 U32                    => undef,
                 U64                    => undef,
