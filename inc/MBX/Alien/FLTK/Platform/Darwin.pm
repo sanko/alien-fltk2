@@ -20,9 +20,9 @@ package MBX::Alien::FLTK::Platform::Darwin;
         print "have pthread... yes (assumed)\n";
         $self->notes('config')->{'HAVE_PTHREAD'} = 1;
         $self->notes(
-                ldflags => '-framework Carbon -framework ApplicationServices '
-                    . $self->notes('ldflags'));
-        $self->notes(GL => '-framework AGL -framework OpenGL');
+               ldflags => ' -framework Carbon -framework ApplicationServices '
+                   . $self->notes('ldflags'));
+        $self->notes(GL => ' -framework AGL -framework OpenGL ');
         return 1;
     }
     1;

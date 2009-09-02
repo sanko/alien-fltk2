@@ -16,9 +16,10 @@ package MBX::Alien::FLTK::Platform::Windows;
         $self->SUPER::configure();    # Get basic config data
         print "Gathering Windows specific configuration data...\n";
         $self->notes(ldflags => $self->notes('ldflags')
-                . ' -mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32');
+                 . ' -mwindows -lmsimg32 -lole32 -luuid -lcomctl32 -lwsock32 '
+        );
         $self->notes(
-               'cxxflags' => '-mwindows -DWIN32 ' . $self->notes('cxxflags'));
+              'cxxflags' => ' -mwindows -DWIN32 ' . $self->notes('cxxflags'));
         $self->notes('config')->{'HAVE_STRCASECMP'}    = undef;
         $self->notes('config')->{'HAVE_STRNCASECMP'}   = undef;
         $self->notes('config')->{'HAVE_STRNCASECMP'}   = undef;
@@ -73,7 +74,7 @@ int main( ) {
                     else {
                         print "okay\n";
                         $self->notes('config')->{'HAVE_GL_GLU_H'} = 1;
-                        $GL_LIB = "-lglu32 $GL_LIB";
+                        $GL_LIB = " -lglu32 $GL_LIB ";
                     }
                 }
             }

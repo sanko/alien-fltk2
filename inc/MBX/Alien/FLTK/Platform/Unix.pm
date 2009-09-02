@@ -114,8 +114,8 @@ int main ( ) {
                         $self->notes('config')->{'USE_X11'} = `$exe`
                             || undef;
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                     . " -I$Xlib_h");
-                        $self->notes('ldflags' => "-L$X11_lib -lX11 -lXext "
+                                     . " -I$Xlib_h ");
+                        $self->notes('ldflags' => " -L$X11_lib -lX11 -lXext "
                                      . $self->notes('ldflags'));
                     }
                 }
@@ -169,8 +169,8 @@ int main ( ) {
                         $self->notes('config')->{'USE_XCURSOR'} = `$exe`
                             || undef;
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                     . " -I$Xcursor_h");
-                        $self->notes('ldflags' => "-L$Xcursor_lib -lXcursor "
+                                     . " -I$Xcursor_h ");
+                        $self->notes('ldflags' => " -L$Xcursor_lib -lXcursor "
                                      . $self->notes('ldflags'));
                     }
                 }
@@ -229,9 +229,9 @@ int main ( ) {
                             );
                         $XInput_okay = `$exe` || undef;
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                     . "-I$XInput_h -I$XI_h");
+                                     . " -I$XInput_h -I$XI_h ");
                         $self->notes(  'ldflags' => $self->notes('ldflags')
-                                     . "-L$XI_lib -lXi");
+                                     . " -L$XI_lib -lXi ");
                     }
                 }
             }

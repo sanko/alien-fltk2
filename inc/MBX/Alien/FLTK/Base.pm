@@ -162,11 +162,11 @@ package MBX::Alien::FLTK::Base;
     # Configure
     sub configure {
         my ($self, $args) = @_;
-        $self->notes('ldflags'  => '-lfltk2');
-        $self->notes('cxxflags' => '');
-        $self->notes('GL'       => '');
+        $self->notes('ldflags'  => ' -lfltk2 ');
+        $self->notes('cxxflags' => ' ');
+        $self->notes('GL'       => ' ');
         $self->notes('image_flags' =>
-            '-lfltk2_images -lfltk2_png -lfltk2_z -lfltk2_images -lfltk2_jpeg'
+            ' -lfltk2_images -lfltk2_png -lfltk2_z -lfltk2_images -lfltk2_jpeg '
         );
         $self->notes('include_dirs'  => {});
         $self->notes('library_paths' => {});
@@ -321,7 +321,7 @@ int main ( ) {
                 else {
                     print "no\n";    # But we can pretend...
                     $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                 . ' -Dbool=char -Dfalse=0 -Dtrue=1');
+                                 . ' -Dbool=char -Dfalse=0 -Dtrue=1 ');
                 }
             }
             {

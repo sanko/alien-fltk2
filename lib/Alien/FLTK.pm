@@ -119,7 +119,7 @@ C<2.0.x> branch of the FLTK GUI toolkit.
                                   objects            => $obj,
                                   extra_linker_flags => Alien::FLTK->ldflags()
     );
-    print system($exe) ? 'Aww...' : 'Yay!';
+    print system('./' . $exe) ? 'Aww...' : 'Yay!';
     END { unlink grep defined, $source, $obj, $exe; }
 
 =head1 Methods

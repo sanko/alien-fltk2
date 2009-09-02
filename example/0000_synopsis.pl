@@ -31,7 +31,7 @@ use warnings;
                                   objects            => $obj,
                                   extra_linker_flags => Alien::FLTK->ldflags()
     );
-    print system($exe) ? 'Aww...' : 'Yay!';
+    print system('./' . $exe) ? 'Aww...' : 'Yay!';
     END { unlink grep defined, $source, $obj, $exe; }
 }
 
