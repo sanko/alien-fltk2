@@ -171,6 +171,7 @@ END
             $CHANGES_D
                 =~ s[\$(Url)(:[^\$]*)?\$][\$$1: $Repo/raw/$Commit/$file \$]ig
                 if $Repo;
+            $CHANGES_D =~ s|//raw|/raw|g;    # cleanup
             $CHANGES_D
                 =~ s[\$(Rev(ision)?)(?::[^\$]*)?\$]["\$$1: ". ($2?$Commit:$Commit_short)." \$"]ige;
 
