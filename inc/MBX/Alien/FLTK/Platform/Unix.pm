@@ -24,7 +24,7 @@ package MBX::Alien::FLTK::Platform::Unix;
         );
 
         # Asssumed true since this is *nix
-        $self->notes('config')->{'USE_X11'} = 1;
+        $self->notes('config')->{'USE_X11'} = !grep {m[^no_x11$]} @args;
         print "have pthread... yes (assumed)\n";
         $self->notes('config')->{'HAVE_PTHREAD'} = 1;
         $self->notes('ldflags' => $self->notes('ldflags') . ' -lpthread ');
