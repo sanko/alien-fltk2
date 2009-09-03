@@ -197,11 +197,62 @@ Include flags to use FLTK's forms compatibility layer.
 Returns the SVN revision number of the source L<C<Alien::FLTK>|Alien::FLTK>
 was built with.
 
-=head1 Bugs
-
-Numerous, I'm sure.
-
 =head1 Notes
+
+=head2 Requirements
+
+The Fast Light Toolkit works right out of the box on Windows (MinGW), but for
+*nix, make sure the following libs are installed for basic functionality...
+
+=over
+
+=item X11 libs
+
+On Debian Linux, the X11 development package is listed as libx11-dev.
+
+=item X11 Input libs
+
+On Debian Linux, the X11 Input development package is listed as libxi-dev.
+
+=item X11 Cursor libs
+
+On Debian Linux, the X11 Cursor development package is listed as
+libxcursor-dev.
+
+Note: The Xcursor libs are optional.
+
+=back
+
+Once installed, L<Alien::FLTK> depends on:
+
+=over
+
+=item L<Config|Config>
+
+=item L<File::Spec::Functions>
+
+=item L<File::Basename>
+
+=item L<File::Find>
+
+=back
+
+=head2 Installation
+
+Building the fltk2 libs requires a functioning C++ compiler, bash, and (to
+make life easy) a version of make.
+
+The distribution is based on L<Module::Build|Module::Build>, so use the
+following procedure:
+
+  perl Build.PL
+  ./Build
+  ./Build test
+  ./Build install
+
+An attempt has been made to work around an incomplete set of build tools. This
+fallback requires L<ExtUtils::CBuilder|ExtUtils::CBuilder> and plenty of
+begging. Consider it alpha at best.
 
 =head2 Support Links
 
@@ -240,44 +291,15 @@ http://github.com/sanko/alien-fltk/ and you are invited to fork it.
 
 =back
 
-=head2 Requirements
-
-Once installed, L<Alien::FLTK> depends on:
-
-=over
-
-=item L<Config|Config>
-
-=item L<File::Spec::Functions>
-
-=item L<File::Basename>
-
-=item L<File::Find>
-
-=back
-
 =head2 Examples
 
 Please see the L<Synopsis|/"Synopsis"> and the files in the C</example/>.
 
-=head2 Installation
+=head2 Bugs
 
-Building the fltk2 libs requires a functioning C++ compiler, bash, and (to
-make life easy) a version of make.
+Numerous, I'm sure.
 
-The distribution is based on L<Module::Build|Module::Build>, so use the
-following procedure:
-
-  perl Build.PL
-  ./Build
-  ./Build test
-  ./Build install
-
-An attempt has been made to work around an incomplete set of build tools. This
-fallback requires L<ExtUtils::CBuilder|ExtUtils::CBuilder> and plenty of
-begging. Consider it alpha at best.
-
-=head1 To Do
+=head2 To Do
 
 Please see L<Alien::FLTK::Todo|Alien::FLTK::Todo>
 
