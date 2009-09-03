@@ -77,12 +77,9 @@ package MBX::Alien::FLTK::Developer;
         my $Commit = $bits[1];
         my $dist = sprintf(
             'Version %s | %s | %s',
-            ($self->dist_version()
-                 =~ m[_]
-
-                 #$self->dist_version()->is_alpha
-             ? ('0.0XX', 'Distant future')
-             : ($self->dist_version()->numify, $Date)
+            ($self->dist_version() =~ m[_]   # $self->dist_version()->is_alpha
+             ? ('0.06XXX', 'Next Sunday AD')
+             : ($self->dist_version(), $Date$self->dist_version()->numify
             ),
             $bits[2]
         );
