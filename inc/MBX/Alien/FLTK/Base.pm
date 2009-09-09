@@ -634,6 +634,7 @@ END
                                 $config{$key}
                         );
                 }
+                $config .= "\n";
                 open(my $CONFIG_H, '>', 'config.h')
                     || Carp::confess 'Failed to open config.h ';
                 syswrite($CONFIG_H, $config) == length($config)
@@ -656,20 +657,24 @@ END
                     or die "Can't rewrite $me: $!";
                 seek($fh, 0, 0);
                 while (<$fh>) { last if /^__DATA__$/; }
-                die "Couldn't find __DATA__ token in $me" if eof($fh);
+
+                if (eof($fh)) {
+                    #warn "Couldn't find __DATA__ token in $me";
+                    $fh->print("\n__DATA__\n");
+                }
                 seek($fh, tell($fh), 0);
                 my $data = $self->notes();
-
                 if (eval 'require Data::Dump') {
-                    $fh->print(
-                          'do{ my $x = ' . Data::Dump::pp($data) . '; $x; }');
+                    $fh->print(  'do{ my $x = '
+                               . Data::Dump::pp($data)
+                               . "; \$x; }\n");
                 }
                 else {
                     require Data::Dumper;
                     $fh->print('do{ my '
                                . Data::Dumper->new([$data], ['x'])->Purity(1)
-                               ->Dump() 
-                               . '$x; }');
+                               ->Dump()
+                               . "\$x; }\n");
                 }
                 truncate($fh, tell($fh));
                 $fh->close;

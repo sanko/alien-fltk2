@@ -44,7 +44,7 @@ package MBX::Alien::FLTK::Developer;
         while (<$fh>) { last if /^__DATA__$/; }
         die "Couldn't find __DATA__ token in $me" if eof($fh);
         seek($fh, tell($fh), 0);
-        $fh->print('do{ my $x = { }; $x; }');
+        $fh->print("do{ my \$x = { }; \$x; }\n");
         truncate($fh, tell($fh));
         $fh->close;
         chmod($mode_orig, $me)
@@ -171,7 +171,7 @@ END
             $CHANGES_D
                 =~ s[\$(Url)(:[^\$]*)?\$][\$$1: $Repo/raw/$Commit/$file \$]ig
                 if $Repo;
-            $CHANGES_D =~ s|//raw|/raw|g;    # cleanup
+            $CHANGES_D =~ s|/raw|/raw|g;    # cleanup
             $CHANGES_D
                 =~ s[\$(Rev(ision)?)(?::[^\$]*)?\$]["\$$1: ". ($2?$Commit:$Commit_short)." \$"]ige;
 
