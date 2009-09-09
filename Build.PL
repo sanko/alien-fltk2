@@ -1,3 +1,4 @@
+use strict;
 use warnings;
 use Config qw[%Config];
 use File::Find qw[find];
@@ -82,8 +83,7 @@ my $mb = $class->new(
             repository => 'http://github.com/sanko/alien-fltk/'
         }
     },
-
-    #quiet => 1
+    quiet => 1
 );
 
 #
