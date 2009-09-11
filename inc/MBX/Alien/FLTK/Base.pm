@@ -175,7 +175,7 @@ package MBX::Alien::FLTK::Base;
                 FLTK_DATADIR => '',    # unused
                 FLTK_DOCDIR  => '',    # unused
                 WORDS_BIGENDIAN =>
-                    ((unpack('h*', pack('s', 1)) =~ /01/) ? 1 : undef),
+                    ((unpack('h*', pack('s', 1)) =~ /01/) ? 1 : 0),
                 U16                    => undef,
                 U32                    => undef,
                 U64                    => undef,
