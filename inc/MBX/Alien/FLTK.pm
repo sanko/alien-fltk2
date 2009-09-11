@@ -25,6 +25,7 @@ package MBX::Alien::FLTK;
              : ()                              # Hope for the best
             )
             )
+            : $OS =~ m[CygWin]i ? ('Windows', 'CygWin')    # ...baka
             : $OS =~ m[Darwin]i  ? 'Darwin'     # Mac OSX
             : $OS =~ m[BSD$]i    ? 'BSD'        # requires GNUmake (gmake)
             : $OS =~ m[Solaris]i ? 'Solaris'    # requires GNUmake (gmake)
