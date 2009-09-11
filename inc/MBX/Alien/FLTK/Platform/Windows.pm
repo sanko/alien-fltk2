@@ -4,7 +4,7 @@ package MBX::Alien::FLTK::Platform::Windows;
     use warnings;
     use Carp qw[];
     use Config qw[%Config];
-    use lib qw[.. ../../../..];
+    use lib qw[.. ../../../.. inc];
     use MBX::Alien::FLTK::Utility
         qw[_o _a _dir _rel _abs find_h find_lib can_run];
     use MBX::Alien::FLTK;

@@ -1,4 +1,18 @@
-Version 0.06844 | 2009-09-03 04:39:20Z (Thu, 03 Sep 2009) | d495603
+Version 0.06844 | 2009-09-03 05:33:54Z (Thu, 03 Sep 2009) | 0233c49
+
+    Resolved Issues/Bug Fixes:
+     * None yet
+
+    Internal/Behavioral Changes:
+     * None yet
+
+    Documentation/Sample Code/Test Suite:
+     * None yet
+
+    Notes:
+     * None yet
+
+Version 0.06844 | 2009-09-03 05:03:50Z (Thu, 03 Sep 2009) | 7ea0002
 
      Resolved Issues/Bug Fixes:
      * It actually works (...on Windows, at least)

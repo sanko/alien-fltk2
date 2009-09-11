@@ -6,7 +6,7 @@ package Alien::FLTK;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     use File::Basename;
     use File::Find qw[find];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6844; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6844; our $UNSTABLE_RELEASE = 1; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
     my $_config = eval do { local $/; <DATA> }
         or warn
