@@ -256,7 +256,7 @@ package MBX::Alien::FLTK::Base;
         {
             my %sizeof;
             for my $type (qw[short int long]) {
-                printf 'checking size of %s... ', $type;
+                printf 'Checking size of %s... ', $type;
                 my $exe = $self->build_exe({code => <<"" });
 static long int longval () { return (long int) (sizeof ($type)); }
 static unsigned long int ulongval () { return (long int) (sizeof ($type)); }
@@ -300,7 +300,7 @@ int main ( ) {
             }
             {
                 print
-                    'checking whether the compiler recognizes bool as a built-in type... ';
+                    'Checking whether the compiler recognizes bool as a built-in type... ';
                 my $exe = $self->build_exe({code => <<"" });
 #include <stdio.h>
 #include <stdlib.h>
@@ -321,7 +321,7 @@ int main ( ) {
                 }
             }
             {
-                print 'checking for library containing pow... ';
+                print 'Checking for library containing pow... ';
                 my $_have_pow = '';
             LIB: for my $lib ('', '-lm') {
                     my $exe = $self->build_exe(

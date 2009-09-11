@@ -39,7 +39,7 @@ package MBX::Alien::FLTK::Platform::Unix;
             = (find_h('ndir.h') ? 1 : undef);
         {
             print
-                'checking whether we have the POSIX compatible scandir() prototype... ';
+                'Checking whether we have the POSIX compatible scandir() prototype... ';
             my $obj = $self->compile({code => <<"" });
 #include <dirent.h>
 int func (const char *d, dirent ***list, void *sort) {
@@ -196,7 +196,7 @@ int main ( ) {
                 #strlcpy     => 'HAVE_STRLCPY'
             );
             for my $func (keys %functions) {
-                printf 'checking for %s... ', $func;
+                printf 'Checking for %s... ', $func;
                 my $obj = $self->compile({code => <<""});
 /* Define $func to an innocuous variant, in case <limits.h> declares $func.
    For example, HP-UX 11i <limits.h> declares gettimeofday.  */
