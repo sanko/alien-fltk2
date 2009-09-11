@@ -74,56 +74,26 @@ int main ( ) {
 
         #
         if (!grep {m[^no_x11$]} @args) {
-            my $X11_okay = 0;
-
-            # Guess where to find include files, by looking for Xlib.h. First,
-            # try using that file with no special directory specified.
-            print 'checking for X11/Xlib.h... ';
-            my $Xlib_h = find_h('Xlib.h', _x11_());
-            if (!$Xlib_h) { print "no\n"; }
-            else {
-                print "yes ($Xlib_h)\n";
-                print 'checking X11/Xlib.h usability... ';
-                my $obj = $self->compile(
-                         {code => <<'', extra_compiler_flags => "-I$Xlib_h"});
-#include <X11/Xlib.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main ( ) {
-    XrmInitialize( );
-    printf ("1");
-    return 0;
-}
-
-                if (!$obj) { print "no\n" }
-                else {
-                    print "yes\n";
-
-                    #LIBS="-lXcursor $LIBS"
-                    print 'checking for libX11... ';
-                    my $search = _x11_();
-                    $search =~ s|include|lib|g;
-                    my $X11_lib = find_lib('X11', $search);
-                    if (!$X11_lib) { print "not found\n" }
-                    else {
-                        print "found ($X11_lib)\n";
-                        my $exe =
-                            $self->link_exe(
-                                  {objects            => $obj,
-                                   extra_linker_flags => "-L$X11_lib -lX11"
-                                  }
-                            );
-                        $X11_okay = `$exe`
-                            || undef;
+            {
+                print 'Checking for X11 libs... ';
+                $self->notes('config')->{'USE_X11'} = 0;
+                for my $incdir (grep defined, split m[\s+], _x11_()) {
+                    my $libdir = $incdir;
+                    $libdir =~ s|include|lib|;
+                    eval
+                        "$self->assert_lib(lib=>'X11', libpath=>$libdir, header=>'X11/Xlib.h', incpath=>$incdir)";
+                    if (!$@) {
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                     . " -I$Xlib_h ");
-                        $self->notes('ldflags' => " -L$X11_lib -lX11 -lXext "
+                                     . " -I$incdir ");
+                        $self->notes('ldflags' => " -L$libdir -lX11  "
                                      . $self->notes('ldflags'));
+                        $self->notes('config')->{'USE_X11'} = 1;
+                        print "okay\n";
+                        last;
                     }
                 }
-            }
-            if (!$X11_okay) {
-                print <<''; exit 0; }
+                if (!$self->notes('config')->{'USE_X11'}) {
+                    exit !print <<'' }
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
   Failed to find the X11 libs.
   You probably need to install the X11 development package first. On Debian
@@ -131,54 +101,31 @@ int main ( ) {
   something... patches welcome.
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 
+            }
         }
-        if (!grep {m[^no_x11$]} @args) {    # Locate XCursor
-            print 'checking for X11/Xcursor/Xcursor.h... ';
-            my $Xcursor_h = find_h('X11/Xcursor/Xcursor.h', _x11_());
-            if (!$Xcursor_h) { print "no\n"; }
-            else {
-                print "$Xcursor_h\n";
-                print 'checking X11/Xcursor/Xcursor.h usability... ';
-                my $obj = $self->compile(
-                      {code => <<'', extra_compiler_flags => "-I$Xcursor_h"});
-#include <X11/Xcursor/Xcursor.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main ( ) {
-        const char * path = XcursorLibraryPath( );
-        printf ( "%s",  path ? "1" : "0");
-        return 0;
-}
 
-                if (!$obj) { print "no\n" }
-                else {
-                    print "yes\n";
-
-                    #LIBS="-lXcursor $LIBS"
-                    print 'checking for libXcursor... ';
-                    my $search = _x11_();
-                    $search =~ s|include|lib|g;
-                    my $Xcursor_lib = find_lib('Xcursor', $search);
-                    if (!$Xcursor_lib) { print "not found\n" }
-                    else {
-                        print "found ($Xcursor_lib)\n";
-                        my $exe =
-                            $self->link_exe({objects => $obj,
-                                             extra_linker_flags =>
-                                                 "-L$Xcursor_lib -lXcursor"
-                                            }
-                            );
-                        $self->notes('config')->{'USE_XCURSOR'} = `$exe`
-                            || undef;
+        #
+        if (!grep {m[^no_x11$]} @args) {
+            {
+                print 'Checking for Xcursor libs... ';
+                $self->notes('config')->{'USE_X11'} = 0;
+                for my $incdir (grep defined, split m[\s+], _x11_()) {
+                    my $libdir = $incdir;
+                    $libdir =~ s|include|lib|;
+                    eval
+                        "$self->assert_lib(lib=>'Xcursor', libpath=>$libdir, header=>'X11/Xcursor/Xcursor.h', incpath=>$incdir)";
+                    if (!$@) {
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                     . " -I$Xcursor_h ");
-                        $self->notes('ldflags' => " -L$Xcursor_lib -lXcursor "
+                                     . " -I$incdir ");
+                        $self->notes('ldflags' => " -L$libdir -lXcursor  "
                                      . $self->notes('ldflags'));
+                        $self->notes('config')->{'USE_XCURSOR'} = 1;
+                        print "okay\n";
+                        last;
                     }
                 }
-            }
-            if (!defined $self->notes('config')->{'USE_XCURSOR'}) {
-                print <<''; }
+                if (!$self->notes('config')->{'USE_XCURSOR'}) {
+                    exit !print <<'' }
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
   Failed to find the XCursor libs.
   You probably need to install the X11 development package first. On Debian
@@ -186,59 +133,30 @@ int main ( ) {
   just missing something... patches welcome.
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
 
+            }
         }
-        if (!grep {m[^no_x11$]} @args) {    # Locate XI and XInput extensions
-            print 'checking for X11/extensions/XI.h... ';
-            my $XI_h = find_h('/X11/extensions/XI.h', _x11_());
-            if   (!$XI_h) { print "no\n"; }
-            else          { print "yes ($XI_h)\n" }
-            print 'checking for X11/extensions/XInput.h... ';
-            my $XInput_h = find_h('/X11/extensions/XInput.h', _x11_());
-            if   (!$XInput_h) { print "no\n"; }
-            else              { print "yes ($XInput_h)\n" }
-            my $XInput_okay = 0;
 
-            if ($XI_h && $XInput_h) {
-                print 'checking X11 Input extensions usability... ';
-                my $obj =
-                    $self->compile(
-                    {code =>
-                         <<'', extra_compiler_flags => "-I$XInput_h -I$XI_h"});
-#include <X11/extensions/XInput.h>
-#include <X11/extensions/XI.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main ( ) {
-        printf ("1");
-        return 0;
-}
-
-                if (!$obj) { print "no\n" }
-                else {
-                    print "yes\n";
-                    print 'checking for libXi... ';
-                    my $search = _x11_();
-                    $search =~ s|include|lib|g;
-                    my $XI_lib = find_lib('Xi', $search);
-                    if (!$XI_lib) { print "not found\n" }
-                    else {
-                        print "found ($XI_lib)\n";
-                        my $exe =
-                            $self->link_exe(
-                                    {objects            => $obj,
-                                     extra_linker_flags => "-L$XI_lib -lXi"
-                                    }
-                            );
-                        $XInput_okay = `$exe` || undef;
-                        $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                     . " -I$XInput_h -I$XI_h ");
-                        $self->notes(  'ldflags' => $self->notes('ldflags')
-                                     . " -L$XI_lib -lXi ");
-                    }
+        #
+        if (!grep {m[^no_x11$]} @args) {
+            print 'Checking for Xi libs... ';
+            my $Xi_okay = 0;
+            for my $incdir (grep defined, split m[\s+], _x11_()) {
+                my $libdir = $incdir;
+                $libdir =~ s|include|lib|;
+                eval
+                    "$self->assert_lib(lib=>[qw[Xi Xext]], libpath=>$libdir, header=>['X11/extensions/XInput.h', 'X11/extensions/XI.h'], incpath=>$incdir)";
+                if (!$@) {
+                    $self->notes(  'cxxflags' => $self->notes('cxxflags')
+                                 . " -I$incdir ");
+                    $self->notes('ldflags' => " -L$libdir -lXext -lXi "
+                                 . $self->notes('ldflags'));
+                    $Xi_okay = 1;
+                    print "okay\n";
+                    last;
                 }
             }
-            if (!$XInput_okay) {
-                print <<''; exit 0; }
+            if (!$Xi_okay) {
+                exit !print <<'' }
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
   Failed to find the XInput Extension.
   You probably need to install the XInput Extension development package
@@ -248,7 +166,7 @@ int main ( ) {
 
         }
         {
-            print "checking string functions...\n";
+            print "Checking string functions...\n";
             if (($self->notes('os') =~ m[^hpux$]i)
                 && $self->notes('os_ver') == 1020)
             {   print
@@ -321,80 +239,35 @@ int main () {
                 }
             }
         }
+
+        #
         if (!grep {m[^no_gl$]} @args) {
-            my $GL_LIB = '';
-            print 'checking for GL/gl.h... ';
-            if (!find_h('GL/gl.h')) { print "no\n" }
-            else {
-                print "okay\n";
-                print 'checking OpenGL... ';
-                my $exe = $self->build_exe(
-                                {code => <<'', extra_linker_flags => '-lGL'});
-#include <GL/gl.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main ( ) {
-    printf ("1");
-    return glXMakeCurrent ();
-}
-
-                if (($exe && `$exe`)) {
-                    print "yes\n";
-                    $GL_LIB = '-lGL';
-                }
-                else {
-                    print "no\n";
-                    print 'checking MesaGL... ';
-                    my $exe = $self->build_exe(
-                            {code => <<'', extra_linker_flags => '-lMesaGL'});
-#include <GL/gl.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main ( ) {
-    printf ("1");
-    return glXMakeCurrent ();
-}
-
-                    if (($exe && `$exe`)) {
-                        print "yes\n";
-                        $GL_LIB = '-lMesaGL';
+            {
+                print 'Checking for GL... ';
+                my $GL_LIB = '';
+                $self->notes('config')->{'HAVE_GL'} = 0;
+                for my $_GL_lib (qw[GL MesaGL]) {
+                    eval "assert_lib(lib=>'$_GL_lib', header=>'GL/gl.h' )";
+                    if (!$@) {
+                        $GL_LIB = '-l' . $_GL_lib;
+                        $self->notes('config')->{'HAVE_GL'} = 1;
+                        print "okay ($GL_LIB)\n";
+                        last;
                     }
-                    else { print "no\n" }
                 }
-                if ($GL_LIB) {
-                    print "okay\n";
-                    $self->notes('config')->{'HAVE_GL'} = 1;
-                    $GL_LIB = '-lMesaGL';
-
-                    #
-                    print 'checking GL/glu.h presence... ';
-                    my $exe_glu =
-                        $self->build_exe(
-                        {   code =>
-                                <<'', extra_linker_flags => '-lGLU ' . $GL_LIB});
-#include <GL/glu.h>
-#include <stdio.h>
-#include <stdlib.h>
-int main ( ) {
-    printf ("1");
-    return glXMakeCurrent ();
-}
-
-                    if (!($exe_glu && `$exe_glu`)) {
+                if ($self->notes('config')->{'HAVE_GL_GLU_H'}) {
+                    print 'Checking for GL/glu.h... ';
+                    eval "assert_lib(lib=>'GLU', header=>'GL/glu.h' )";
+                    if ($@) {
                         print "no\n";
                     }
                     else {
-                        print "okay\n";
                         $self->notes('config')->{'HAVE_GL_GLU_H'} = 1;
-                        $GL_LIB = "-lGLU $GL_LIB";
+                        print "okay\n";
+                        $GL_LIB = " -lGLU  $GL_LIB ";
                     }
                 }
-            }
-            if ($GL_LIB) {
                 $self->notes(GL => $GL_LIB);
-            }
-            else {
-                print "GL is disabled\n";
             }
         }
         return 1;

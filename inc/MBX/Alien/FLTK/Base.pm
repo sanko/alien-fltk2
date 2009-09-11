@@ -735,5 +735,60 @@ END
         $self->copy_headers();    # XXX - part of build_fltk2
         return $self->SUPER::ACTION_code;
     }
+    {
+
+        # Ganked from Devel::CheckLib
+        sub assert_lib {
+            my ($self, %args) = @_;
+            my (@libs, @libpaths, @headers, @incpaths);
+
+            # FIXME: these four just SCREAM "refactor" at me
+            @libs = (ref($args{lib}) ? @{$args{lib}} : $args{lib})
+                if $args{lib};
+            @libpaths
+                = (ref($args{libpath}) ? @{$args{libpath}} : $args{libpath})
+                if $args{libpath};
+            @headers = (ref($args{header}) ? @{$args{header}} : $args{header})
+                if $args{header};
+            @incpaths
+                = (ref($args{incpath}) ? @{$args{incpath}} : $args{incpath})
+                if $args{incpath};
+            my @missing;
+
+            # first figure out which headers we can't find ...
+            for my $header (@headers) {
+                my $exe =
+                    $self->build_exe(
+                    {code =>
+                         "#include <$header>\nint main(void) { return 0; }\n",
+                     include_dirs => \@incpaths,
+                     lib_dirs     => \@libpaths
+                    }
+                    );
+                push @missing, $header if !-x $exe;
+                unlink $exe;
+            }
+
+            # now do each library in turn with no headers
+            for my $lib (@libs) {
+                my $exe =
+                    $self->build_exe(
+                                    {code => "int main(void) { return 0; }\n",
+                                     include_dirs       => \@incpaths,
+                                     lib_dirs           => \@libpaths,
+                                     extra_linker_flags => "-l$lib"
+                                    }
+                    );
+                push @missing, $lib if !-x $exe;
+                unlink $exe;
+            }
+            my $miss_string = join(q{, }, map {qq{'$_'}} @missing);
+            if (@missing) {
+                warn "Can't link/include $miss_string\n";
+                return 0;
+            }
+            return 1;
+        }
+    }
     1;
 }
