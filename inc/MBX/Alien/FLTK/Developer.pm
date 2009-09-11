@@ -88,16 +88,16 @@ package MBX::Alien::FLTK::Developer;
         $CHANGES_D =~ s[.+(\r?\n)][$dist$1];
         $CHANGES_D
             =~ s[(_ -.-. .... .- -. --. . ... _+).*][$1 . sprintf <<'END',
-        $self->{'properties'}{'meta_merge'}{'resources'}{'ChangeLog'}||'',
-        $self->dist_version , qw[$ $ $]
+        $self->{'properties'}{'meta_merge'}{'resources'}{'ChangeLog'}||'', '$',
+        $self->dist_version , qw[$ $ $ $ $ $ $]
     ]se;
 
 For more information, see the commit log:
     %s
 
-$_Ver: %s $ from git $_Rev%s
-$_Date%s
-$_Url%s
+%sVer: %s %s from git %sRev%s
+%sDate%s
+%sUrl%s
 END
 
      # Keep a backup (just in case) and move the file so we can create it next
