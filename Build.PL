@@ -80,7 +80,7 @@ my $mb = $class->new(
             license => 'http://www.perlfoundation.org/artistic_license_2_0',
 
             #MailingList => 'TODO',
-            repository => 'http://github.com/sanko/alien-fltk/'
+            repository => 'http://github.com/sanko/alien-fltk'
         }
     },
     quiet => 1
