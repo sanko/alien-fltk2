@@ -77,15 +77,18 @@ int main ( ) {
             {
                 print 'Checking for X11 libs... ';
                 $self->notes('config')->{'USE_X11'} = 0;
-                for my $incdir (grep defined, split m[\s+], _x11_()) {
+                for my $incdir ($self->_x11_()) {
                     my $libdir = $incdir;
                     $libdir =~ s|include|lib|;
-                    eval
-                        "$self->assert_lib(lib=>'X11', libpath=>$libdir, header=>'X11/Xlib.h', incpath=>$incdir)";
+                    eval $self->assert_lib(lib     => 'X11',
+                                           libpath => $libdir,
+                                           header  => 'X11/Xlib.h',
+                                           incpath => $incdir
+                    );
                     if (!$@) {
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
                                      . " -I$incdir ");
-                        $self->notes('ldflags' => " -L$libdir -lX11  "
+                        $self->notes('ldflags' => " -L$libdir -lX11 "
                                      . $self->notes('ldflags'));
                         $self->notes('config')->{'USE_X11'} = 1;
                         print "okay\n";
@@ -108,12 +111,15 @@ int main ( ) {
         if (!grep {m[^no_x11$]} @args) {
             {
                 print 'Checking for Xcursor libs... ';
-                $self->notes('config')->{'USE_X11'} = 0;
-                for my $incdir (grep defined, split m[\s+], _x11_()) {
+                $self->notes('config')->{'USE_XCURSOR'} = 0;
+                for my $incdir ($self->_x11_()) {
                     my $libdir = $incdir;
                     $libdir =~ s|include|lib|;
-                    eval
-                        "$self->assert_lib(lib=>'Xcursor', libpath=>$libdir, header=>'X11/Xcursor/Xcursor.h', incpath=>$incdir)";
+                    eval $self->assert_lib(lib     => 'Xcursor',
+                                           libpath => $libdir,
+                                           header  => 'X11/Xcursor/Xcursor.h',
+                                           incpath => $incdir
+                    );
                     if (!$@) {
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
                                      . " -I$incdir ");
@@ -140,11 +146,16 @@ int main ( ) {
         if (!grep {m[^no_x11$]} @args) {
             print 'Checking for Xi libs... ';
             my $Xi_okay = 0;
-            for my $incdir (grep defined, split m[\s+], _x11_()) {
+            for my $incdir ($self->_x11_()) {
                 my $libdir = $incdir;
                 $libdir =~ s|include|lib|;
-                eval
-                    "$self->assert_lib(lib=>[qw[Xi Xext]], libpath=>$libdir, header=>['X11/extensions/XInput.h', 'X11/extensions/XI.h'], incpath=>$incdir)";
+                eval $self->assert_lib(
+                       lib     => [qw[Xi Xext]],
+                       libpath => $libdir,
+                       header =>
+                           ['X11/extensions/XInput.h', 'X11/extensions/XI.h'],
+                       incpath => $incdir
+                );
                 if (!$@) {
                     $self->notes(  'cxxflags' => $self->notes('cxxflags')
                                  . " -I$incdir ");
@@ -275,7 +286,7 @@ int main () {
 
     sub _x11_ {    # Common directories for X headers. Check X11 before X11R\d
         return     # because it is often a symlink to the current release.
-            <<'' }
+            split m[\s+], <<'' }
 /usr/X11/include
 /usr/X11R7/include
 /usr/X11R6/include
