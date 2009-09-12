@@ -1,16 +1,18 @@
-Version 0.06844 | 2009-09-03 05:33:54Z (Thu, 03 Sep 2009) | 0233c49
+Version 0.06858 | 2009-09-11 23:32:05Z (Fri, 11 Sep 2009) | f4d8f74
 
     Resolved Issues/Bug Fixes:
      * None yet
 
     Internal/Behavioral Changes:
-     * None yet
+     * More spitballing with *nix
 
     Documentation/Sample Code/Test Suite:
-     * None yet
+     * capabilities() and config() methods are now documented
 
     Notes:
-     * None yet
+     * Upgrading to fltk2 r6858 which comes with a modified license which
+         remains "in the spirit of the original FLTK 2 license, but at the
+         same time [complies with] Debian license requirements."
 
 Version 0.06844 | 2009-09-03 05:03:50Z (Thu, 03 Sep 2009) | 7ea0002
 

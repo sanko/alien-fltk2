@@ -6,7 +6,7 @@ package Alien::FLTK;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     use File::Basename;
     use File::Find qw[find];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6844; our $UNSTABLE_RELEASE = 1; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6858; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
     my $_config = eval do { local $/; <DATA> }
         or warn
@@ -197,12 +197,27 @@ Include flags to use FLTK's forms compatibility layer.
 Returns the SVN revision number of the source L<C<Alien::FLTK>|Alien::FLTK>
 was built with.
 
+=head2 C<capabilities>
+
+    my $caps = Alien::FLTK->capabilities;
+
+Returns a list of capabilities supported by your L<Alien::FLTK|Alien::FLTK>
+installation. This list can be handed directly to
+L<C<ldflags( )>|Alien::FLTK/ldflags>.
+
+=head2 C<config>
+
+    my $configuration = Alien::FLTK->config;
+
+Returns a hashref containing the raw configuration data collected during
+build. This would be helpful when reporting bugs, etc.
+
 =head1 Notes
 
 =head2 Requirements
 
 The Fast Light Toolkit works right out of the box on Windows (MinGW), but for
-*nix, make sure the following libs are installed for basic functionality...
+*nix, make sure the following libs are installed first...
 
 =over
 

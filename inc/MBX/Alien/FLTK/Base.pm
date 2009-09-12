@@ -659,6 +659,7 @@ END
                 while (<$fh>) { last if /^__DATA__$/; }
 
                 if (eof($fh)) {
+
                     #warn "Couldn't find __DATA__ token in $me";
                     $fh->print("\n__DATA__\n");
                 }
@@ -673,7 +674,7 @@ END
                     require Data::Dumper;
                     $fh->print('do{ my '
                                . Data::Dumper->new([$data], ['x'])->Purity(1)
-                               ->Dump()
+                               ->Dump() 
                                . "\$x; }\n");
                 }
                 truncate($fh, tell($fh));
