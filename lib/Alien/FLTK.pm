@@ -6,26 +6,46 @@ package Alien::FLTK;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     use File::Basename;
     use File::Find qw[find];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6858; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
-    sub revision { return $FLTK_SVN; }
     my $_config = eval do { local $/; <DATA> }
         or warn
         "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
     close DATA;
     sub config { return $_config; }
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6858; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    sub revision { return $FLTK_SVN; }
+    sub branch   { return $_config->{'fltk_branch'} }
 
     sub include_path {
+        my ($self) = @_;
         my @include = map { -d $_ ? $_ : () } (
-                 rel2abs(catdir(qw[blib arch Alien FLTK include])),
-                 rel2abs(catdir(dirname(rel2abs(__FILE__)), qw[FLTK include]))
+                                  rel2abs(
+                                      catdir(qw[blib arch Alien FLTK include],
+                                             'fltk-' . $self->branch
+                                      )
+                                  ),
+                                  rel2abs(catdir(dirname(rel2abs(__FILE__)),
+                                                 qw[FLTK include],
+                                                 'fltk-' . $self->branch
+                                          )
+                                  )
         );
         return $include[0];
     }
 
     sub library_path {
+        my ($self) = @_;
         my @libs = map { -d $_ ? $_ : () } (
-                    rel2abs(catdir(qw[blib arch Alien FLTK libs])),
-                    rel2abs(catdir(dirname(rel2abs(__FILE__)), qw[FLTK libs]))
+                                     rel2abs(
+                                         catdir(qw[blib arch Alien FLTK libs],
+                                                'fltk-' . $self->branch
+                                         )
+                                     ),
+                                     rel2abs(
+                                            catdir(dirname(rel2abs(__FILE__)),
+                                                   qw[FLTK libs],
+                                                   'fltk-' . $self->branch
+                                            )
+                                     )
         );
         return $libs[0];
     }
@@ -43,25 +63,41 @@ package Alien::FLTK;
 
         # Calculate needed libraries
         my $SHAREDSUFFIX = $Config{'_a'};
-        my $LDSTATIC     = "-L$libdir $libdir/libfltk2$SHAREDSUFFIX "
-            . $_config->{'ldflags'};
+        my $LDSTATIC     = sprintf '-L%s %s/libfltk%s%s %s',
+            $libdir, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
+            $SHAREDSUFFIX, $_config->{'ldflags'};
         my $LDFLAGS = "-L$libdir " . $_config->{'ldflags'};
-        my $LIBS    = "$libdir/libfltk2$SHAREDSUFFIX";
+        my $LIBS = sprintf '%s/libfltk%s%s', $libdir,
+            ($self->branch eq '1.3.x' ? '' : '2'),
+            $SHAREDSUFFIX;
         if (grep {m[forms]} @args) {
-            $LDFLAGS  = "-lfltk2_forms $LDFLAGS";
-            $LDSTATIC = "$libdir/libfltk2_forms$SHAREDSUFFIX $LDSTATIC";
-            $LIBS     = "$LIBS $libdir/libfltk2_forms$SHAREDSUFFIX";
+            $LDFLAGS = sprintf '-lfltk%s_forms %s',
+                ($self->branch eq '1.3.x' ? '' : '2'), $LDFLAGS;
+            $LDSTATIC = sprintf '$libdir/libfltk%s_forms%s %s',
+                $libdir, ($self->branch eq '1.3.x' ? '' : '2'), $SHAREDSUFFIX,
+                $$LDSTATIC;
+            $LIBS = sprintf '%s %s/libfltk%s_forms%s',
+                $LIBS, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
+                $SHAREDSUFFIX;
         }
         if ((grep {m[gl]} @args) && $_config->{'GL'}) {
             my $LIBGL = $_config->{'GL'};
-            $LDFLAGS  = "-lfltk2_gl $LIBGL $LDFLAGS";
-            $LDSTATIC = "$libdir/libfltk2_gl$SHAREDSUFFIX $LIBGL $LDSTATIC";
-            $LIBS     = "$LIBS $libdir/libfltk2_gl$SHAREDSUFFIX";
+            $LDFLAGS = sprintf '-lfltk%s_gl %s %s',
+                ($self->branch eq '1.3.x' ? '' : '2'),
+                $LIBGL, $LDFLAGS;
+            $LDSTATIC = sprintf '%s/libfltk%s_gl%s %s %s',
+                $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
+                $SHAREDSUFFIX, $LIBGL, $LDSTATIC;
+            $LIBS = sprintf '%s %s/libfltk%s_gl%s',
+                $LIBS, $libdir,
+                ($self->branch eq '1.3.x' ? '' : '2'),
+                $SHAREDSUFFIX;
         }
         if (grep {m[images]} @args) {
             $LDFLAGS  = $_config->{'image_flags'} . " $LDFLAGS";
-            $LDSTATIC = "$libdir/libfltk2_images$SHAREDSUFFIX $LDSTATIC "
-                . $_config->{'image_flags'};
+            $LDSTATIC = sprintf '%s/libfltk%s_images%s %s %s',
+                $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
+                $SHAREDSUFFIX, $LDSTATIC, $_config->{'image_flags'};
         }
         return (
              ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS) . ' -lsupc++');
@@ -254,7 +290,7 @@ Once installed, L<Alien::FLTK> depends on:
 
 =head2 Installation
 
-Building the fltk2 libs requires a functioning C++ compiler, bash, and (to
+Building the fltk libs requires a functioning C++ compiler, bash, and (to
 make life easy) a version of make.
 
 The distribution is based on L<Module::Build|Module::Build>, so use the

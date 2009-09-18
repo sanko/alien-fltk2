@@ -106,6 +106,7 @@ print
 #$mb->notes(use_glut  => 0);           # TODO
 #$mb->notes(use_gl    => 1);
 #$mb->notes(use_forms => 0);           # TODO
+$mb->notes(fltk_branch => '2.0.x');
 $mb->notes(fltk_svn => $mb->dist_version =~ m[\.0?(\d+)]);
 ##################################################################### TODO ###
 $mb->notes(automated_testing => $automated_testing     ? 1 : 0);

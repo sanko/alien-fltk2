@@ -6,7 +6,9 @@ package MBX::Alien::FLTK::Developer;
     use Config qw[%Config];
     use ExtUtils::ParseXS qw[];
     use ExtUtils::CBuilder qw[];
-    use File::Spec::Functions qw[catdir rel2abs abs2rel canonpath];
+    use lib qw[../../../../inc];
+    use MBX::Alien::FLTK::Utility
+        qw[_o _a _dir _file _rel _abs _split _exe find_h find_lib can_run];
     use File::Find qw[find];
     use File::Path 2.07 qw[make_path];
     use base 'MBX::Alien::FLTK';
@@ -34,7 +36,7 @@ package MBX::Alien::FLTK::Developer;
     sub ACTION_clear_config {
         my ($self) = @_;
         print 'Cleaning Alien::FLTK config... ';
-        my $me = rel2abs($self->base_dir() . '/lib/Alien/FLTK.pm');
+        my $me = _abs($self->base_dir() . '/lib/Alien/FLTK.pm');
         require IO::File;
         my $mode_orig = (stat $me)[2] & 07777;
         chmod($mode_orig | 0222, $me);    # Make it writeable
@@ -154,10 +156,9 @@ END
             my $_Mod  = qx[git log --pretty=format:"%cr" -n 1 $file];
             my $_Date = POSIX::strftime('%Y-%m-%d %H:%M:%SZ (%a, %d %b %Y)',
                                         gmtime($bits[0]));
-            my $_Commit = $bits[1];
+            my $_Commit       = $bits[1];
             my $_Commit_short = substr($bits[1], 0, 7);
-            my $_Id = sprintf $bits[2], (File::Spec->splitpath($file))[2],
-                $_Date;
+            my $_Id           = sprintf $bits[2], (_split($file))[2], $_Date;
             my $_Repo
                 = $self->{'properties'}{'meta_merge'}{'resources'}
                 {'repository'}
@@ -212,22 +213,19 @@ END
             return;
         }
         require Perl::Tidy;
-        my $demo_files
-            = $self->rscan_dir(File::Spec->catdir('example'), qr[\.pl$]);
-        my $inst_files
-            = $self->rscan_dir(File::Spec->catdir('inc'), qr[\.pm$]);
+        my $demo_files = $self->rscan_dir('examples', qr[\.pl$]);
+        my $inst_files = $self->rscan_dir('inc',      qr[\.pm$]);
         for my $files ([keys(%{$self->script_files})],       # scripts first
                        [values(%{$self->find_pm_files})],    # modules
                        [@{$self->find_test_files}],          # test suite next
                        [@{$inst_files}],                     # installer files
                        [@{$demo_files}]                      # demos last
             )
-        {   $files = [sort map { File::Spec->rel2abs('./' . $_) } @{$files}];
+        {   $files = [sort map { _abs('./' . $_) } @{$files}];
 
             # One at a time...
             for my $file (@$files) {
-                printf "Running perltidy on '%s' ...\n",
-                    File::Spec->abs2rel($file);
+                printf "Running perltidy on '%s' ...\n", _rel($file);
                 $self->add_to_cleanup($file . '.tidy');
                 Perl::Tidy::perltidy(argv => <<'END' . $file); } }
 --brace-tightness=2
