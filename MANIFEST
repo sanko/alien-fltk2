@@ -2,8 +2,7 @@ Build.PL
 Changes
 examples/0000_synopsis.pl
 examples/0001_embed.pl
-examples/0002_static.pl
-examples/0003_gl.pl
+examples/0002_gl.pl
 inc/MBX/Alien/FLTK.pm
 inc/MBX/Alien/FLTK/Base.pm
 inc/MBX/Alien/FLTK/Platform/Darwin.pm
