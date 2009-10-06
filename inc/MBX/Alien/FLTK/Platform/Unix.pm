@@ -76,7 +76,7 @@ int main ( ) {
         if (!grep {m[^no_x11$]} @args) {
             {
                 print 'Checking for X11 libs... ';
-                $self->notes('config')->{'USE_X11'} = 0;
+                $self->notes('can_has_x11', 0);
                 for my $incdir ($self->_x11_()) {
                     my $libdir = $incdir;
                     $libdir =~ s|include|lib|;
@@ -90,12 +90,12 @@ int main ( ) {
                                      . " -I$incdir ");
                         $self->notes('ldflags' => " -L$libdir -lX11 "
                                      . $self->notes('ldflags'));
-                        $self->notes('config')->{'USE_X11'} = 1;
+                        $self->notes('can_has_x11', 1);
                         print "okay\n";
                         last;
                     }
                 }
-                if (!$self->notes('config')->{'USE_X11'}) {
+                if (!$self->notes('can_has_x11')) {
                     exit !print <<'' }
  *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
   Failed to find the X11 libs.
