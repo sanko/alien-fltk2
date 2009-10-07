@@ -81,24 +81,15 @@ my $mb = $class->new(
             #MailingList => 'TODO',
             repository => 'http://github.com/sanko/alien-fltk'
         }
-    },
-    #quiet => 1
+    }
 );
 
 #
-print
-    <<''; if (!$mb->cbuilder->have_compiler()) { print <<''; exit 0 } print <<'';
- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-  Alien::FLTK requires a functioning C++ compiler.  Hold on a sec while I
-  look for one...
-
-  Aw, man... Looks like you're missing something important so this is where
-  you and I part ways.
- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-  Everything's okay here. Moving on.
- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
+$mb->quiet(1); # Don't print while looking for compiler
+print "Checking for a functioning C++ compiler...\n";
+if ($mb->cbuilder->have_compiler()) { print "Looks good\n\n" }
+else { print "fail\n* No compiler found. Exiting.\n"; exit 0 }
+$mb->quiet(0); # You can get noisy again.
 
 #$mb->notes(use_cairo => 0);           # TODO - MacOS
 #$mb->notes(use_x     => 0);           # TODO - find_lib
