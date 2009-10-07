@@ -252,39 +252,27 @@ build. This would be helpful when reporting bugs, etc.
 
 =head2 Requirements
 
-The Fast Light Toolkit works right out of the box on Windows (MinGW), but for
-*nix, make sure the following libs are installed first...
+Prerequisites differ by system...
 
 =over
 
-=item X11 libs
+=item Win32
 
-On Debian Linux, the X11 development package is listed as libx11-dev.
+The fltk2 libs and L<Alien::FLTK|Alien::FLTK> both build right out of the box
+with MinGW. Further testing is needed for other setups.
 
-=item X11 Input libs
+=item X11/*nix
 
-On Debian Linux, the X11 Input development package is listed as libxi-dev.
+X11-based systems require several development packages. On Debian, these may
+be installed with...
 
-=item X11 Cursor libs
+  > sudo apt-get install libx11-dev
+  > sudo apt-get install libxi-dev
+  > sudo apt-get install libxcursor-dev
 
-On Debian Linux, the X11 Cursor development package is listed as
-libxcursor-dev.
+=item Darwin/OSX
 
-Note: The Xcursor libs are optional.
-
-=back
-
-Once installed, L<Alien::FLTK> depends on:
-
-=over
-
-=item L<Config|Config>
-
-=item L<File::Spec::Functions>
-
-=item L<File::Basename>
-
-=item L<File::Find>
+Uh, yeah, I have no idea.
 
 =back
 
@@ -296,14 +284,10 @@ make life easy) a version of make.
 The distribution is based on L<Module::Build|Module::Build>, so use the
 following procedure:
 
-  perl Build.PL
-  ./Build
-  ./Build test
-  ./Build install
-
-An attempt has been made to work around an incomplete set of build tools. This
-fallback requires L<ExtUtils::CBuilder|ExtUtils::CBuilder> and plenty of
-begging. Consider it alpha at best.
+  > perl Build.PL
+  > ./Build
+  > ./Build test
+  > ./Build install
 
 =head2 Support Links
 
