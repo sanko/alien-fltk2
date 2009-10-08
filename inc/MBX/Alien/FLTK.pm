@@ -41,6 +41,7 @@ package MBX::Alien::FLTK;
         $self->notes(platform => \@platform);
         $self->notes(os       => $OS);
         $self->notes(cc       => $CC);
+        $self->notes(errors   => []);
         return $self;
     }
 

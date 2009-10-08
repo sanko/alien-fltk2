@@ -859,29 +859,32 @@ int main ( ) {
             }
         }
         if (!$path) {
-            printf
-                <<'END', $self->notes('fltk_branch'), $self->notes('fltk_svn'), $dest;
- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-       ERROR: We failed to fetch fltk-%s-r%s.tar.gz and will exit.
+            my $msg = sprintf <<'END',
+We failed to fetch fltk-%s-r%s.tar.gz.
 
-  If this problem persists, you may download the archive yourself and put
-  it in the ./%s/ directory. Alien::FLTK will attempt to extract and build
-  the libs from there.
+If this problem persists, you may download the archive yourself and put it in
+the ./%s/ directory. Alien::FLTK will attempt to extract and build the libs
+from there.
 
-  Use any of these mirrors:
+Use any of these mirrors:
 
 END
+                $self->notes('fltk_branch'), $self->notes('fltk_svn'), $dest;
             for my $mirror (keys %mirrors) {
-                print " " x 4 . $mirrors{$mirror} . "\n";
+                $msg .= " " x 4 . $mirrors{$mirror} . "\n";
                 for my $prot (qw[ftp http]) {
-                    printf
+                    $msg .= sprintf
                         "      %s://%s/pub/fltk/snapshots/fltk-%s-r%s.tar.gz\n",
                         $prot, $mirror, $self->notes('fltk_branch'),
                         $self->notes('fltk_svn');
                 }
             }
-            print ' ---' x 19;
-            exit 0;    # Clean exit
+            push @{$self->notes('errors')},
+                {stage   => 'source download',
+                 fatal   => 1,
+                 message => $msg
+                };
+            return;
         }
         return $path;
     }
@@ -895,8 +898,12 @@ END
         require Archive::Extract;
         my $ae = Archive::Extract->new(archive => $archive);
         if (!$ae->extract(to => 'src')) {
-            carp "\nError: " . $ae->error;
-            return 0;
+            push @{$self->notes('errors')},
+                {stage   => 'extracting source',
+                 fatal   => 1,
+                 message => $ae->error
+                };
+            return;
         }
         print "okay\n";
         return 1;
@@ -1057,13 +1064,42 @@ END
 
     sub ACTION_code {
         my ($self) = @_;
-        $self->depends_on('fetch_fltk');
-        $self->depends_on('extract_fltk');
-        $self->depends_on('configure_fltk');
-        $self->depends_on('write_config_h');
-        $self->depends_on('build_fltk');
-        $self->depends_on('copy_headers');
+        for my $action (
+            qw[fetch_fltk extract_fltk configure_fltk write_config_h build_fltk]
+            )
+        {   $self->depends_on($action);
+            $self->dispatch('check_errors');
+        }
         return $self->SUPER::ACTION_code;
+    }
+
+    sub ACTION_check_errors {
+        my ($self) = @_;
+        return if !@{$self->notes('errors')};
+        my $fatal = 0;
+        for my $error (@{$self->notes('errors')}) {
+            $fatal += $error->{'fatal'};
+            my $msg = $error->{'message'};
+            $msg =~ s|(.+)|  $1|gm;
+            printf "%s error enountered during %s:\n%s\n",
+                ($error->{'fatal'} ? ('*** Fatal') : 'Non-fatal'),
+                $error->{'stage'}, $msg, '-- ' x 10;
+        }
+        if ($fatal) {
+            printf STDOUT ('*** ' x 15) . "\n"
+                . '%s fatal error%s encountered during the build process. '
+                . "Please correct %s and run Build.PL again.\nExiting...",
+                $fatal == 1
+                ? ('A', ' was', 'it')
+                : ($fatal, 's were', 'them');
+            exit 0;
+        }
+    }
+
+    sub ACTION_clean {
+        my $self = shift;
+        $self->SUPER::ACTION_clean(@_);
+        $self->notes(errors => []);    # Reset fatal and non-fatal errors
     }
     {
 

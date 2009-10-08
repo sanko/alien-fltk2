@@ -35,6 +35,11 @@ package MBX::Alien::FLTK::Platform::Windows;
             $self->notes('config')->{'HAVE_GL'} = 0;
             if (!$self->assert_lib(lib => 'opengl32', header => 'GL/gl.h')) {
                 print "no\n";
+                push @{$self->notes('errors')},
+                    {stage   => 'configure',
+                     fatal   => 0,
+                     message => 'OpenGL libs were not found'
+                    };
             }
             else {
                 $self->notes('config')->{'HAVE_GL'} = 1;

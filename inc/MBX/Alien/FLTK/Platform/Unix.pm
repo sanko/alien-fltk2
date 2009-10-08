@@ -96,85 +96,92 @@ int main ( ) {
                     }
                 }
                 if (!$self->notes('can_has_x11')) {
-                    exit !print <<'' }
- *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-  Failed to find the X11 libs.
-  You probably need to install the X11 development package first. On Debian
-  Linux, these are the packages libx11-dev and x-dev. If I'm just missing
-  something... patches welcome.
- *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+                    push @{$self->notes('errors')},
+                        {stage   => 'configure',
+                         fatal   => 1,
+                         message => <<'' };
+Failed to find the X11 libs. You probably need to install the X11 development
+package first. On Debian Linux, these are the packages libx11-dev and x-dev.
+If I'm just missing something... patches welcome.
 
+                }
             }
-        }
 
-        #
-        if (!grep {m[^no_x11$]} @args) {
-            {
-                print 'Checking for Xcursor libs... ';
-                $self->notes('config')->{'USE_XCURSOR'} = 0;
+            #
+            if (!grep {m[^no_x11$]} @args) {
+                {
+                    print 'Checking for Xcursor libs... ';
+                    $self->notes('config')->{'USE_XCURSOR'} = 0;
+                    for my $incdir ($self->_x11_()) {
+                        my $libdir = $incdir;
+                        $libdir =~ s|include|lib|;
+                        eval $self->assert_lib(
+                                            lib     => 'Xcursor',
+                                            libpath => $libdir,
+                                            header => 'X11/Xcursor/Xcursor.h',
+                                            incpath => $incdir
+                        );
+                        if (!$@) {
+                            $self->notes(
+                                        'cxxflags' => $self->notes('cxxflags')
+                                            . " -I$incdir ");
+                            $self->notes('ldflags' => " -L$libdir -lXcursor  "
+                                         . $self->notes('ldflags'));
+                            $self->notes('config')->{'USE_XCURSOR'} = 1;
+                            print "okay\n";
+                            last;
+                        }
+                    }
+                    if (!$self->notes('config')->{'USE_XCURSOR'}) {
+                        push @{$self->notes('errors')},
+                            {stage   => 'configure',
+                             fatal   => 0,
+                             message => <<'' };
+Failed to find the XCursor libs. You probably need to install the X11
+development package first. On Debian Linux, these are the packages libx11-dev,
+x-dev, and libxcursor-dev. If I'm just missing something... patches welcome.
+
+                    }
+                }
+            }
+
+            #
+            if (!grep {m[^no_x11$]} @args) {
+                print 'Checking for Xi libs... ';
+                my $Xi_okay = 0;
                 for my $incdir ($self->_x11_()) {
                     my $libdir = $incdir;
                     $libdir =~ s|include|lib|;
-                    eval $self->assert_lib(lib     => 'Xcursor',
-                                           libpath => $libdir,
-                                           header  => 'X11/Xcursor/Xcursor.h',
-                                           incpath => $incdir
+                    eval $self->assert_lib(
+                                         lib     => [qw[Xi Xext]],
+                                         libpath => $libdir,
+                                         header  => [
+                                                    'X11/extensions/XInput.h',
+                                                    'X11/extensions/XI.h'
+                                         ],
+                                         incpath => $incdir
                     );
                     if (!$@) {
                         $self->notes(  'cxxflags' => $self->notes('cxxflags')
                                      . " -I$incdir ");
-                        $self->notes('ldflags' => " -L$libdir -lXcursor  "
+                        $self->notes('ldflags' => " -L$libdir -lXext -lXi "
                                      . $self->notes('ldflags'));
-                        $self->notes('config')->{'USE_XCURSOR'} = 1;
+                        $Xi_okay = 1;
                         print "okay\n";
                         last;
                     }
                 }
-                if (!$self->notes('config')->{'USE_XCURSOR'}) {
-                    exit !print <<'' }
- *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-  Failed to find the XCursor libs.
-  You probably need to install the X11 development package first. On Debian
-  Linux, these are the packages libx11-dev, x-dev, and libxcursor-dev. If I'm
-  just missing something... patches welcome.
- *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
+                if (!$Xi_okay) {
+                    push @{$self->notes('errors')},
+                        {stage   => 'configure',
+                         fatal   => 1,
+                         message => <<'' };
+Failed to find the XInput Extension. You probably need to install the XInput
+Extension development package first. On Debian Linux, this is the libxi-dev
+package. If I'm just missing something... patches welcome.
 
-            }
-        }
-
-        #
-        if (!grep {m[^no_x11$]} @args) {
-            print 'Checking for Xi libs... ';
-            my $Xi_okay = 0;
-            for my $incdir ($self->_x11_()) {
-                my $libdir = $incdir;
-                $libdir =~ s|include|lib|;
-                eval $self->assert_lib(
-                       lib     => [qw[Xi Xext]],
-                       libpath => $libdir,
-                       header =>
-                           ['X11/extensions/XInput.h', 'X11/extensions/XI.h'],
-                       incpath => $incdir
-                );
-                if (!$@) {
-                    $self->notes(  'cxxflags' => $self->notes('cxxflags')
-                                 . " -I$incdir ");
-                    $self->notes('ldflags' => " -L$libdir -lXext -lXi "
-                                 . $self->notes('ldflags'));
-                    $Xi_okay = 1;
-                    print "okay\n";
-                    last;
                 }
             }
-            if (!$Xi_okay) {
-                exit !print <<'' }
- *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-  Failed to find the XInput Extension.
-  You probably need to install the XInput Extension development package
-  first. On Debian Linux, this is the libxi-dev package. If I'm just
-  missing something... patches welcome.
- *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-
         }
         {
             print "Checking string functions...\n";
@@ -266,7 +273,16 @@ int main () {
                         last;
                     }
                 }
-                if ($self->notes('config')->{'HAVE_GL_GLU_H'}) {
+                if (!$GL_LIB) {
+                    push @{$self->notes('errors')},
+                        {
+                        stage => 'configure',
+                        fatal => 0,
+                        message =>
+                            'OpenGL libs were not found (tried both GL and MesaGL)'
+                        };
+                }
+                if ($GL_LIB && $self->notes('config')->{'HAVE_GL_GLU_H'}) {
                     print 'Checking for GL/glu.h... ';
                     eval "assert_lib(lib=>'GLU', header=>'GL/glu.h' )";
                     if ($@) {
