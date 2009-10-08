@@ -1,6 +1,6 @@
-Version 0.XXXXX | In the not too distant future | 539ccd4
+Version 0.XXXXX | In the not too distant future | 294ec87
     Resolved Issues/Bug Fixes:
-     * None yet
+     * lib/header checks (should) now work on Unix
 
     Internal/Behavioral Changes:
      * We configure fltk before creating Build script in case we run into
