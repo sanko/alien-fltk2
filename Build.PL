@@ -104,6 +104,11 @@ $mb->notes(release_testing   => $is_developer);
 $mb->notes(test_suite        => \@tests);
 $mb->notes(gmtime            => scalar gmtime);
 $mb->notes(threads           => $Config{'useithreads'} ? 1 : 0);
+############################################################## Get to work ###
+for my $action (qw[fetch_fltk extract_fltk configure_fltk write_config_h]) {
+    $mb->depends_on($action);
+    $mb->dispatch('check_errors');
+}
 $mb->create_build_script;
 ##############################################################################
 exit 0;
