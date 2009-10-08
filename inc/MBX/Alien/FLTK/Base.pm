@@ -882,7 +882,7 @@ END
                 }
             }
             push @{$self->notes('errors')},
-                {stage   => 'source download',
+                {stage   => 'fltk source download',
                  fatal   => 1,
                  message => $msg
                 };
@@ -901,7 +901,7 @@ END
         my $ae = Archive::Extract->new(archive => $archive);
         if (!$ae->extract(to => 'src')) {
             push @{$self->notes('errors')},
-                {stage   => 'extracting source',
+                {stage   => 'fltk source extraction',
                  fatal   => 1,
                  message => $ae->error
                 };
