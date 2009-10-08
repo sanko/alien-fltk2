@@ -292,9 +292,6 @@ Uh, yeah, I have no idea.
 
 =head2 Installation
 
-Building the fltk libs requires a functioning C++ compiler, bash, and (to
-make life easy) a version of make.
-
 The distribution is based on L<Module::Build|Module::Build>, so use the
 following procedure:
 
