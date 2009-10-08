@@ -851,7 +851,7 @@ int main ( ) {
                     $self->notes('fltk_branch'),
                     $self->notes('fltk_svn');
                 printf
-                    "Fetching r%s or FLTK's %s branch from %s mirror\n    %s...\n",
+                    "Fetching r%s from the %s branch of fltk from %s mirror\n    %s...\n",
                     $self->notes('fltk_svn'), $self->notes('fltk_branch'),
                     $mirrors{$mirror}, $from;
                 $path = File::Fetch->new(uri => $from)->fetch(to => $dest);
