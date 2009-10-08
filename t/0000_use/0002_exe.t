@@ -8,6 +8,7 @@ use Alien::FLTK;
 use ExtUtils::CBuilder;
 $|++;
 my $cc = ExtUtils::CBuilder->new(quiet => 1);
+my $AF = Alien::FLTK->new();
 my ($FH, $SRC)
     = File::Temp->tempfile('alien_fltk_t0002_XXXX',
                            TMPDIR  => 1,
@@ -37,13 +38,13 @@ int main(int argc, char **argv) {
 }
 END
 my $obj = $cc->compile(source               => $SRC,
-                       include_dirs         => [Alien::FLTK->include_path()],
-                       extra_compiler_flags => Alien::FLTK->cxxflags()
+                       include_dirs         => [$AF->include_path()],
+                       extra_compiler_flags => $AF->cxxflags()
 );
 ok($obj, 'Compile with FLTK headers');
 my $exe =
     $cc->link_executable(objects            => $obj,
-                         extra_linker_flags => Alien::FLTK->ldflags());
+                         extra_linker_flags => $AF->ldflags());
 ok($exe,          'Link exe with fltk');
 ok(!system($exe), sprintf 'Run exe');
 unlink $obj, $exe, $SRC;

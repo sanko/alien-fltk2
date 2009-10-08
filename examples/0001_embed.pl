@@ -3,6 +3,7 @@ use warnings;
 use Alien::FLTK;
 use ExtUtils::CBuilder;
 use Config qw[%Config];
+my $AF     = Alien::FLTK->new();
 my $CC     = ExtUtils::CBuilder->new();
 my $source = 'embed.cxx';
 open(my $FH, '>', $source) || die '...';
@@ -136,13 +137,11 @@ int main( int argc, char **argv, char **env ) {
 */
 
 my $obj = $CC->compile(source               => $source,
-                       extra_compiler_flags => Alien::FLTK->cxxflags());
+                       extra_compiler_flags => $AF->cxxflags());
 my $exe = $CC->link_executable(
-                      objects            => $obj,
-                      extra_linker_flags => [
-                           Alien::FLTK->ldflags(),
-                           $Config{'archlib'} . '/CORE/' . $Config{'libperl'},
-                      ]
+     objects => $obj,
+     extra_linker_flags =>
+         [$AF->ldflags(), $Config{'archlib'} . '/CORE/' . $Config{'libperl'},]
 );
 printf system('./' . $exe) ? 'Aww...' : 'Yay! %s bytes', -s $exe;
 END { unlink grep defined, $source, $obj, $exe; }

@@ -3,6 +3,7 @@ use warnings;
 {
     use Alien::FLTK;
     use ExtUtils::CBuilder;
+    my $AF     = Alien::FLTK->new();
     my $CC     = ExtUtils::CBuilder->new();
     my $source = 'hello_world.cxx';
     open(my $FH, '>', $source) || die '...';
@@ -25,11 +26,9 @@ use warnings;
       }
 
     my $obj = $CC->compile(source               => $source,
-                           extra_compiler_flags => Alien::FLTK->cxxflags());
-    my $exe = $CC->link_executable(
-                                  objects            => $obj,
-                                  extra_linker_flags => Alien::FLTK->ldflags()
-    );
+                           extra_compiler_flags => $AF->cxxflags());
+    my $exe = $CC->link_executable(objects            => $obj,
+                                   extra_linker_flags => $AF->ldflags());
     print system('./' . $exe) ? 'Aww...' : 'Yay!';
     END { unlink grep defined, $source, $obj, $exe; }
 }
