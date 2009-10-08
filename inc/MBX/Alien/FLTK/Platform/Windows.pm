@@ -13,6 +13,7 @@ package MBX::Alien::FLTK::Platform::Windows;
 
     sub configure {
         my ($self) = @_;
+        $self->quiet(1);
         $self->SUPER::configure();    # Get basic config data
         print "Gathering Windows specific configuration data...\n";
         $self->notes(ldflags => $self->notes('ldflags')
@@ -60,6 +61,7 @@ package MBX::Alien::FLTK::Platform::Windows;
             }
             $self->notes(GL => $GL_LIB);
         }
+        $self->quiet(0);
         return 1;
     }
     1;

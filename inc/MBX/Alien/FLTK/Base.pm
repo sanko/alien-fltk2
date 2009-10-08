@@ -508,7 +508,8 @@ int main ( ) {
 }
 
                     if ($exe && `$exe`) {
-                        print($lib ? "$lib\n" : "none required\n");
+                        if   ($lib) { print "$lib\n" }
+                        else        { print "none required\n" }
                         $self->notes(
                              'ldflags' => $self->notes('ldflags') . " $lib ");
                         $_have_pow = 1;
@@ -742,8 +743,8 @@ int main ( ) {
 
     sub build_fltk {
         my ($self, $build) = @_;
-        my @lib;
-        my @_libs;
+        $self->quiet(1);
+        my (@lib, @_libs);
         if ($self->notes('fltk_branch') eq '1.3.x') {
             @_libs = grep { $_ !~ m[2] } keys %{$self->LIBS};
         }
@@ -815,6 +816,7 @@ int main ( ) {
             print 'Failed to cd to ' . $self->fltk_dir();
             exit 0;
         }
+        $self->quiet(0);
         return @lib ? 1 : 0;
     }
 
@@ -1000,10 +1002,10 @@ END
                 }
                 else {
                     require Data::Dumper;
-                    $fh->print('do{ my '
-                               . Data::Dumper->new([$data], ['x'])->Purity(1)
-                               ->Dump()
-                               . "\$x; }\n");
+                    my $Dumper = Data::Dumper->new([$data], ['x']);
+                    $Dumper->Purity(1);
+                    $fh->print(sprintf 'do{ my %s; \$x; }' . "\n",
+                               $Dumper->Dump());
                 }
                 truncate($fh, tell($fh));
                 $fh->close;

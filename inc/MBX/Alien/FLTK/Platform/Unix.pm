@@ -13,6 +13,7 @@ package MBX::Alien::FLTK::Platform::Unix;
 
     sub configure {
         my ($self, @args) = @_;
+        $self->quiet(1);
         $self->SUPER::configure();    # Get basic config data
         print "Gathering *nix/X11 specific configuration data...\n";
         $self->notes(
@@ -40,7 +41,7 @@ package MBX::Alien::FLTK::Platform::Unix;
         {
             print
                 'Checking whether we have the POSIX compatible scandir() prototype... ';
-            my $obj = $self->compile({code => <<"" });
+            my $obj = $self->compile({code => <<'' });
 #include <dirent.h>
 int func (const char *d, dirent ***list, void *sort) {
     int n = scandir(d, list, 0, (int(*)(const dirent **, const dirent **))sort);
@@ -297,6 +298,7 @@ int main () {
                 $self->notes(GL => $GL_LIB);
             }
         }
+        $self->quiet(0);
         return 1;
     }
 

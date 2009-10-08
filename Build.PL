@@ -85,11 +85,11 @@ my $mb = $class->new(
 );
 
 #
-$mb->quiet(1); # Don't print while looking for compiler
+$mb->quiet(1);    # Don't print while looking for compiler
 print "Checking for a functioning C++ compiler...\n";
 if ($mb->cbuilder->have_compiler()) { print "Looks good\n\n" }
 else { print "fail\n* No compiler found. Exiting.\n"; exit 0 }
-$mb->quiet(0); # You can get noisy again.
+$mb->quiet(0);    # You can get noisy again.
 
 #$mb->notes(use_cairo => 0);           # TODO - MacOS
 #$mb->notes(use_x     => 0);           # TODO - find_lib

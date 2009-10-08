@@ -12,7 +12,7 @@ package Alien::FLTK;
     close DATA;
     sub new { return bless \$|, shift; }
     sub config { return $_config; }
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6879; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6879; our $UNSTABLE_RELEASE = 1; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
     sub branch   { return $_config->{'fltk_branch'} }
 
@@ -212,7 +212,8 @@ arguments are:
 
 Returns flags to link against a static FLTK library.
 
-I<FLTK's license allows static linking, btw.>
+FLTK's license allows static linking, but L<Alien::FLTK|Alien::FLTK> does not
+build static libs. ...yet.
 
 =item C<gl>
 
@@ -383,11 +384,12 @@ Creative Commons Attribution-Share Alike 3.0 License. See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
-L<C<Alien::FLTK>|Alien::FLTK> is based in part on the work of the FLTK
-project. See http://www.fltk.org/.
+L<Alien::FLTK|Alien::FLTK> is based in part on the work of the FLTK project.
+See http://www.fltk.org/.
 
 =for git $Id$
 
 =cut
+
 __DATA__
 do{ my $x = { }; $x; }

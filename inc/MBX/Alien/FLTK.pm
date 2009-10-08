@@ -57,7 +57,6 @@ package MBX::Alien::FLTK;
         }
         return $self;
     }
-    sub VERBOSE { !shift->quiet() }
     1;
 }
 
