@@ -1067,8 +1067,8 @@ END
     sub ACTION_code {
         my ($self) = @_;
         for my $action (
-            qw[fetch_fltk extract_fltk configure_fltk write_config_h build_fltk]
-            )
+            qw[fetch_fltk extract_fltk configure_fltk write_config_h build_fltk
+            copy_headers])
         {   $self->depends_on($action);
             $self->dispatch('check_errors');
         }
