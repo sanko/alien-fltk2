@@ -996,15 +996,14 @@ END
                 seek($fh, tell($fh), 0);
                 my $data = $self->notes();
                 if (eval 'require Data::Dump') {
-                    $fh->print(  'do{ my $x = '
-                               . Data::Dump::pp($data)
-                               . "; \$x; }\n");
+                    $fh->print(sprintf 'do{ my $x = %s; $x; }' . "\n",
+                               Data::Dump::pp($data));
                 }
                 else {
                     require Data::Dumper;
                     my $Dumper = Data::Dumper->new([$data], ['x']);
                     $Dumper->Purity(1);
-                    $fh->print(sprintf 'do{ my %s; \$x; }' . "\n",
+                    $fh->print(sprintf 'do{ my %s; $x; }' . "\n",
                                $Dumper->Dump());
                 }
                 truncate($fh, tell($fh));
