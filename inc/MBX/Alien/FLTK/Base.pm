@@ -1107,20 +1107,24 @@ END
 
         # Ganked from Devel::CheckLib
         sub assert_lib {
-            my ($self, %args) = @_;
+            my ($self, $args) = @_;
             my (@libs, @libpaths, @headers, @incpaths);
 
             # FIXME: these four just SCREAM "refactor" at me
-            @libs = (ref($args{lib}) ? @{$args{lib}} : $args{lib})
-                if $args{lib};
-            @libpaths
-                = (ref($args{libpath}) ? @{$args{libpath}} : $args{libpath})
-                if $args{libpath};
-            @headers = (ref($args{header}) ? @{$args{header}} : $args{header})
-                if $args{header};
-            @incpaths
-                = (ref($args{incpath}) ? @{$args{incpath}} : $args{incpath})
-                if $args{incpath};
+            @libs = (ref($args->{'lib'}) ? @{$args->{'lib'}} : $args->{'lib'})
+                if $args->{'lib'};
+            @libpaths = (ref($args->{'libpath'})
+                         ? @{$args->{'libpath'}}
+                         : $args->{'libpath'}
+            ) if $args->{'libpath'};
+            @headers = (ref($args->{'header'})
+                        ? @{$args->{'header'}}
+                        : $args->{'header'}
+            ) if $args->{'header'};
+            @incpaths = (ref($args->{'incpath'})
+                         ? @{$args->{'incpath'}}
+                         : $args->{'incpath'}
+            ) if $args->{'incpath'};
             my @missing;
 
             # first figure out which headers we can't find ...
@@ -1133,8 +1137,8 @@ END
                      lib_dirs     => \@libpaths
                     }
                     );
-                push @missing, $header if !-x $exe;
-                unlink $exe;
+                if   (defined $exe && -x $exe) { unlink $exe }
+                else                           { push @missing, $header }
             }
 
             # now do each library in turn with no headers
@@ -1147,8 +1151,8 @@ END
                                      extra_linker_flags => "-l$lib"
                                     }
                     );
-                push @missing, $lib if !-x $exe;
-                unlink $exe;
+                if   (defined $exe && -x $exe) { unlink $exe }
+                else                           { push @missing, $lib }
             }
             my $miss_string = join(q{, }, map {qq{'$_'}} @missing);
             if (@missing) {

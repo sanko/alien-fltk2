@@ -34,8 +34,8 @@ package MBX::Alien::FLTK::Platform::Windows;
             print 'Checking for OpenGL... ';
             my $GL_LIB = '';
             $self->notes('config')->{'HAVE_GL'} = 0;
-            if (!$self->assert_lib(lib => 'opengl32', header => 'GL/gl.h')) {
-                print "no\n";
+            if (!$self->assert_lib({lib => 'opengl32', header => 'GL/gl.h'}))
+            {   print "no\n";
                 push @{$self->notes('errors')},
                     {stage   => 'configure',
                      fatal   => 0,
@@ -50,7 +50,8 @@ package MBX::Alien::FLTK::Platform::Windows;
                 #
                 print 'Checking for GL/glu.h... ';
                 $self->notes('config')->{'HAVE_GL_GLU_H'} = 0;
-                if (!$self->assert_lib(lib => 'glu32', header => 'GL/glu.h'))
+                if (!$self->assert_lib({lib => 'glu32', header => 'GL/glu.h'})
+                    )
                 {   print "no\n";
                 }
                 else {
