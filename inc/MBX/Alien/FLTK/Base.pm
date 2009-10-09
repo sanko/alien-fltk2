@@ -1083,7 +1083,7 @@ END
             $fatal += $error->{'fatal'};
             my $msg = $error->{'message'};
             $msg =~ s|(.+)|  $1|gm;
-            printf "%s error enountered during %s:\n%s\n",
+            printf "\nWARNING: %s error enountered during %s:\n%s\n",
                 ($error->{'fatal'} ? ('*** Fatal') : 'Non-fatal'),
                 $error->{'stage'}, $msg, '-- ' x 10;
         }
