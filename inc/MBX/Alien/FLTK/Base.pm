@@ -1079,6 +1079,7 @@ END
         return if !@{$self->notes('errors')};
         my $fatal = 0;
         for my $error (@{$self->notes('errors')}) {
+            next if $error->{'seen'}++ && !$error->{'fatal'};
             $fatal += $error->{'fatal'};
             my $msg = $error->{'message'};
             $msg =~ s|(.+)|  $1|gm;
