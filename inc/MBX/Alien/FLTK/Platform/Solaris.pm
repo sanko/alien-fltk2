@@ -15,7 +15,7 @@ package MBX::Alien::FLTK::Platform::Solaris;
         my ($self) = @_;
         $self->SUPER::configure() || return 0;    # Get basic config data
         print "Gathering Solaris specific configuration data...\n";
-        print "(Not using $uname scandir emulation function.)\n";
+        print "(Not using scandir emulation function.)\n";
         $self->notes('config')->{'HAVE_SCANDIR'} = undef;
         return 1;
     }
