@@ -33,27 +33,6 @@ package MBX::Alien::FLTK::Developer;
         $self->SUPER::ACTION_distdir(@_);
     }
 
-    sub ACTION_clear_config {
-        my ($self) = @_;
-        print 'Cleaning Alien::FLTK config... ';
-        my $me = _abs($self->base_dir() . '/lib/Alien/FLTK.pm');
-        require IO::File;
-        my $mode_orig = (stat $me)[2] & 07777;
-        chmod($mode_orig | 0222, $me);    # Make it writeable
-        my $fh = IO::File->new($me, 'r+')
-            or die "Can't rewrite $me: $!";
-        seek($fh, 0, 0);
-        while (<$fh>) { last if /^__DATA__$/; }
-        die "Couldn't find __DATA__ token in $me" if eof($fh);
-        seek($fh, tell($fh), 0);
-        $fh->print("do{ my \$x = { }; \$x; }\n");
-        truncate($fh, tell($fh));
-        $fh->close;
-        chmod($mode_orig, $me)
-            or warn "Couldn't restore permissions on $me: $!";
-        print "okay\n";
-    }
-
     sub ACTION_changelog {
         my ($self) = @_;
         require POSIX;

@@ -1020,6 +1020,27 @@ END
         return 1;
     }
 
+    sub ACTION_clear_config {
+        my ($self) = @_;
+        print 'Cleaning Alien::FLTK config... ';
+        my $me = _abs($self->base_dir() . '/lib/Alien/FLTK.pm');
+        require IO::File;
+        my $mode_orig = (stat $me)[2] & 07777;
+        chmod($mode_orig | 0222, $me);    # Make it writeable
+        my $fh = IO::File->new($me, 'r+')
+            or die "Can't rewrite $me: $!";
+        seek($fh, 0, 0);
+        while (<$fh>) { last if /^__DATA__$/; }
+        die "Couldn't find __DATA__ token in $me" if eof($fh);
+        seek($fh, tell($fh), 0);
+        $fh->print("do{ my \$x = { }; \$x; }\n");
+        truncate($fh, tell($fh));
+        $fh->close;
+        chmod($mode_orig, $me)
+            or warn "Couldn't restore permissions on $me: $!";
+        print "okay\n";
+    }
+
     sub ACTION_build_fltk {
         my ($self) = @_;
         $self->depends_on('fetch_fltk');
@@ -1100,6 +1121,7 @@ END
 
     sub ACTION_clean {
         my $self = shift;
+        $self->dispatch('clear_config');
         $self->SUPER::ACTION_clean(@_);
         $self->notes(errors => []);    # Reset fatal and non-fatal errors
     }
