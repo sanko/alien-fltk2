@@ -101,7 +101,7 @@ int main ( ) {
                     push @{$self->notes('errors')},
                         {stage   => 'configure',
                          fatal   => 1,
-                         message => <<'' };
+                         message => <<'' }; return 0;
 Failed to find the X11 libs. You probably need to install the X11 development
 package first. On Debian Linux, these are the packages libx11-dev and x-dev.
 If I'm just missing something... patches welcome.
@@ -178,7 +178,7 @@ x-dev, and libxcursor-dev. If I'm just missing something... patches welcome.
                     push @{$self->notes('errors')},
                         {stage   => 'configure',
                          fatal   => 1,
-                         message => <<'' };
+                         message => <<'' }; return 0;
 Failed to find the XInput Extension. You probably need to install the XInput
 Extension development package first. On Debian Linux, this is the libxi-dev
 package. If I'm just missing something... patches welcome.
