@@ -1,6 +1,7 @@
-Version 0.XXXXX | In the not too distant future | 294ec87
+Version 0.XXXXX | In the not too distant future | 0edb385
     Resolved Issues/Bug Fixes:
      * lib/header checks (should) now work on Unix
+     * configure action /should/ work on Solaris
 
     Internal/Behavioral Changes:
      * We configure fltk before creating Build script in case we run into
@@ -9,6 +10,7 @@ Version 0.XXXXX | In the not too distant future | 294ec87
 
     Documentation/Sample Code/Test Suite:
      * Full OO syntax is now used in docs, tests, and examples
+     * Trimmed down t/0000_use/0002_exe.t so tests don't fail under tunneled X11
 
     Notes:
      * I'll get this right eventually... ((sigh))
