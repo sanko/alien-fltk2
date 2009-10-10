@@ -130,7 +130,7 @@ C<2.0.x> branch of the FLTK GUI toolkit.
     use Alien::FLTK;
     use ExtUtils::CBuilder;
     my $CC     = ExtUtils::CBuilder->new();
-    my $AF     = $AF->new();
+    my $AF     = Alien::FLTK->new();
     my $source = 'hello_world.cxx';
     open(my $FH, '>', $source) || die '...';
     syswrite($FH, <<'') || die '...'; close $FH;
