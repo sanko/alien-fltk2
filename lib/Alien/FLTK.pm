@@ -339,7 +339,7 @@ http://github.com/sanko/alien-fltk/ and you are invited to fork it.
 
 =head2 Examples
 
-Please see the L<Synopsis|/"Synopsis"> and the files in the C</example/>.
+Please see the L<Synopsis|/"Synopsis"> and the files in the C</examples/>.
 
 =head2 Bugs
 
