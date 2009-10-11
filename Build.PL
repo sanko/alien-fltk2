@@ -120,19 +120,6 @@ sub find_cb {
     return push @tests, $File::Find::name;
 }
 
-BEGIN {    # Tired of getting FAIL-mail from outdated build environments
-    if ($] < 5.008008) {    # 5.8.8 is already 3+ years old...
-        warn sprintf 'Perl v5.8.8 required--this is only v%vd, stopped', $^V;
-        exit 0;
-    }
-    if ($Module::Build::VERSION < 0.3) {
-        warn sprintf
-            'Module::Build version 0.3 required--this is only version %s',
-            $Module::Build::VERSION;
-        exit 0;
-    }
-}
-
 =pod
 
 =head1 NAME
