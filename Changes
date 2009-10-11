@@ -1,9 +1,10 @@
-Version 0.XXXXX | In the not too distant future | 0edb385
+Version 0.06916 | 2009-10-11 05:47:16Z (Sun, 11 Oct 2009) | 2a849d8
     Resolved Issues/Bug Fixes:
      * lib/header checks (should) now work on Unix
      * configure action /should/ work on Solaris
 
     Internal/Behavioral Changes:
+     * Upgrading to r6916
      * We configure fltk before creating Build script in case we run into
           trouble (typically missing libs on *nix) and need to exit(0) so test
           results in NA
