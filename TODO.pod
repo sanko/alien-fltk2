@@ -7,10 +7,7 @@ Alien::FLTK::Todo - TODO list for Perl module Alien::FLTK
 
 =over
 
-=item * X11 dev packages are required for installation on X11-based systems.
-
-The fact that most systems (particularly CPAN Tester boxes) are missing these
-is annoying.
+=item * None yet.
 
 =back
 
