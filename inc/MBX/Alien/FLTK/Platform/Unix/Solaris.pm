@@ -1,10 +1,10 @@
-package MBX::Alien::FLTK::Platform::Darwin;
+package MBX::Alien::FLTK::Platform::Unix::Solaris;
 {
     use strict;
     use warnings;
     use Carp qw[];
     use Config qw[%Config];
-    use lib qw[.. ../../../..];
+    use lib qw[.. ../../../../..];
     use MBX::Alien::FLTK::Utility
         qw[_o _a _dir _rel _abs find_h find_lib can_run];
     use MBX::Alien::FLTK;
@@ -13,17 +13,10 @@ package MBX::Alien::FLTK::Platform::Darwin;
 
     sub configure {
         my ($self) = @_;
-        $self->SUPER::configure(qw[no_gl no_x11])
-            || return 0;    # Get basic config data
+        $self->SUPER::configure() || return 0;    # Get basic config data
         print "Gathering Solaris specific configuration data...\n";
-
-        # Asssumed true since this is *nix
-        print "have pthread... yes (assumed)\n";
-        $self->notes('config')->{'HAVE_PTHREAD'} = 1;
-        $self->notes(
-               ldflags => ' -framework Carbon -framework ApplicationServices '
-                   . $self->notes('ldflags'));
-        $self->notes(GL => ' -framework AGL -framework OpenGL ');
+        print "(Not using scandir emulation function.)\n";
+        $self->notes('config')->{'HAVE_SCANDIR'} = undef;
         return 1;
     }
     1;

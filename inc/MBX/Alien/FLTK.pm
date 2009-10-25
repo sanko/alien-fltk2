@@ -11,9 +11,8 @@ package MBX::Alien::FLTK;
     sub new {
         my ($class, %args) = @_;
         shift;
-        my $self     = $class->SUPER::new(@_);
-        my $OS       = $args{'osname'} || $Config{'osname'} || $^O;
-        my $CC       = $args{'cc'} || $Config{'ccname'} || $Config{'cc'};
+        my $OS = $args{'osname'} || $Config{'osname'} || $^O;
+        my $CC = $args{'cc'}     || $Config{'ccname'} || $Config{'cc'};
         my @platform = grep defined, $OS =~ m[Win32]
             ? (
             'Windows',
@@ -25,12 +24,17 @@ package MBX::Alien::FLTK;
              : ()                              # Hope for the best
             )
             )
-            : $OS =~ m[CygWin]i ? ('Windows', 'CygWin')    # ...baka
-            : $OS =~ m[Darwin]i  ? 'Darwin'     # Mac OSX
-            : $OS =~ m[BSD$]i    ? 'BSD'        # requires GNUmake (gmake)
-            : $OS =~ m[Solaris]i ? 'Solaris'    # requires GNUmake (gmake)
-            : $OS =~ m[IRIX]i    ? 'IRIX'       # requires GNUmake (gmake)
-            :                      'Unix';
+            : $OS =~ m[CygWin]i ? (qw[Windows CygWin])    # ...baka
+            : (
+            'Unix',
+            ($OS =~ m[Darwin]i
+             ? 'Darwin'                                   # Mac OSX
+             : $OS =~ m[BSD$]i    ? 'BSD'
+             : $OS =~ m[Solaris]i ? 'Solaris'
+             : $OS =~ m[IRIX]i    ? 'IRIX'
+             : ()
+            )
+            );
         my $platform = 'MBX::Alien::FLTK::Platform';
         for my $qual (@platform) {
             $platform .= '::' . $qual;
@@ -38,6 +42,7 @@ package MBX::Alien::FLTK;
             next if $@;
             unshift @ISA, $platform;
         }
+        my $self = $class->SUPER::new(@_);
         $self->notes(platform => \@platform);
         $self->notes(os       => $OS);
         $self->notes(cc       => $CC);

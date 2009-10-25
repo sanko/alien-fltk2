@@ -5,9 +5,9 @@ examples/0001_embed.pl
 examples/0002_gl.pl
 inc/MBX/Alien/FLTK.pm
 inc/MBX/Alien/FLTK/Base.pm
-inc/MBX/Alien/FLTK/Platform/Darwin.pm
-inc/MBX/Alien/FLTK/Platform/Solaris.pm
 inc/MBX/Alien/FLTK/Platform/Unix.pm
+inc/MBX/Alien/FLTK/Platform/Unix/Darwin.pm
+inc/MBX/Alien/FLTK/Platform/Unix/Solaris.pm
 inc/MBX/Alien/FLTK/Platform/Windows.pm
 inc/MBX/Alien/FLTK/Utility.pm
 lib/Alien/FLTK.pm
