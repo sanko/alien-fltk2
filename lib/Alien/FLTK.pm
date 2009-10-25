@@ -18,37 +18,32 @@ package Alien::FLTK;
 
     sub include_path {
         my ($self) = @_;
-        my @include = map { -d $_ ? $_ : () } (
-                                  rel2abs(
-                                      catdir(qw[blib arch Alien FLTK include],
-                                             'fltk-' . $self->branch
-                                      )
-                                  ),
-                                  rel2abs(catdir(dirname(rel2abs(__FILE__)),
-                                                 qw[FLTK include],
-                                                 'fltk-' . $self->branch
-                                          )
-                                  )
-        );
-        return $include[0];
+        for my $path (catdir(qw[.. .. blib arch Alien FLTK]),
+                      catdir(qw[. blib arch Alien FLTK]),
+                      catdir(qw[Alien FLTK]))
+        {   foreach my $inc (@INC) {
+                next unless defined $inc and !ref $inc;
+                my $dir = rel2abs(
+                     catdir($inc, $path, 'include', 'fltk-' . $self->branch));
+                return $dir if -d $dir && -r $dir;
+            }
+        }
+        return undef;
     }
 
     sub library_path {
         my ($self) = @_;
-        my @libs = map { -d $_ ? $_ : () } (
-                                     rel2abs(
-                                         catdir(qw[blib arch Alien FLTK libs],
-                                                'fltk-' . $self->branch
-                                         )
-                                     ),
-                                     rel2abs(
-                                            catdir(dirname(rel2abs(__FILE__)),
-                                                   qw[FLTK libs],
-                                                   'fltk-' . $self->branch
-                                            )
-                                     )
-        );
-        return $libs[0];
+        for my $path (catdir(qw[.. .. blib arch Alien FLTK]),
+                      catdir(qw[. blib arch Alien FLTK]),
+                      catdir(qw[Alien FLTK]))
+        {   foreach my $inc (@INC) {
+                next unless defined $inc and !ref $inc;
+                my $dir = rel2abs(
+                        catdir($inc, $path, 'libs', 'fltk-' . $self->branch));
+                return $dir if -d $dir && -r $dir;
+            }
+        }
+        return undef;
     }
 
     sub cflags {
