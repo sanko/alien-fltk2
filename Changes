@@ -1,6 +1,7 @@
 Version 0.06921 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
 
     Internal/Behavioral Changes:
+     * Upgrading to r6921
      * include_path() and library_path() methods are (hopefully) less flimsey
      * Slightly better platform handling
 
