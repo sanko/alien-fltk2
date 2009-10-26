@@ -36,7 +36,7 @@ my $mb = $class->new(
         'File::Temp'         => 0,
         'Test::More'         => 0.88,
         'Module::Build'      => 0.35,
-        'ExtUtils::CBuilder' => 0.260301,
+        'ExtUtils::CBuilder' => 0.26_05,
         perl                 => '5.8.0',
         (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
          : ()
@@ -55,7 +55,7 @@ my $mb = $class->new(
                        'File::Temp'         => 0,
                        'Test::More'         => 0.88,
                        'Module::Build'      => 0.35,
-                       'ExtUtils::CBuilder' => 0.260301,
+                       'ExtUtils::CBuilder' => 0.26_05,
                        perl                 => '5.8.0',
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
                         : ()
@@ -85,11 +85,9 @@ my $mb = $class->new(
 );
 
 #
-$mb->quiet(1);    # Don't print while looking for compiler
 print "Checking for a functioning C++ compiler...\n";
 if ($mb->cbuilder->have_compiler()) { print "Looks good\n\n" }
 else { print "fail\n* No compiler found. Exiting.\n"; exit 0 }
-$mb->quiet(0);    # You can get noisy again.
 
 #$mb->notes(use_cairo => 0);           # TODO - MacOS
 #$mb->notes(use_x     => 0);           # TODO - find_lib
