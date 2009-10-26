@@ -61,6 +61,7 @@ package MBX::Alien::FLTK::Base;
         }
         my $obj = eval {
             $self->cbuilder->compile(
+                  ($args->{'source'} !~ m[\.c$] ? ('C++' => 1) : ()),
                   source => $args->{'source'},
                   ($args->{'include_dirs'}
                    ? (include_dirs => $args->{'include_dirs'})
