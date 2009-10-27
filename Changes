@@ -1,3 +1,15 @@
+Version 0.XXXXX | In the not too distant future | f8b1562
+
+    Internal/Behavioral Changes:
+     * cflags() and cxxflags() no longer include list of include directories
+     * Renamed include_path() => include_dirs() now that it returns all
+          required include directories
+     * Internal method config('blah') now returns blah's data in the config
+          hash
+
+    Notes:
+     * This is an API-breakin' release
+
 Version 0.06921 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
 
     Internal/Behavioral Changes:
@@ -6,6 +18,7 @@ Version 0.06921 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
      * Slightly better platform handling
 
 Version 0.06916 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
+
     Resolved Issues/Bug Fixes:
      * lib/header checks (should) now work on Unix
      * configure action /should/ work on Solaris
@@ -24,6 +37,7 @@ Version 0.06916 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
      * I'll get this right eventually... ((sigh))
 
 Version 0.06879 | 2009-10-04 04:46:04Z (Sun, 04 Oct 2009) | b9cf221
+
     Resolved Issues/Bug Fixes:
      * None yet
 
