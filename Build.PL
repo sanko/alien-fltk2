@@ -37,7 +37,7 @@ my $mb = $class->new(
         'Test::More'         => 0.88,
         'Module::Build'      => 0.35,
         'ExtUtils::CBuilder' => 0.26_05,
-        perl                 => '5.8.0',
+        perl                 => 5.008000,
         (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
          : ()
         )
@@ -56,7 +56,7 @@ my $mb = $class->new(
                        'Test::More'         => 0.88,
                        'Module::Build'      => 0.35,
                        'ExtUtils::CBuilder' => 0.26_05,
-                       perl                 => '5.8.0',
+                       perl                 => 5.008000,
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
                         : ()
                        )
