@@ -8,7 +8,7 @@ package Alien::FLTK;
         "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
     close DATA;
     sub new { return bless \$|, shift; }
-    sub config { return $_config; }
+    sub config { return $_[1] ? $_config->{$_[1]} : %$_config; }
     our $VERSION_BASE = 0; our $FLTK_SVN = 6921; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
     sub branch   { return $_config->{'fltk_branch'} }
@@ -121,8 +121,8 @@ C<2.0.x> branch of the FLTK GUI toolkit.
 
     use Alien::FLTK;
     use ExtUtils::CBuilder;
-    my $CC     = ExtUtils::CBuilder->new();
     my $AF     = Alien::FLTK->new();
+    my $CC     = ExtUtils::CBuilder->new();
     my $source = 'hello_world.cxx';
     open(my $FH, '>', $source) || die '...';
     syswrite($FH, <<'') || die '...'; close $FH;
@@ -143,12 +143,13 @@ C<2.0.x> branch of the FLTK GUI toolkit.
         return run();
       }
 
-    my $obj = $CC->compile(source               => $source,
-                           extra_compiler_flags => $AF->cxxflags());
-    my $exe = $CC->link_executable(
-                                  objects            => $obj,
-                                  extra_linker_flags => $AF->ldflags()
+    my $obj = $CC->compile('C++'                => 1,
+                           source               => $source,
+                           include_dirs         => [$AF->include_dirs()],
+                           extra_compiler_flags => $AF->cxxflags()
     );
+    my $exe = $CC->link_executable(objects            => $obj,
+                                   extra_linker_flags => $AF->ldflags());
     print system('./' . $exe) ? 'Aww...' : 'Yay!';
     END { unlink grep defined, $source, $obj, $exe; }
 
