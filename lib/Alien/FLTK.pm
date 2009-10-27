@@ -44,7 +44,7 @@ package Alien::FLTK;
     }
 
     sub cflags {
-        return $_config->{'cxxflags'} . ' -I' . shift->include_path();
+        return $_config->{'cxxflags'};
     }
     sub cxxflags { return shift->cflags() . ' -Wno-non-virtual-dtor'; }
 
