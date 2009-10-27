@@ -7,7 +7,7 @@ use lib qw[blib/lib];
 use Alien::FLTK;
 use ExtUtils::CBuilder;
 $|++;
-my $cc = ExtUtils::CBuilder->new(quiet => 1);
+my $CC = ExtUtils::CBuilder->new(quiet => 1);
 my $AF = Alien::FLTK->new();
 my ($FH, $SRC)
     = File::Temp->tempfile('alien_fltk_t0002_XXXX',
@@ -37,17 +37,18 @@ int main(int argc, char **argv) {
   return 0;
 }
 END
-my $obj = $cc->compile(source               => $SRC,
-                       include_dirs         => [$AF->include_path()],
+my $OBJ = $CC->compile('C++'                => 1,
+                       source               => $SRC,
+                       include_dirs         => [$AF->include_dirs()],
                        extra_compiler_flags => $AF->cxxflags()
 );
-ok($obj, 'Compile with FLTK headers');
-my $exe =
-    $cc->link_executable(objects            => $obj,
+ok($OBJ, 'Compile with FLTK headers');
+my $EXE =
+    $CC->link_executable(objects            => $OBJ,
                          extra_linker_flags => $AF->ldflags());
-ok($exe,          'Link exe with fltk');
-ok(!system($exe), sprintf 'Run exe');
-unlink $obj, $exe, $SRC;
+ok($EXE,          'Link exe with fltk');
+ok(!system($EXE), sprintf 'Run exe');
+unlink $OBJ, $EXE, $SRC;
 
 =pod
 

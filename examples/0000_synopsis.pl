@@ -25,8 +25,11 @@ use warnings;
         return run();
       }
 
-    my $obj = $CC->compile(source               => $source,
-                           extra_compiler_flags => $AF->cxxflags());
+    my $obj = $CC->compile('C++'                => 1,
+                           source               => $source,
+                           include_dirs         => [$AF->include_dirs()],
+                           extra_compiler_flags => $AF->cxxflags()
+    );
     my $exe = $CC->link_executable(objects            => $obj,
                                    extra_linker_flags => $AF->ldflags());
     print system('./' . $exe) ? 'Aww...' : 'Yay!';

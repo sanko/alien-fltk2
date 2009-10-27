@@ -277,9 +277,6 @@ package MBX::Alien::FLTK::Base;
             }
         );
         {
-            $self->notes('include_dirs')->{_abs($self->fltk_dir())}++;
-        }
-        {
             print 'Locating library archiver... ';
             my $ar = can_run('ar');
             if (!$ar) {

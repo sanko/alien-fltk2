@@ -65,7 +65,9 @@ int main( int argc, char **argv ) {
 }
 
 my $obj = $CC->compile(source               => $source,
-                       extra_compiler_flags => $AF->cxxflags());
+                       include_dirs         => [$AF->include_dirs()],
+                       extra_compiler_flags => $AF->cxxflags()
+);
 my $exe = $CC->link_executable(objects            => $obj,
                                extra_linker_flags => [$AF->ldflags(qw[gl])]);
 printf system('./' . $exe) ? 'Aww...' : 'Yay! %s bytes', -s $exe;
