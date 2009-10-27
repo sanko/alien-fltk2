@@ -13,8 +13,9 @@ package Alien::FLTK;
     sub revision { return $FLTK_SVN; }
     sub branch   { return $_config->{'fltk_branch'} }
 
-    sub include_path {
+    sub include_dirs {
         my ($self) = @_;
+        my @return = keys %{$self->config('include_dirs')};
         for my $path (catdir(qw[.. .. blib arch Alien FLTK]),
                       catdir(qw[. blib arch Alien FLTK]),
                       catdir(qw[Alien FLTK]))
@@ -22,7 +23,7 @@ package Alien::FLTK;
                 next unless defined $inc and !ref $inc;
                 my $dir = rel2abs(
                      catdir($inc, $path, 'include', 'fltk-' . $self->branch));
-                return $dir if -d $dir && -r $dir;
+                return ($dir, @return) if -d $dir && -r $dir;
             }
         }
         return undef;
