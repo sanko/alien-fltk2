@@ -167,15 +167,16 @@ create objects with the C<new> constructor.
 After creating a new L<Alien::FLTK|Alien::FLTK> object, use the following
 methods to gather information:
 
-=head2 C<include_path>
+=head2 C<include_dirs>
 
-    my $include_path = $AF->include_path( );
+    my @include_dirs = $AF->include_dirs( );
 
-Returns the location of the headers installed during the build process.
+Returns a list of the locations of the headers installed during the build
+process and those required for compilation.
 
 =head2 C<library_path>
 
-    my $include_path = $AF->library_path( );
+    my $lib_path = $AF->library_path( );
 
 Returns the location of the private libraries we made and installed
 during the build process.
