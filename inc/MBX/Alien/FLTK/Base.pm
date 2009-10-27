@@ -188,6 +188,7 @@ package MBX::Alien::FLTK::Base;
                                    : ' -lfltk2 '
                      )
         );
+        $self->notes('_a'       => $Config{'_a'});
         $self->notes('cxxflags' => ' ');
         $self->notes('GL'       => ' ');
         $self->notes(

@@ -2,10 +2,7 @@ package Alien::FLTK;
 {
     use strict;
     use warnings;
-    use Config qw[%Config];
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    use File::Basename;
-    use File::Find qw[find];
     my $_config = eval do { local $/; <DATA> }
         or warn
         "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
@@ -58,7 +55,7 @@ package Alien::FLTK;
         my $libdir = shift->library_path();
 
         # Calculate needed libraries
-        my $SHAREDSUFFIX = $Config{'_a'};
+        my $SHAREDSUFFIX = $self->config('_a');
         my $LDSTATIC     = sprintf '-L%s %s/libfltk%s%s %s',
             $libdir, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
             $SHAREDSUFFIX, $_config->{'ldflags'};
