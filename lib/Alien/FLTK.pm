@@ -43,11 +43,8 @@ package Alien::FLTK;
         }
         return undef;
     }
+    sub cflags   { return shift->cxxflags(); }
     sub cxxflags { return $_config->{'cxxflags'}; }
-
-    sub cflags {
-        return $_config->{'cxxflags'};
-    }
 
     sub ldflags {    # XXX - Cache this
         my ($self, @args) = @_;
