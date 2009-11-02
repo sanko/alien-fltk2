@@ -20,7 +20,7 @@ package MBX::Alien::FLTK::Platform::Unix::Darwin;
         # Asssumed true since this is *nix
         print "have pthread... yes (assumed)\n";
         $self->notes('config')->{'HAVE_PTHREAD'} = 1;
-        $self->notes('config')->{'USE_QUARTZ'} = 1;
+        $self->notes('config')->{'USE_QUARTZ'} = 1; # Alpha
         $self->notes(
                ldflags => ' -framework Carbon -framework ApplicationServices '
                    . $self->notes('ldflags'));

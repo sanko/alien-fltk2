@@ -9,7 +9,7 @@ package Alien::FLTK;
     close DATA;
     sub new { return bless \$|, shift; }
     sub config { return $_[1] ? $_config->{$_[1]} : %$_config; }
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6921; our $UNSTABLE_RELEASE = 2; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6921; our $UNSTABLE_RELEASE = 3; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     sub revision { return $FLTK_SVN; }
     sub branch   { return $_config->{'fltk_branch'} }
 

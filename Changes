@@ -1,4 +1,4 @@
-Version 0.XXXXX | In the not too distant future | b6d21b4
+Version 0.XXXXX | In the not too distant future | a52de71
 
     Internal/Behavioral Changes:
      * cflags() and cxxflags() no longer include list of include directories
@@ -6,9 +6,10 @@ Version 0.XXXXX | In the not too distant future | b6d21b4
           required include directories
      * Internal method config('blah') now returns blah's data in the config
           hash
+     * Compile using Quartz drawing instead of X11 on Apple OS X
 
     Notes:
-     * This is an API-breakin' release
+     * When stable, this will be an API-breakin' release
 
 Version 0.06921 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
 
