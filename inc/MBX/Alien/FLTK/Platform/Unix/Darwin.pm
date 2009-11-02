@@ -15,7 +15,7 @@ package MBX::Alien::FLTK::Platform::Unix::Darwin;
         my ($self) = @_;
         $self->SUPER::configure(qw[no_gl no_x11])
             || return 0;    # Get basic config data
-        print "Gathering Solaris specific configuration data...\n";
+        print "Gathering Mac OSX specific configuration data...\n";
 
         # Asssumed true since this is *nix
         print "have pthread... yes (assumed)\n";
