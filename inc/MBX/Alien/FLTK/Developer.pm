@@ -10,7 +10,7 @@ package MBX::Alien::FLTK::Developer;
     use MBX::Alien::FLTK::Utility
         qw[_o _a _dir _file _rel _abs _split _exe find_h find_lib can_run];
     use File::Find qw[find];
-    use File::Path 2.07 qw[make_path];
+    use File::Path qw[make_path];
     use base 'MBX::Alien::FLTK';
 
     sub make_tarball {
