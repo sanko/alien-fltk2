@@ -731,41 +731,39 @@ END
                 $self->notes(timestamp_config_h => time);
                 print "okay\n";
             }
-            {    # Ganked from Module::Build::Notes
-                print 'Updating Alien::FLTK config... ';
-                my $me = _abs($self->base_dir() . '/lib/Alien/FLTK.pm');
-                require IO::File;
-                my $mode_orig = (stat $me)[2] & 07777;
-                chmod($mode_orig | 0222, $me);    # Make it writeable
-                my $fh = IO::File->new($me, 'r+')
-                    or die "Can't rewrite $me: $!";
-                seek($fh, 0, 0);
-                while (<$fh>) { last if /^__DATA__$/; }
+        }
+        {    # Ganked from Module::Build::Notes
+            print 'Updating Alien::FLTK config... ';
+            my $me = _abs($self->base_dir() . '/lib/Alien/FLTK.pm');
+            require IO::File;
+            my $mode_orig = (stat $me)[2] & 07777;
+            chmod($mode_orig | 0222, $me);    # Make it writeable
+            my $fh = IO::File->new($me, 'r+')
+                or die "Can't rewrite $me: $!";
+            seek($fh, 0, 0);
+            while (<$fh>) { last if /^__DATA__$/; }
 
-                if (eof($fh)) {
-
-                    #warn "Couldn't find __DATA__ token in $me";
-                    $fh->print("\n__DATA__\n");
-                }
-                seek($fh, tell($fh), 0);
-                my $data = $self->notes();
-                if (eval 'require Data::Dump') {
-                    $fh->print(sprintf 'do{ my $x = %s; $x; }' . "\n",
-                               Data::Dump::pp($data));
-                }
-                else {
-                    require Data::Dumper;
-                    my $Dumper = Data::Dumper->new([$data], ['x']);
-                    $Dumper->Purity(1);
-                    $fh->print(sprintf 'do{ my %s; $x; }' . "\n",
-                               $Dumper->Dump());
-                }
-                truncate($fh, tell($fh));
-                $fh->close;
-                chmod($mode_orig, $me)
-                    or warn "Couldn't restore permissions on $me: $!";
-                print "okay\n";
+            if (eof($fh)) {    #warn "Couldn't find __DATA__ token in $me";
+                $fh->print("\n__DATA__\n");
             }
+            seek($fh, tell($fh), 0);
+            my $data = $self->notes();
+            if (eval 'require Data::Dump') {
+                $fh->print(sprintf 'do{ my $x = %s; $x; }' . "\n",
+                           Data::Dump::pp($data));
+            }
+            else {
+                require Data::Dumper;
+                my $Dumper = Data::Dumper->new([$data], ['x']);
+                $Dumper->Purity(1);
+                $fh->print(sprintf 'do{ my %s; $x; }' . "\n",
+                           $Dumper->Dump());
+            }
+            truncate($fh, tell($fh));
+            $fh->close;
+            chmod($mode_orig, $me)
+                or warn "Couldn't restore permissions on $me: $!";
+            print "okay\n";
         }
         if (!chdir $self->base_dir()) {
             print 'Failed to cd to base directory';
