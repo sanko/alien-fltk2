@@ -3,19 +3,23 @@ package Alien::FLTK;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6921; our $UNSTABLE_RELEASE = 4; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     my $_config = eval do { local $/; <DATA> }
         or warn
         "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
     close DATA;
     sub new { return bless \$|, shift; }
-    sub config { return $_[1] ? $_config->{$_[1]} : %$_config; }
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6921; our $UNSTABLE_RELEASE = 3; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    sub config   { return $_config; }
     sub revision { return $FLTK_SVN; }
     sub branch   { return $_config->{'fltk_branch'} }
 
     sub include_dirs {
         my ($self) = @_;
-        my @return = keys %{$self->config('include_dirs')};
+        my @return = keys %{
+              $self->config->{'include_dirs'}
+            ? $self->config->{'include_dirs'}
+            : ()
+            };
         for my $path (catdir(qw[.. .. blib arch Alien FLTK]),
                       catdir(qw[. blib arch Alien FLTK]),
                       catdir(qw[Alien FLTK]))
@@ -43,8 +47,12 @@ package Alien::FLTK;
         }
         return undef;
     }
-    sub cflags   { return shift->cxxflags(); }
-    sub cxxflags { return $_config->{'cxxflags'}; }
+    sub cflags { return shift->cxxflags(); }
+
+    sub cxxflags {
+        my ($self) = @_;
+        return $self->config->{'cxxflags'} ? $self->config->{'cxxflags'} : '';
+    }
 
     sub ldflags {    # XXX - Cache this
         my ($self, @args) = @_;
@@ -53,11 +61,16 @@ package Alien::FLTK;
         my $libdir = shift->library_path();
 
         # Calculate needed libraries
-        my $SHAREDSUFFIX = $self->config('_a');
-        my $LDSTATIC     = sprintf '-L%s %s/libfltk%s%s %s',
+        my $SHAREDSUFFIX
+            = $self->config->{'_a'} ? $self->config->{'_a'}
+            : $^O =~ '$MSWin32' ? '.a'
+            :                     '.o';
+        my $LDSTATIC = sprintf '-L%s %s/libfltk%s%s %s',
             $libdir, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
-            $SHAREDSUFFIX, $_config->{'ldflags'};
-        my $LDFLAGS = "-L$libdir " . $_config->{'ldflags'};
+            $SHAREDSUFFIX,
+            ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
+        my $LDFLAGS = "-L$libdir "
+            . ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
         my $LIBS = sprintf '%s/libfltk%s%s', $libdir,
             ($self->branch eq '1.3.x' ? '' : '2'),
             $SHAREDSUFFIX;
@@ -71,8 +84,8 @@ package Alien::FLTK;
                 $LIBS, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
                 $SHAREDSUFFIX;
         }
-        if ((grep {m[gl]} @args) && $_config->{'GL'}) {
-            my $LIBGL = $_config->{'GL'};
+        if ((grep {m[gl]} @args) && $self->config->{'GL'}) {
+            my $LIBGL = $self->config->{'GL'};
             $LDFLAGS = sprintf '-lfltk%s_gl %s %s',
                 ($self->branch eq '1.3.x' ? '' : '2'),
                 $LIBGL, $LDFLAGS;
@@ -84,19 +97,20 @@ package Alien::FLTK;
                 ($self->branch eq '1.3.x' ? '' : '2'),
                 $SHAREDSUFFIX;
         }
-        if (grep {m[images]} @args) {
-            $LDFLAGS  = $_config->{'image_flags'} . " $LDFLAGS";
+        if ((grep {m[images]} @args) && $self->config->{'image_flags'}) {
+            $LDFLAGS  = $self->config->{'image_flags'} . " $LDFLAGS";
             $LDSTATIC = sprintf '%s/libfltk%s_images%s %s %s',
                 $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
-                $SHAREDSUFFIX, $LDSTATIC, $_config->{'image_flags'};
+                $SHAREDSUFFIX, $LDSTATIC, $self->config->{'image_flags'};
         }
         return (
              ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS) . ' -lsupc++');
     }
 
     sub capabilities {
+        my ($self) = @_;
         my @caps;
-        push @caps, 'gl' if $_config->{'config'}{'HAVE_GL'};
+        push @caps, 'gl' if $self->config->{'config'}{'HAVE_GL'};
 
         # TODO: images, forms, static(?)
         return @caps;
