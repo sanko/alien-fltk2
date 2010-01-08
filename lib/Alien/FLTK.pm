@@ -3,7 +3,7 @@ package Alien::FLTK;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6921; our $UNSTABLE_RELEASE = 4; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $VERSION_BASE = 0; our $FLTK_SVN = 6985; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
     my $_config = eval do { local $/; <DATA> }
         or warn
         "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
@@ -245,6 +245,16 @@ Include flags to use FLTK's forms compatibility layer.
 =end TODO
 
 =back
+
+=head2 C<branch>
+
+    my $revision = $AF->branch( );
+
+Returns the SVN brance of the source L<Alien::FLTK|Alien::FLTK> was built
+with.
+
+Currently, L<Alien::FLTK|Alien::FLTK> defaults to the 2.0.x branch but it is
+capable of building the more stable 1.3.x branch.
 
 =head2 C<revision>
 

@@ -94,7 +94,20 @@ else { print "fail\n* No compiler found. Exiting.\n"; exit 0 }
 #$mb->notes(use_glut  => 0);           # TODO
 #$mb->notes(use_gl    => 1);
 #$mb->notes(use_forms => 0);           # TODO
-$mb->notes(fltk_branch => '2.0.x');
+$mb->notes(
+    fltk_branch => (
+        $mb->y_n(sub {
+                     local $_
+                         = <<'PROMPT'; chomp; $_ }->(), 'n') ? '2.0.x' : '1.3.x'));
+The Fast Light Toolkit confusingly has two (or more) concurrently developed
+branches:
+
+ - The 2.0.x branch has been around longer but is still considered unstable.
+ - The 1.3.x branch is newer and is considered more stable.
+
+Alien::FLTK can build either of them for you but the FLTK distribution only
+works with the unstable branch. Wanna try the stable branch?
+PROMPT
 $mb->notes(fltk_svn => $mb->dist_version =~ m[\.0?(\d+)]);
 ##################################################################### TODO ###
 $mb->notes(automated_testing => $automated_testing     ? 1 : 0);

@@ -16,7 +16,26 @@ my ($FH, $SRC)
                            SUFFIX  => '.cxx',
                            CLEANUP => 1
     );
-syswrite($FH, <<'END') || BAIL_OUT("Failed to write to $SRC: $!"); close $FH;
+syswrite($FH,
+         ($AF->branch eq '1.3.x'
+          ? <<'STABLE' : <<'CURRENT')) || BAIL_OUT("Failed to write to $SRC: $!"); close $FH;
+#include <FL/Fl.H>
+#include <FL/Fl_Window.H>
+#include <FL/Fl_Box.H>
+
+int main(int argc, char **argv) {
+  Fl_Window *window = new Fl_Window(300,180);
+  Fl_Box *box = new Fl_Box(FL_UP_BOX, 20, 40, 260, 100, "Hello, World!");
+  box->labelfont(FL_BOLD + FL_ITALIC);
+  box->labelsize(36);
+  box->labeltype(FL_SHADOW_LABEL);
+  window->end();            /* Showing the window causes the test to fail on
+  window->show(argc, argv);    X11 w/o a display. Testing the creation of the
+  wait(0.1);                   window and a widget should be enough.
+  window->hide();           */
+  return 0;
+}
+STABLE
 #include <fltk/Window.h>
 #include <fltk/Widget.h>
 #include <fltk/run.h>
@@ -36,7 +55,7 @@ int main(int argc, char **argv) {
   window->hide();           */
   return 0;
 }
-END
+CURRENT
 my $OBJ = $CC->compile('C++'                => 1,
                        source               => $SRC,
                        include_dirs         => [$AF->include_dirs()],

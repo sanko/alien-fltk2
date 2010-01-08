@@ -419,11 +419,12 @@ int main ( ) {
                             qw[jmemnobs jcapimin jcapistd jccoefct jccolor
                             jcdctmgr jchuff jcinit jcmainct jcmarker jcmaster
                             jcomapi jcparam jcphuff jcprepct jcsample jctrans
-                            jdapimin jdapistd jdatadst jdatasrc jdcoefct jdcolor
-                            jddctmgr jdhuff jdinput jdmainct jdmarker jdmaster
-                            jdmerge jdphuff jdpostct jdsample jdtrans jerror
-                            jfdctflt jfdctfst jfdctint jidctflt jidctfst jidctint
-                            jidctred jquant1 jquant2 jutils jmemmgr]
+                            jdapimin jdapistd jdatadst jdatasrc jdcoefct
+                            jdcolor jddctmgr jdhuff jdinput jdmainct jdmarker
+                            jdmaster jdmerge jdphuff jdpostct jdsample jdtrans
+                            jerror jfdctflt jfdctfst jfdctint jidctflt
+                            jidctfst jidctint jidctred jquant1 jquant2 jutils
+                            jmemmgr]
                     ]
                 },
                 fltk2_png => {
@@ -489,6 +490,85 @@ int main ( ) {
                       source    => [
                           map { $_ . '.cxx' } qw[glut_compatability glut_font]
                       ]
+                },
+                fltk => {
+                    directory => 'src',
+                    source    => [
+                        (map { $_ . '.c' }
+                             qw[fl_call_main flstring scandir numericsort
+                             vsnprintf fl_utf]
+                        ),
+                        (map { $_ . '.cxx' } 'Fl',
+                         'screen_xywh',
+                         (map { 'Fl_' . $_ }
+                              qw[Adjuster Bitmap Browser Browser_
+                              Browser_load Box Button Chart Check_Browser
+                              Check_Button Choice Clock Color_Chooser
+                              Counter Dial Double_Window File_Browser
+                              File_Chooser File_Chooser2 File_Icon
+                              File_Input Group Help_View Image Input Input_
+                              Light_Button Menu Menu_ Menu_Bar Sys_Menu_Bar
+                              Menu_Button Menu_Window Menu_add Menu_global
+                              Multi_Label Overlay_Window Pack Pixmap
+                              Positioner Preferences Progress Repeat_Button
+                              Return_Button Roller Round_Button Scroll
+                              Scrollbar Shared_Image Single_Window Slider
+                              Table Table_Row Tabs Text_Buffer Text_Display
+                              Text_Editor Tile Tiled_Image Tree Tree_Item
+                              Tree_Item_Array Tree_Prefs Tooltip Valuator
+                              Value_Input Value_Output Value_Slider Widget
+                              Window Window_fullscreen Window_hotspot
+                              Window_iconize Wizard XBM_Image XPM_Image
+                              abort add_idle arg compose display get_key
+                              get_system_colors grab lock own_colormap
+                              visual x]
+                         ),
+                         (map { 'filename_' . $_ }
+                              qw[absolute expand ext isdir list match setext]
+                         ),
+                         (map { 'fl_' . $_ }
+                              qw[arc arci ask boxtype color cursor curve
+                              diamond_box dnd draw draw_image draw_pixmap
+                              encoding_latin1 encoding_mac_roman
+                              engraved_label file_dir font gtk labeltype
+                              line_style open_uri oval_box overlay
+                              overlay_visual plastic read_image rect
+                              round_box rounded_box set_font set_fonts
+                              scroll_area shadow_box shortcut show_colormap
+                              symbols vertex utf8]
+                         )
+                        ),
+                        (map { 'xutf8/' . $_ . '.c' }
+                             qw[case is_right2left is_spacing keysym2Ucs
+                             utf8Input utf8Utils utf8Wrap]
+                        ),
+                    ]
+                },
+                fltk_forms => {
+                    directory => 'src',
+                    source    => [
+                        map { 'forms_' . $_ . '.cxx' }
+                            qw[compatability bitmap free fselect pixmap timer]
+                    ]
+                },
+                fltk_gl => {
+                    directory => 'src',
+                    source    => [
+                        map { $_ . '.cxx' }
+                            qw[Fl_Gl_Choice Fl_Gl_Overlay Fl_Gl_Window
+                            freeglut_geometry freeglut_stroke_mono_roman
+                            freeglut_stroke_roman freeglut_teapot gl_draw
+                            gl_start glut_compatability glut_font]
+                    ]
+                },
+                fltk_image => {
+                    directory => 'src',
+                    source    => [
+                        map { $_ . '.cxx' }
+                            qw[fl_images_core Fl_BMP_Image Fl_File_Icon2
+                            Fl_GIF_Image Fl_Help_Dialog Fl_JPEG_Image
+                            Fl_PNG_Image Fl_PNM_Image]
+                    ]
                 }
             ) if !keys %___LIBS;
             return \%___LIBS;
@@ -671,8 +751,9 @@ END
         $self->depends_on('extract_fltk');
 
         #if (!$self->notes('config') || !keys %{$self->notes('config')}) {
-        if (!$self->notes('config') || !-f $self->fltk_dir() . '/config.h') {
-            print "Gathering configuration data...\n";
+        if (   !$self->notes('config')
+            || !-f $self->fltk_dir() . '/config.h')
+        {   print "Gathering configuration data...\n";
             $self->configure();
             $self->notes(timestamp_configure => time);
         }
