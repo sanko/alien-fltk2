@@ -1,3 +1,4 @@
+use strict;
 use warnings;
 use Config qw[%Config];
 use File::Find qw[find];
@@ -98,7 +99,7 @@ $mb->notes(
     fltk_branch => (
         $mb->y_n(sub {
                      local $_
-                         = <<'PROMPT'; chomp; $_ }->(), 'n') ? '2.0.x' : '1.3.x'));
+                         = <<'PROMPT'; chomp; $_ }->(), 'y') ? '2.0.x' : '1.3.x'));
 The Fast Light Toolkit confusingly has two (or more) concurrently developed
 branches:
 
@@ -106,7 +107,7 @@ branches:
  - The 1.3.x branch is newer and is considered more stable.
 
 Alien::FLTK can build either of them for you but the FLTK distribution only
-works with the unstable branch. Wanna try the stable branch?
+works with the unstable branch. Wanna try the unstable branch?
 PROMPT
 $mb->notes(fltk_svn => $mb->dist_version =~ m[\.0?(\d+)]);
 ##################################################################### TODO ###
