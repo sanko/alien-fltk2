@@ -1,7 +1,8 @@
 use strict;
 use warnings;
+use lib '../lib/blib';
 {
-    use Alien::FLTK;
+    use Alien::FLTK2;
     use ExtUtils::CBuilder;
     my $AF     = Alien::FLTK->new();
     my $CC     = ExtUtils::CBuilder->new();

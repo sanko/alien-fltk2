@@ -4,11 +4,11 @@ BEGIN { chdir '../..' if not -d '_build'; }
 use Test::More tests => 3;
 use File::Temp;
 use lib qw[blib/lib];
-use Alien::FLTK;
+use Alien::FLTK2;
 use ExtUtils::CBuilder;
 $|++;
 my $CC = ExtUtils::CBuilder->new(quiet => 1);
-my $AF = Alien::FLTK->new();
+my $AF = Alien::FLTK2->new();
 my ($FH, $SRC)
     = File::Temp->tempfile('alien_fltk_t0002_XXXX',
                            TMPDIR  => 1,

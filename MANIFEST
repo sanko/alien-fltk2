@@ -11,7 +11,7 @@ inc/MBX/Alien/FLTK/Platform/Unix/Solaris.pm
 inc/MBX/Alien/FLTK/Platform/Windows.pm
 inc/MBX/Alien/FLTK/Platform/Windows/CygWin.pm
 inc/MBX/Alien/FLTK/Utility.pm
-lib/Alien/FLTK.pm
+lib/Alien/FLTK2.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files

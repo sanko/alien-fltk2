@@ -50,10 +50,14 @@ git.pod
 
 # FLTK's source (currently) isn't mirrored on github. This may change in the
 #   future.
-src/
-snapshots/
+working/
 *.tidy
 ~*
 *.spell
+.gitignore.pl
+inc/*
+
+#
+
 
 # $Id$

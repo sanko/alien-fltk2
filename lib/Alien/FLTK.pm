@@ -3,15 +3,15 @@ package Alien::FLTK;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    our $VERSION_BASE = 0; our $FLTK_SVN = 6985; our $UNSTABLE_RELEASE = 0; our $VERSION = sprintf('%d.%05d' . ($UNSTABLE_RELEASE ? '_%03d' : ''), $VERSION_BASE, $FLTK_SVN, $UNSTABLE_RELEASE);
+    our $BASE = 0; our $SVN = 6985; our $DEV = 0; our $VERSION = sprintf('%d.%05d' . ($DEV ? '_%03d' : ''), $BASE, $SVN, $DEV);
     my $_config = eval do { local $/; <DATA> }
         or warn
         "Couldn't load Alien::FLTK configuration data: $@\n Using defaults";
     close DATA;
     sub new { return bless \$|, shift; }
     sub config   { return $_config; }
-    sub revision { return $FLTK_SVN; }
-    sub branch   { return $_config->{'fltk_branch'} }
+    sub revision { return $SVN; }
+    sub branch   { return $_config->{'branch'} }
 
     sub include_dirs {
         my ($self) = @_;
@@ -97,11 +97,11 @@ package Alien::FLTK;
                 ($self->branch eq '1.3.x' ? '' : '2'),
                 $SHAREDSUFFIX;
         }
-        if ((grep {m[images]} @args) && $self->config->{'image_flags'}) {
-            $LDFLAGS  = $self->config->{'image_flags'} . " $LDFLAGS";
+        if ((grep {m[images]} @args) && $self->config->{'ldflags_image'}) {
+            $LDFLAGS  = $self->config->{'ldflags_image'} . " $LDFLAGS";
             $LDSTATIC = sprintf '%s/libfltk%s_images%s %s %s',
                 $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
-                $SHAREDSUFFIX, $LDSTATIC, $self->config->{'image_flags'};
+                $SHAREDSUFFIX, $LDSTATIC, $self->config->{'ldflags_image'};
         }
         return (
              ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS) . ' -lsupc++');
