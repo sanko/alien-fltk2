@@ -1,8 +1,8 @@
 use strict;
 use warnings;
-use Alien::FLTK;
+use Alien::FLTK2;
 use ExtUtils::CBuilder;
-my $AF     = Alien::FLTK->new();
+my $AF     = Alien::FLTK2->new();
 my $CC     = ExtUtils::CBuilder->new();
 my $source = 'gl_hello_world.cxx';
 open(my $FH, '>', $source) || die '...';

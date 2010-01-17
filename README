@@ -1,14 +1,14 @@
 NAME
-  Alien::FLTK - Build and use the Fast Light Toolkit binaries
+  Alien::FLTK2 - Build and use the Fast Light Toolkit binaries
 
 Description
   This distribution builds and installs libraries for the (experimental)
   "2.0.x" branch of the FLTK GUI toolkit.
 
 Synopsis
-    use Alien::FLTK;
+    use Alien::FLTK2;
     use ExtUtils::CBuilder;
-    my $AF     = Alien::FLTK->new();
+    my $AF     = Alien::FLTK2->new();
     my $CC     = ExtUtils::CBuilder->new();
     my $source = 'hello_world.cxx';
     open(my $FH, '>', $source) || die '...';
@@ -44,7 +44,7 @@ Requirements
   Prerequisites differ by system...
 
   * Win32
-      The fltk2 libs and Alien::FLTK both build right out of the box with
+      The fltk2 libs and Alien::FLTK2 both build right out of the box with
       MinGW. Further testing is needed for other setups.
 
   * X11/*nix
@@ -71,7 +71,7 @@ Support Links
 
       http://github.com/sanko/alien-fltk/issues
 
-      Please only report Alien::FLTK related bugs to this tracker. For FLTK
+      Please only report Alien::FLTK2 related bugs to this tracker. For FLTK
       issues, use http://github.com/sanko/fltk-perl/issues/
 
   *   Homepage:
@@ -81,7 +81,7 @@ Support Links
   *   Mailing List
 
       Once I find someone to host a list for the FLTK project, I'll use it for
-      Alien::FLTK too.
+      Alien::FLTK2 too.
 
   *   Repository
 
@@ -91,7 +91,7 @@ Examples
   Please see the Synopsis and the files in the "/example/".
 
 Bugs
-  Numerous, I'm sure. Please see Alien::FLTK::Todo
+  Numerous, I'm sure. Please see Alien::FLTK2::Todo
 
 See Also
     FLTK
@@ -115,7 +115,7 @@ License and Legal
   http://creativecommons.org/licenses/by-sa/3.0/us/legalcode. For
   clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
-  Alien::FLTK is based in part on the work of the FLTK project. See
+  Alien::FLTK2 is based in part on the work of the FLTK project. See
   http://www.fltk.org/.
 
 $Id$

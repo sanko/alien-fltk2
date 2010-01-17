@@ -1,9 +1,9 @@
 use strict;
 use warnings;
-use Alien::FLTK;
+use Alien::FLTK2;
 use ExtUtils::CBuilder;
 use Config qw[%Config];
-my $AF     = Alien::FLTK->new();
+my $AF     = Alien::FLTK2->new();
 my $CC     = ExtUtils::CBuilder->new();
 my $source = 'embed.cxx';
 open(my $FH, '>', $source) || die '...';
