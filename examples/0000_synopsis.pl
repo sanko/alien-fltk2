@@ -4,7 +4,7 @@ use lib '../lib/blib';
 {
     use Alien::FLTK2;
     use ExtUtils::CBuilder;
-    my $AF     = Alien::FLTK2->new();
+    my $AF     = Alien::FLTK->new();
     my $CC     = ExtUtils::CBuilder->new();
     my $source = 'hello_world.cxx';
     open(my $FH, '>', $source) || die '...';

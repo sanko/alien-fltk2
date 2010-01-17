@@ -30,15 +30,17 @@ my $mb = $class->new(
         'File::Fetch'        => 0,
         'File::Find'         => 0,
         'File::Path'         => 2.07,
+        'File::ShareDir'     => 0,
         'File::Spec'         => 0,          # used in A::F proper
         'File::Temp'         => 0,
         'Test::More'         => 0.88,
-        'Module::Build'      => 0.35,
+        'Module::Build'      => 0.36,
         'ExtUtils::CBuilder' => 0.27,
         perl                 => 5.008000,
         (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
          : ()
-        )
+        ),
+        'YAML::Tiny' => 0
     },
     build_requires => {'Archive::Extract'   => 0,
                        base                 => 0,
@@ -50,22 +52,24 @@ my $mb = $class->new(
                        'File::Fetch'        => 0,
                        'File::Find'         => 0,
                        'File::Path'         => 2.07,
+                       'File::ShareDir'     => 0,
                        'File::Spec'         => 0,
                        'File::Temp'         => 0,
                        'Test::More'         => 0.88,
-                       'Module::Build'      => 0.35,
+                       'Module::Build'      => 0.36,
                        'ExtUtils::CBuilder' => 0.27,
                        perl                 => 5.008000,
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
                         : ()
-                       )
+                       ),
+                       'YAML::Tiny' => 0
     },
-    add_to_cleanup => [qw[Alien-FLTK2-* src/*],
+    add_to_cleanup => [qw[Alien-FLTK2-* src/* share/*],
                        map {"*$_"} (
                              '.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'}
                        )
     ],
-    no_index   => {directory => [qw[t example inc]]},
+    no_index   => {directory => [qw[t example inc share]]},
     test_files => \@tests,
     meta_merge => {
         generated_by => 'Conversion, software version 7.0',
@@ -80,10 +84,9 @@ my $mb = $class->new(
               repository => 'http://github.com/sanko/alien-fltk'
         }
     },
-    needs_compiler => 1    # adds ExtUtils::CBuilder to build_requires
+    needs_compiler => 1,        # adds ExtUtils::CBuilder to build_requires
+    share_dir      => 'share'
 );
-
-
 
 #$mb->notes(use_x     => 0);           # TODO - find_lib
 #$mb->notes(use_glut  => 0);           # TODO
@@ -97,6 +100,7 @@ $mb->notes(gmtime            => scalar gmtime);
 $mb->notes(threads           => $Config{'useithreads'} ? 1 : 0);
 $mb->notes(snapshot_dir => 'working/snapshot/');    # archive location
 $mb->notes(extract_dir  => 'working/extract/');     # extracted source
+$mb->notes(config_path =>  'share/config.yml');
 #################################### 'Dynamic' values used by build system ###
 $mb->notes(svn => $mb->dist_version =~ m[\.0?+(\d+)]);
 $mb->notes(branch                     => '2.0.x');

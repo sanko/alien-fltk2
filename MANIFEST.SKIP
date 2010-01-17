@@ -46,6 +46,7 @@
 src/
 snapshots/
 working/
+share/
 
 # Don't include these developer only files
 inc/MBX/Alien/FLTK/Developer.pm

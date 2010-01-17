@@ -3,11 +3,21 @@ package Alien::FLTK2;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
+    use File::ShareDir;
+    use YAML::Tiny;
     our $BASE = 0; our $SVN = 6970; our $DEV = 0; our $VERSION = sprintf('%d.%05d' . ($DEV ? '_%03d' : ''), $BASE, $SVN, $DEV);
-    my $_config = eval do { local $/; <DATA> }
-        or warn
-        "Couldn't load Alien::FLTK2 configuration data: $@\n Using defaults";
-    close DATA;
+    my ($basedir)
+        = (grep { -d $_ && -f catdir($_, 'config.yml') } map { rel2abs($_) } (
+                eval { File::ShareDir::dist_dir('Alien-FLTK2') }, '../share/',
+                '../../share/'
+           )
+        );
+    my $_config = do {
+        my $yaml = YAML::Tiny->read(catdir($basedir, 'config.yml'));
+        warn 'Failed to load Alien::FLTK2 config: ' . YAML::Tiny->errstr()
+            if !$yaml;
+        $yaml ? $yaml->[0] : {};
+    };
     sub new { return bless \$|, shift; }
     sub config   { return $_config; }
     sub revision { return $SVN; }
@@ -15,37 +25,12 @@ package Alien::FLTK2;
 
     sub include_dirs {
         my ($self) = @_;
-        my @return = keys %{
-              $self->config->{'include_dirs'}
-            ? $self->config->{'include_dirs'}
-            : ()
-            };
-        for my $path (catdir(qw[.. .. blib arch Alien FLTK2]),
-                      catdir(qw[. blib arch Alien FLTK2]),
-                      catdir(qw[Alien FLTK]))
-        {   foreach my $inc (@INC) {
-                next unless defined $inc and !ref $inc;
-                my $dir = rel2abs(
-                     catdir($inc, $path, 'include', 'fltk-' . $self->branch));
-                return ($dir, @return) if -d $dir && -r $dir;
-            }
-        }
-        return undef;
+        return canonpath($basedir . '/include');
     }
 
     sub library_path {
         my ($self) = @_;
-        for my $path (catdir(qw[.. .. blib arch Alien FLTK2]),
-                      catdir(qw[. blib arch Alien FLTK2]),
-                      catdir(qw[Alien FLTK2]))
-        {   foreach my $inc (@INC) {
-                next unless defined $inc and !ref $inc;
-                my $dir = rel2abs(
-                        catdir($inc, $path, 'libs', 'fltk-' . $self->branch));
-                return $dir if -d $dir && -r $dir;
-            }
-        }
-        return undef;
+        return canonpath($basedir . '/libs');
     }
     sub cflags { return shift->cxxflags(); }
 
@@ -403,6 +388,3 @@ See http://www.fltk.org/.
 =for git $Id$
 
 =cut
-
-__DATA__
-do{ my $x = { }; $x; }
