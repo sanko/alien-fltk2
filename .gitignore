@@ -54,7 +54,7 @@ working/
 *.tidy
 ~*
 *.spell
-.gitignore.pl
+.gitclean.pl
 inc/*
 share/*
 #
