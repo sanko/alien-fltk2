@@ -1,17 +1,20 @@
-Version 0. | In the not too distant future | 88da95e
+Version 0.06970 | 2010-01-18 05:07:57Z (Mon, 18 Jan 2010) | e61837e
 
     Internal/Behavioral Changes:
-     * Alien::FLTK can build both the unstable (2.0.x) and stable (1.3.x)
-          branches of FLTK
+     * Alien::FLTK has been split into two projects. See Notes below.
      * cflags() and cxxflags() no longer include list of include directories
      * Renamed include_path() => include_dirs() now that it returns all
           required include directories
      * Internal method config('blah') now returns blah's data in the config
           hash
      * Compile using Quartz drawing instead of X11 on Apple OS X
+     * Four months of stuff I forgot to keep the changelog up to date for. You
+           could check out the commit logs if you're bored.
 
     Notes:
-     * When stable, this will be an API-breakin' release
+     * Alien::FLTK has been split into two projects. The first, Alien::FLTK
+           will now build the stable 1.3.x branch of FLTK while Alien::FLTK2
+           will build the 2.0.x branch.
 
 Version 0.06921 | 2009-10-11 05:50:42Z (Sun, 11 Oct 2009) | 335da88
 
@@ -94,7 +97,7 @@ Version 0.068410 | 2009-08-22 07:10:42Z (Sat, 22 Aug 2009) | ecfdb18
 
 _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
-    http://github.com/sanko/alien-fltk/commits/master
+    http://github.com/sanko/alien-fltk2/commits/master
 
 $Ver$ from git $Rev$
 $Date$

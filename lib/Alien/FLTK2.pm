@@ -6,6 +6,11 @@ package Alien::FLTK2;
     use File::ShareDir;
     use YAML::Tiny;
     our $BASE = 0; our $SVN = 6970; our $DEV = 0; our $VERSION = sprintf('%d.%05d' . ($DEV ? '_%03d' : ''), $BASE, $SVN, $DEV);
+    sub md5 {
+        return {gz  => '8159cabebbd1b5b774b277827aa4e030',
+                bz2 => 'f78976d0ba1a5c845e14f4df96d580a0'
+        };
+    }
     my ($basedir)
         = (grep { -d $_ && -f catdir($_, 'config.yml') } map { rel2abs($_) } (
                 eval { File::ShareDir::dist_dir('Alien-FLTK2') }, '../share/',

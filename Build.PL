@@ -76,12 +76,12 @@ my $mb = $class->new(
         keywords =>
             [qw[Alien FLTK Fast Light Toolkit widget FL GUI UI window 2.0.x]],
         resources => {
-              bugtracker => 'http://github.com/sanko/alien-fltk/issues',
+              bugtracker => 'http://github.com/sanko/alien-fltk2/issues',
               ChangeLog =>
-                  'http://github.com/sanko/alien-fltk/commits/fltk-2.0.x',
+                  'http://github.com/sanko/alien-fltk2/commits/master',
               homepage => 'http://sanko.github.com/fltk-perl/',
               license => 'http://www.perlfoundation.org/artistic_license_2_0',
-              repository => 'http://github.com/sanko/alien-fltk'
+              repository => 'http://github.com/sanko/alien-fltk2'
         }
     },
     needs_compiler => 1,        # adds ExtUtils::CBuilder to build_requires
@@ -104,8 +104,6 @@ $mb->notes(config_path =>  'share/config.yml');
 #################################### 'Dynamic' values used by build system ###
 $mb->notes(svn => $mb->dist_version =~ m[\.0?+(\d+)]);
 $mb->notes(branch                     => '2.0.x');
-$mb->notes(md5_gz                     => '8159cabebbd1b5b774b277827aa4e030');
-$mb->notes(md5_bz2                    => 'f78976d0ba1a5c845e14f4df96d580a0');
 $mb->notes(include_path_images        => '/images');
 $mb->notes(include_path_compatability => '/fltk/compat');
 $mb->notes(headers_path               => 'fltk');

@@ -42,7 +42,7 @@
 \B\._
 
 # Dist related stuff
-\bFLTK-[\d\.\_]+
+\bFLTK2-[\d\.\_]+
 src/
 snapshots/
 working/

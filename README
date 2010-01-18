@@ -85,7 +85,7 @@ Support Links
 
   *   Repository
 
-      http://github.com/sanko/alien-fltk/ and you are invited to fork it.
+      http://github.com/sanko/alien-fltk2/ and you are invited to fork it.
 
 Examples
   Please see the Synopsis and the files in the "/example/".
@@ -94,7 +94,7 @@ Bugs
   Numerous, I'm sure. Please see Alien::FLTK2::Todo
 
 See Also
-    FLTK
+    FLTK, Alien::FLTK
 
 Author
     Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/

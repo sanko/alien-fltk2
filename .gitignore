@@ -24,7 +24,7 @@ dll.base
 #t/tmp*
 
 # build junk
-Alien-FLTK-*
+Alien-FLTK2-*
 Makefile
 Makefile.old
 pm_to_blib
