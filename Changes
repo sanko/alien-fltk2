@@ -1,4 +1,4 @@
-Version 0.06970 | 2010-01-18 05:07:57Z (Mon, 18 Jan 2010) | e61837e
+Version 0.06970 | 2010-01-18 05:25:57Z (Mon, 18 Jan 2010) | 29c299d
 
     Internal/Behavioral Changes:
      * Alien::FLTK has been split into two projects. See Notes below.
