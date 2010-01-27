@@ -3,39 +3,54 @@ package Alien::FLTK2;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    use File::ShareDir;
-    use YAML::Tiny;
-    our $BASE = 0; our $SVN = 6970; our $DEV = 1; our $VERSION = sprintf('%d.%05d' . ($DEV ? '_%03d' : ''), $BASE, $SVN, $DEV);
-    sub md5 {
+    our $BASE = 0; our $SVN = 6970; our $DEV = 9; our $VERSION = sprintf('%d.%05d' . ($DEV ? '_%03d' : ''), $BASE, $SVN, $DEV);
+
+    sub _md5 {
         return {gz  => '8159cabebbd1b5b774b277827aa4e030',
                 bz2 => 'f78976d0ba1a5c845e14f4df96d580a0'
         };
     }
-    my ($basedir)
-        = (grep { -d $_ && -f catdir($_, 'config.yml') } map { rel2abs($_) } (
-                eval { File::ShareDir::dist_dir('Alien-FLTK2') }, '../share/',
-                '../../share/'
-           )
-        );
-    my $_config = do {
-        my $yaml = YAML::Tiny->read(catdir($basedir, 'config.yml'));
-        warn 'Failed to load Alien::FLTK2 config: ' . YAML::Tiny->errstr()
-            if !$yaml;
-        $yaml ? $yaml->[0] : {};
-    };
-    sub new { return bless \$|, shift; }
-    sub config   { return $_config; }
+    sub _unique_file { return 'src/Widget.cxx' }
+
+    sub new {
+        my ($class, $overrides) = @_;    # XXX - overrides are unsupported
+        my $self;
+        {
+            ($self->{'basedir'})
+                = (grep { -d $_ && -f catdir($_, 'config.yml') }
+                       map { rel2abs($_) } (
+                             eval { File::ShareDir::dist_dir('Alien-FLTK2') },
+                             'share', '../share', '../../share'
+                       )
+                );
+            require File::ShareDir;
+        }
+        if (!defined $self->{'basedir'}) {
+            warn 'Fail';
+            return ();
+        }
+        $self->{'define'} = do {
+            require YAML::Tiny;
+            my $yaml
+                = YAML::Tiny->read(catdir($self->{'basedir'}, 'config.yml'));
+            warn 'Failed to load Alien::FLTK2 config: ' . YAML::Tiny->errstr()
+                if !$yaml;
+            $yaml ? $yaml->[0] : {};
+        };
+        return bless $self, shift;
+    }
+    sub config   { return +shift->{'define'}; }
     sub revision { return $SVN; }
-    sub branch   { return $_config->{'branch'} }
+    sub branch   { return +shift->{'define'}->{'branch'} }
 
     sub include_dirs {
         my ($self) = @_;
-        return canonpath($basedir . '/include');
+        return canonpath($self->{'basedir'} . '/include');
     }
 
     sub library_path {
         my ($self) = @_;
-        return canonpath($basedir . '/libs');
+        return canonpath($self->{'basedir'} . '/libs');
     }
     sub cflags { return shift->cxxflags(); }
 
@@ -100,7 +115,7 @@ package Alien::FLTK2;
     sub capabilities {
         my ($self) = @_;
         my @caps;
-        push @caps, 'gl' if $self->config->{'config'}{'HAVE_GL'};
+        push @caps, 'gl' if $self->config->{'define'}{'HAVE_GL'};
 
         # TODO: images, forms, static(?)
         return @caps;
