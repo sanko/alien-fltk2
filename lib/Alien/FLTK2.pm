@@ -16,6 +16,7 @@ package Alien::FLTK2;
         my ($class, $overrides) = @_;    # XXX - overrides are unsupported
         my $self;
         {
+            require File::ShareDir;
             ($self->{'basedir'})
                 = (grep { -d $_ && -f catdir($_, 'config.yml') }
                        map { rel2abs($_) } (
@@ -23,7 +24,6 @@ package Alien::FLTK2;
                              'share', '../share', '../../share'
                        )
                 );
-            require File::ShareDir;
         }
         if (!defined $self->{'basedir'}) {
             warn 'Fail';
