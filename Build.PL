@@ -108,9 +108,6 @@ $mb->notes(branch                     => '2.0.x');
 $mb->notes(include_path_images        => '/images');
 $mb->notes(include_path_compatability => '/fltk/compat');
 $mb->notes(headers_path               => 'fltk');
-$mb->notes(ldflags                    => ' -lfltk2 ');
-$mb->notes(ldflags_image =>
-        ' -lfltk2_images -lfltk2_png -lfltk2_z -lfltk2_images -lfltk2_jpeg ');
 $mb->notes(use_cairo => 0);                         # TODO - MacOS
 $mb->notes(
     libs_source => {

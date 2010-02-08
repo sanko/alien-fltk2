@@ -70,43 +70,33 @@ package Alien::FLTK2;
             = $self->config->{'_a'} ? $self->config->{'_a'}
             : $^O =~ '$MSWin32' ? '.a'
             :                     '.o';
-        my $LDSTATIC = sprintf '-L%s %s/libfltk%s%s %s',
-            $libdir, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
+        my $LDSTATIC = sprintf '-L%s %s/libfltk2%s %s', $libdir, $libdir,
             $SHAREDSUFFIX,
             ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
-        my $LDFLAGS = "-L$libdir "
+        my $LDFLAGS = "-L$libdir -lfltk2 "
             . ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
-        my $LIBS = sprintf '%s/libfltk%s%s', $libdir,
-            ($self->branch eq '1.3.x' ? '' : '2'),
-            $SHAREDSUFFIX;
+        my $LIBS = sprintf '%s/libfltk2%s', $libdir, $SHAREDSUFFIX;
         if (grep {m[forms]} @args) {
-            $LDFLAGS = sprintf '-lfltk%s_forms %s',
-                ($self->branch eq '1.3.x' ? '' : '2'), $LDFLAGS;
-            $LDSTATIC = sprintf '$libdir/libfltk%s_forms%s %s',
-                $libdir, ($self->branch eq '1.3.x' ? '' : '2'), $SHAREDSUFFIX,
+            $LDFLAGS  = sprintf '-lfltk2_forms %s',            $LDFLAGS;
+            $LDSTATIC = sprintf '$libdir/libfltk2_forms%s %s', $libdir,
+                $SHAREDSUFFIX,
                 $$LDSTATIC;
-            $LIBS = sprintf '%s %s/libfltk%s_forms%s',
-                $LIBS, $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
+            $LIBS = sprintf '%s %s/libfltk2_forms%s', $LIBS, $libdir,
                 $SHAREDSUFFIX;
         }
         if ((grep {m[gl]} @args) && $self->config->{'GL'}) {
             my $LIBGL = $self->config->{'GL'};
-            $LDFLAGS = sprintf '-lfltk%s_gl %s %s',
-                ($self->branch eq '1.3.x' ? '' : '2'),
-                $LIBGL, $LDFLAGS;
-            $LDSTATIC = sprintf '%s/libfltk%s_gl%s %s %s',
-                $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
-                $SHAREDSUFFIX, $LIBGL, $LDSTATIC;
-            $LIBS = sprintf '%s %s/libfltk%s_gl%s',
-                $LIBS, $libdir,
-                ($self->branch eq '1.3.x' ? '' : '2'),
-                $SHAREDSUFFIX;
+            $LDFLAGS = sprintf '-lfltk2_gl %s %s', $LIBGL, $LDFLAGS;
+            $LDSTATIC = sprintf '%s/libfltk2_gl%s %s %s',
+                $libdir, $SHAREDSUFFIX, $LIBGL, $LDSTATIC;
+            $LIBS = sprintf '%s %s/libfltk2_gl%s',
+                $LIBS, $libdir, $SHAREDSUFFIX;
         }
-        if ((grep {m[images]} @args) && $self->config->{'ldflags_image'}) {
-            $LDFLAGS  = $self->config->{'ldflags_image'} . " $LDFLAGS";
-            $LDSTATIC = sprintf '%s/libfltk%s_images%s %s %s',
-                $libdir, ($self->branch eq '1.3.x' ? '' : '2'),
-                $SHAREDSUFFIX, $LDSTATIC, $self->config->{'ldflags_image'};
+        if (grep {m[images]} @args) {
+            my $img_libs = $self->config->{'image_flags'};
+            $LDFLAGS  = " $img_libs $LDFLAGS ";
+            $LDSTATIC = sprintf '%s/libfltk2_images%s %s %s',
+                $libdir, $SHAREDSUFFIX, $img_libs, $LDSTATIC;
         }
         return (
              ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS) . ' -lsupc++');
