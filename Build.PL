@@ -40,7 +40,8 @@ my $mb = $class->new(
         (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
          : ()
         ),
-        'YAML::Tiny' => 0
+        'File::Find::Rule' => 0,
+        'YAML::Tiny'       => 0
     },
     build_requires => {'Archive::Extract'   => 0,
                        base                 => 0,
@@ -62,7 +63,8 @@ my $mb = $class->new(
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
                         : ()
                        ),
-                       'YAML::Tiny' => 0
+                       'File::Find::Rule' => 0,
+                       'YAML::Tiny'       => 0
     },
     add_to_cleanup => [qw[Alien-FLTK2-* src/* share/*],
                        map {"*$_"} (
