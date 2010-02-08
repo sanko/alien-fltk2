@@ -245,11 +245,8 @@ Include flags to use FLTK's forms compatibility layer.
 
     my $revision = $AF->branch( );
 
-Returns the SVN brance of the source L<Alien::FLTK2|Alien::FLTK2> was built
-with.
-
-Currently, L<Alien::FLTK2|Alien::FLTK2> defaults to the 2.0.x branch but it is
-capable of building the more stable 1.3.x branch.
+Returns the SVN branch of the source L<Alien::FLTK2|Alien::FLTK2> was built
+with. For the C<1.3.x> branch of fltk, see L<Alien::FLTK|Alien::FLTK>.
 
 =head2 C<revision>
 
