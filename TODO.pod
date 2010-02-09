@@ -1,7 +1,7 @@
 
 =head1 NAME
 
-Alien::FLTK::Todo - TODO list for Perl module Alien::FLTK
+Alien::FLTK2::Todo - TODO list for Perl module Alien::FLTK2
 
 =head1 High priorities
 
