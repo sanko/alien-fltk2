@@ -103,7 +103,7 @@ $mb->notes(snapshot_dir => 'working/snapshot/');    # archive location
 $mb->notes(extract_dir  => 'working/extract/');     # extracted source
 $mb->notes(config_yml   => 'share/config.yml');
 #################################### 'Dynamic' values used by build system ###
-$mb->notes(svn => $mb->dist_version =~ m[\.0*(\d+)]);
+$mb->notes(svn => $mb->dist_version =~ m[\.0?(\d{4})]);
 $mb->notes(branch                     => '2.0.x');
 $mb->notes(include_path_images        => '/images');
 $mb->notes(include_path_compatability => '/fltk/compat');
