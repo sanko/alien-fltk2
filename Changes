@@ -1,4 +1,9 @@
-Version 0.06970016 | 2010-02-09 21:02:51Z (Tue, 09 Feb 2010) | a744843
+Version 0.06970017 | 2010-02-09 21:08:50Z (Tue, 09 Feb 2010) | 6ca8824
+
+     Resolved Issues/Bug Fixes:
+     * X11-related libs are now linked in the correct, working order (I hope)
+
+Version 0.06970016 | 2010-02-09 21:08:50Z (Tue, 09 Feb 2010) | 6ca8824
 
     Internal/Behavioral Changes:
      * Alien::FLTK has been split into two projects. See Notes below.
