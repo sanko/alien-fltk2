@@ -3,7 +3,7 @@ package Alien::FLTK2;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    our $BASE = 0; our $SVN = 6970; our $DEV = -17; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
+    our $BASE = 0; our $SVN = 6970; our $DEV = -18; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
 
     sub _md5 {
         return {gz  => '8159cabebbd1b5b774b277827aa4e030',
@@ -214,8 +214,8 @@ arguments are:
 
 Returns flags to link against a static FLTK library.
 
-FLTK's license allows static linking, but L<Alien::FLTK2|Alien::FLTK2> does not
-build static libs. ...yet.
+FLTK's license allows static linking, but L<Alien::FLTK2|Alien::FLTK2> does
+not build static libs. ...yet.
 
 =item C<gl>
 
@@ -281,17 +281,20 @@ Prerequisites differ by system...
 
 =item Win32
 
-The fltk2 libs and L<Alien::FLTK2|Alien::FLTK2> both build right out of the box
-with MinGW. Further testing is needed for other setups.
+The fltk2 libs and L<Alien::FLTK2|Alien::FLTK2> both build right out of the
+box with MinGW. Further testing is needed for other setups.
 
 =item X11/*nix
 
 X11-based systems require several development packages. On Debian, these may
-be installed with...
+be installed with:
 
-  > sudo apt-get install libx11-dev
-  > sudo apt-get install libxi-dev
-  > sudo apt-get install libxcursor-dev
+    > sudo apt-get install libx11-dev
+    > sudo apt-get install libxi-dev
+
+Additionally, the optional XCurser lib may be installed with:
+
+    > sudo apt-get install libxcursor-dev
 
 =item Darwin/OSX
 
@@ -342,7 +345,7 @@ for L<Alien::FLTK2|Alien::FLTK2> too.
 
 =item * Repository
 
-http://github.com/sanko/alien-fltk/ and you are invited to fork it.
+http://github.com/sanko/alien-fltk2/ and you are invited to fork it.
 
 =back
 

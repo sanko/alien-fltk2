@@ -1,6 +1,19 @@
-Version 0.06970017 | 2010-02-09 21:08:50Z (Tue, 09 Feb 2010) | 6ca8824
+Version 0.06970018 | 2010-02-13 15:56:08Z (Sat, 13 Feb 2010) | 2958f45
 
-     Resolved Issues/Bug Fixes:
+    Resolved Issues/Bug Fixes:
+     * Rather than X11, OSX/Darwin uses Carbon for graphics so we no longer
+       search for X11-related libs
+
+    Documentation/Sample Code/Test Suite:
+     * The XCursor lib is now noted as being optional in POD and README
+
+    Notes:
+     * This dist also includes other OS X 'fixes' which are completly untested
+       and will probably fail
+
+Version 0.06970017 | 2010-02-10 07:20:11Z (Wed, 10 Feb 2010) | 71318bc
+
+    Resolved Issues/Bug Fixes:
      * X11-related libs are now linked in the correct, working order (I hope)
 
 Version 0.06970016 | 2010-02-09 21:08:50Z (Tue, 09 Feb 2010) | 6ca8824
