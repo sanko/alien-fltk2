@@ -73,7 +73,7 @@ package Alien::FLTK2;
         my $LDSTATIC = sprintf '-L%s %s/libfltk2%s %s', $libdir, $libdir,
             $SHAREDSUFFIX,
             ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
-        my $LDFLAGS = '-lfltk2'
+        my $LDFLAGS = '-lfltk2 '
             . ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
         my $LIBS = sprintf '%s/libfltk2%s', $libdir, $SHAREDSUFFIX;
         if (grep {m[forms]} @args) {
