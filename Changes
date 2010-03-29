@@ -1,4 +1,9 @@
-Version 0.06970019 | 2010-02-15 21:53:26Z (Mon, 15 Feb 2010) | 77cab3a
+Version 0.06970020 | 2010-02-15 21:58:16Z (Mon, 15 Feb 2010) | 29adc40
+
+    Resolved Issues/Bug Fixes:
+     * Under-tested MSVC fixes in the fltk2 lib
+
+Version 0.06970019 | 2010-02-15 21:58:16Z (Mon, 15 Feb 2010) | 29adc40
 
     Resolved Issues/Bug Fixes:
      * Un(der)tested CygWin configuration and build fixes
