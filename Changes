@@ -1,4 +1,22 @@
-Version 0.06970020 | 2010-02-15 21:58:16Z (Mon, 15 Feb 2010) | 29adc40
+Version 0.06970022 | 2010-03-29 05:13:06Z (Mon, 29 Mar 2010) | a8a2473
+
+    Resolved Issues/Bug Fixes:
+     * Untested config fix for Solaris
+           See STR #1890
+           See cpantesters.org/cpan/report/07134937-b19f-3f77-b713-d32bba55d77f
+
+Version 0.06970022 | 2010-03-29 05:13:06Z (Mon, 29 Mar 2010) | a8a2473
+
+    Resolved Issues/Bug Fixes:
+     * Untested config step for OSX
+
+Version 0.06970021 | 2010-03-29 05:13:06Z (Mon, 29 Mar 2010) | a8a2473
+
+    Resolved Issues/Bug Fixes:
+     * [7f6c18b] Font sizing on Win32 w/unicode
+           See http://www.cpantesters.org/cpan/report/7045261
+
+Version 0.06970020 | 2010-03-29 05:13:06Z (Mon, 29 Mar 2010) | a8a2473
 
     Resolved Issues/Bug Fixes:
      * Under-tested MSVC fixes in the fltk2 lib
