@@ -20,4 +20,5 @@ META.json
 README
 t/0000_use/0001_use.t
 t/0000_use/0002_exe.t
+t/0000_use/0003_gl.t
 TODO.pod
