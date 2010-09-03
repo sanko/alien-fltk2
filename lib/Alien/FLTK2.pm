@@ -20,8 +20,8 @@ package Alien::FLTK2;
             ($self->{'basedir'})
                 = (grep { -d $_ && -f catdir($_, 'config.yml') }
                        map { rel2abs($_) } (
-                             eval { File::ShareDir::dist_dir('Alien-FLTK2') },
-                             'share', '../share', '../../share'
+                        'share', '../share', '../../share',
+                        eval { File::ShareDir::dist_dir('Alien-FLTK2') }
                        )
                 );
         }
@@ -61,17 +61,18 @@ package Alien::FLTK2;
 
     sub ldflags {    # XXX - Cache this
         my ($self, @args) = @_;
+        my $MSVC = 'Windows|MSVC' eq join '|', @{$self->config->{'platform'}};
 
         #
         my $libdir = shift->library_path();
 
         # Calculate needed libraries
         my $SHAREDSUFFIX
-            = $self->config->{'_a'} ? $self->config->{'_a'}
-            : $^O =~ '$MSWin32' ? '.a'
+            = $self->config->{'_a'}
+            ? $self->config->{'_a'}
+            : $^O =~ '$MSWin32' ? '.a'    # Even on MSVC... for now.
             :                     '.o';
-        my $LDSTATIC = sprintf '-L%s %s/libfltk2%s %s', $libdir, $libdir,
-            $SHAREDSUFFIX,
+        my $LDSTATIC = sprintf '%s/libfltk2%s %s', $libdir, $SHAREDSUFFIX,
             ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
         my $LDFLAGS = '-lfltk2 '
             . ($self->config->{'ldflags'} ? $self->config->{'ldflags'} : '');
@@ -98,9 +99,16 @@ package Alien::FLTK2;
             $LDSTATIC = sprintf '%s/libfltk2_images%s %s %s',
                 $libdir, $SHAREDSUFFIX, $img_libs, $LDSTATIC;
         }
-        return (  "-L$libdir "
-                . ((grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS)
-                . ' -lsupc++');
+        my $ret
+            = (  " -L$libdir "
+               . (($MSVC || grep {m[static]} @args) ? $LDSTATIC : $LDFLAGS)
+               . ($MSVC ? '' : ' -lsupc++'));
+        if ($MSVC) {    # Oy...
+            $ret =~ s[-L([^\s]*)][/libpath:"$1"]g;
+            $ret =~ s[-l([^\s]*)][$1]g;
+            $ret =~ s[-D([^\s]+)][/D"$1"]g;
+        }
+        return $ret;
     }
 
     sub capabilities {
