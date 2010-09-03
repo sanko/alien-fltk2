@@ -20,28 +20,9 @@ my $mb = $class->new(
     license     => 'artistic_2',
     dist_author => 'Sanko Robinson <sanko@cpan.org>',
     requires    => {
-        'Archive::Extract'   => 0,
-        base                 => 0,
-        Carp                 => 0,
-        Config               => 0,
-        Cwd                  => 0,
-        'Digest::MD5'        => 0,
-        'File::Basename'     => 0,
-        'File::Fetch'        => 0,
-        'File::Find'         => 0,
-        'File::Path'         => 2.07,
-        'File::ShareDir'     => 0,
-        'File::Spec'         => 0,          # used in A::F proper
-        'File::Temp'         => 0,
-        'Test::More'         => 0.88,
-        'Module::Build'      => 0.36,
-        'ExtUtils::CBuilder' => 0.27,
-        perl                 => 5.008000,
-        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
-         : ()
-        ),
-        'File::Find::Rule' => 0,
-        'YAML::Tiny'       => 0
+                 'File::ShareDir'        => 0,
+                 'YAML::Tiny'            => 0,
+                 'File::Spec::Functions' => 0
     },
     build_requires => {'Archive::Extract'   => 0,
                        base                 => 0,
@@ -49,40 +30,58 @@ my $mb = $class->new(
                        Config               => 0,
                        Cwd                  => 0,
                        'Digest::MD5'        => 0,
+                       'ExtUtils::CBuilder' => 0.27,
                        'File::Basename'     => 0,
                        'File::Fetch'        => 0,
                        'File::Find'         => 0,
+                       'File::Find::Rule'   => 0,
                        'File::Path'         => 2.07,
                        'File::ShareDir'     => 0,
                        'File::Spec'         => 0,
                        'File::Temp'         => 0,
+                       'TAP::Harness'       => 3.18,
                        'Test::More'         => 0.88,
                        'Module::Build'      => 0.36,
-                       'ExtUtils::CBuilder' => 0.27,
                        perl                 => 5.008000,
+                       'YAML::Tiny'         => 0,
+                       ($is_developer
+                        ? ('CPAN::Meta::Converter' => 0,
+                           'CPAN::Meta::Validator' => 0,
+                           JSON                    => 0,
+                           'Perl::Tidy'            => 0
+                            )
+                        : ()
+                       ),
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
                         : ()
                        ),
-                       'File::Find::Rule' => 0,
-                       'YAML::Tiny'       => 0
     },
-    add_to_cleanup => [qw[Alien-FLTK2-* src/* share/*],
-                       map {"*$_"} (
-                             '.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'}
-                       )
+    add_to_cleanup => [
+               qw[Alien-FLTK2-* src/* share/*],
+               map {"*$_"} ('.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'})
     ],
-    no_index   => {directory => [qw[t example inc share]]},
-    test_files => \@tests,
+    no_index         => {directory => [qw[t example inc share]]},
+    test_files       => \@tests,
+    test_file_exts   => ['.t'],
+    use_tap_harness  => 1,
+    tap_harness_args => {jobs  => 9,
+                         rules => {par => ['*']}
+    },
     meta_merge => {
-        generated_by => 'Conversion, software version 7.0',
         keywords =>
             [qw[Alien FLTK Fast Light Toolkit widget FL GUI UI window 2.0.x]],
         resources => {
-            bugtracker => 'http://github.com/sanko/alien-fltk2/issues',
-            ChangeLog => 'http://github.com/sanko/alien-fltk2/commits/master',
-            homepage  => 'http://sanko.github.com/fltk-perl/',
-            license   => 'http://www.perlfoundation.org/artistic_license_2_0',
-            repository => 'http://github.com/sanko/alien-fltk2'
+             bugtracker => {
+                          web => 'http://github.com/sanko/alien-fltk2/issues',
+                          mailto => 'sanko@cpan.org'
+             },
+             repository => {url  => 'git://github.com/sanko/alien-fltk2.git',
+                            web  => 'http://github.com/sanko/alien-fltk2',
+                            type => 'git'
+             },
+             ChangeLog => 'http://github.com/sanko/alien-fltk2/commits',
+             homepage  => 'http://sanko.github.com/fltk-perl/',
+             license => ['http://www.perlfoundation.org/artistic_license_2_0']
         }
     },
     needs_compiler => 1,        # adds ExtUtils::CBuilder to build_requires
@@ -108,7 +107,7 @@ $mb->notes(branch                     => '2.0.x');
 $mb->notes(include_path_images        => '/images');
 $mb->notes(include_path_compatability => '/fltk/compat');
 $mb->notes(headers_path               => 'fltk');
-$mb->notes(use_cairo => 0);                         # TODO - MacOS
+$mb->notes(use_cairo                  => 0);                # TODO - MacOS
 $mb->notes(
     libs_source => {
         fltk2_images => {
@@ -222,7 +221,7 @@ Build.PL - Module::Build based install
 C<Build.PL> creates the 'Build' script which... meh, you know what C<Build.PL>
 is for.
 
-Anyway, when this one decides that it is being run by an L<Alien::FLTK>
+Anyway, when this one decides that it is being run by an L<Alien::FLTK2>
 Developer (or just some random person who checked out the source from git) it
 loads a "special" L<Module::Build|Module::Build> subclass filled with useless
 things I've wasted my time pasting together. Otherwise, it loads a rather tame
@@ -232,12 +231,12 @@ subclass which works well enough for most end users.
 
 =over
 
-=item L<Alien::FLTK|Alien::FLTK> is licensed under the Artistic License 2.0
+=item L<Alien::FLTK|Alien::FLTK2> is licensed under the Artistic License 2.0
 (see the L<License and Legal|/"License and Legal"> section) so this
 C<Build.PL> requires at least L<Module::Build|Module::Build> C<0.3>.
 
 =item I've set an arbitrary minimum perl version at 5.8.8 not because I've
-tested L<Alien::FLTK|Alien::FLTK> with anything lower than that and failed,
+tested L<Alien::FLTK2|Alien::FLTK2> with anything lower than that and failed,
 but because I really don't care for test reports from ancient builds.
 
 =back
