@@ -15,7 +15,6 @@ inc/MBX/Alien/FLTK/Platform/Windows/MSVC.pm
 inc/MBX/Alien/FLTK/Utility.pm
 lib/Alien/FLTK2.pm
 LICENSE
-Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
