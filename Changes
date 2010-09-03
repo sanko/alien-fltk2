@@ -1,9 +1,23 @@
-Version 0.06970022 | 2010-03-29 05:13:06Z (Mon, 29 Mar 2010) | a8a2473
+Version 0.06970024 | 2010-04-18 19:40:15Z (Sun, 18 Apr 2010) | b154909
+
+    Resolved Issues/Bug Fixes:
+     * Undertested GL build fix
+     * ExtUtils::CBuilder tacks perl's CORE include dir on when compiling so
+          the config.h we generate for FLTK2 was left unused and caused
+          problems w/MinGW
+          See cpantesters.org/cpan/report/07665931-b19f-3f77-b713-d32bba55d77f
+
+    Documentation/Sample Code/Test Suite:
+     * New GL test
+
+Version 0.06970023 | 2010-04-18 19:40:15Z (Sun, 18 Apr 2010) | b154909
 
     Resolved Issues/Bug Fixes:
      * Untested config fix for Solaris
-           See STR #1890
-           See cpantesters.org/cpan/report/07134937-b19f-3f77-b713-d32bba55d77f
+          See STR #1890
+          See cpantesters.org/cpan/report/07134937-b19f-3f77-b713-d32bba55d77f
+     * Untested config fix for OSX
+          See cpantesters.org/cpan/report/07134608-b19f-3f77-b713-d32bba55d77f
 
 Version 0.06970022 | 2010-03-29 05:13:06Z (Mon, 29 Mar 2010) | a8a2473
 
@@ -150,7 +164,7 @@ Version 0.068410 | 2009-08-22 07:10:42Z (Sat, 22 Aug 2009) | ecfdb18
 
 _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
-    http://github.com/sanko/alien-fltk2/commits/master
+    http://github.com/sanko/alien-fltk2/commits
 
 $Ver$ from git $Rev$
 $Date$
