@@ -4,6 +4,19 @@ package Alien::FLTK2;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
     our $BASE = 0; our $SVN = 6970; our $DEV = -23; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
+    sub _git_rev {'7f6c18b'}
+
+    sub _snapshot_mirrors {
+        return {
+            'Milky Way' => 'http://sankorobinson.com/fltk-2.0.x/snapshots/',
+
+            #'Github (temp)' => 'http://download.github.com/',
+            #'Github (gen)'  => 'http://waitdownload.github.com/'
+            'Github (perm)' => 'http://github.com/downloads/sanko/fltk-2.0.x/'
+
+                # waitdownload.github.com/sanko-fltk-2.0.x-fd41e31.tar.gz
+        };
+    }
 
     sub _md5 {
         return {gz  => '8159cabebbd1b5b774b277827aa4e030',
