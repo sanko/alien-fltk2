@@ -342,7 +342,7 @@ following procedure:
 http://github.com/sanko/alien-fltk/issues
 
 Please only report L<Alien::FLTK2|Alien::FLTK2> related bugs to this tracker.
-For L<FLTK|FLTK> issues, use http://github.com/sanko/fltk-perl/issues/
+For L<FLTK|FLTK> issues, use http://github.com/sanko/fltk-perl2/issues/
 
 =item * Commit Log
 
@@ -372,7 +372,7 @@ http://github.com/sanko/alien-fltk2/ and you are invited to fork it.
 
 =head2 Examples
 
-Please see the L<Synopsis|/"Synopsis"> and the files in the C</examples/>.
+Please see the L<Synopsis|Alien::FLTK2/"Synopsis"> and the files in the C</examples/>.
 
 =head2 Bugs
 
