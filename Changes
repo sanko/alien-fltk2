@@ -1,4 +1,11 @@
-Version 0.06970024 | 2010-04-18 19:40:15Z (Sun, 18 Apr 2010) | b154909
+Version 0.06970025 | 2010-09-04 04:21:58Z (Sat, 04 Sep 2010) | 978608d
+
+    Resolved Issues/Bug Fixes:
+     * Correcting c+p bug in gl test
+          See cpantesters.org/cpan/report/5856497a-ba06-11df-b6d3-36bb8fbefd91
+
+
+Version 0.06970024 | 2010-09-04 04:21:58Z (Sat, 04 Sep 2010) | 978608d
 
     Resolved Issues/Bug Fixes:
      * Undertested GL build fix
