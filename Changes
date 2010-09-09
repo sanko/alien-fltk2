@@ -1,9 +1,14 @@
-Version 0.06970025 | 2010-09-04 04:21:58Z (Sat, 04 Sep 2010) | 978608d
+Version 0.XXXXX | In the not too distant future | 4c1b0cc
 
     Resolved Issues/Bug Fixes:
      * Correcting c+p bug in gl test
           See cpantesters.org/cpan/report/5856497a-ba06-11df-b6d3-36bb8fbefd91
-
+     * When fltk2_gl disabled, do not attempt to build fltk2_glut lib either
+     * Work around a bug in v5.12.1 of 32bit Strawberry Perl which places some
+          headers under ...strawberry\c\i686-w64-mingw32\include\ without
+          adding the directory to $Config{incpath} or even $Config{userinc}.
+          This was causing such systems to miss GL during configure.
+     * Build against fltk2's mainline SVN revision 7680
 
 Version 0.06970024 | 2010-09-04 04:21:58Z (Sat, 04 Sep 2010) | 978608d
 

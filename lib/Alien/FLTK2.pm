@@ -126,7 +126,7 @@ package Alien::FLTK2;
 
 =head1 NAME
 
-Alien::FLTK2 - Build and use the experimental C<2.0.x> branch Fast Light Toolkit
+Alien::FLTK2 - Build and use the experimental 2.0.x branch Fast Light Toolkit
 
 =head1 Description
 
