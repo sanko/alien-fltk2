@@ -3,24 +3,11 @@ package Alien::FLTK2;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    our $BASE = 0; our $SVN = 6970; our $DEV = -25; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
-    sub _git_rev {'7f6c18b'}
-
-    sub _snapshot_mirrors {
-        return {
-            'Milky Way' => 'http://sankorobinson.com/fltk-2.0.x/snapshots/',
-
-            #'Github (temp)' => 'http://download.github.com/',
-            #'Github (gen)'  => 'http://waitdownload.github.com/'
-            'Github (perm)' => 'http://github.com/downloads/sanko/fltk-2.0.x/'
-
-                # waitdownload.github.com/sanko-fltk-2.0.x-fd41e31.tar.gz
-        };
-    }
+    our $BASE = 0; our $SVN = 7680; our $DEV = 1; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
 
     sub _md5 {
-        return {gz  => '8159cabebbd1b5b774b277827aa4e030',
-                bz2 => 'f78976d0ba1a5c845e14f4df96d580a0'
+        return {gz  => '6d3ea46a7392bccbcd96b6c6d569446f',
+                bz2 => '677cfe42553355bdc21d79722687c1b0'
         };
     }
     sub _unique_file { return 'src/Widget.cxx' }
