@@ -53,7 +53,7 @@ my $mb = $class->new(
                         : ()
                        ),
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
-                        : ()
+                        : ('ExtUtils::MM' => 0)
                        ),
     },
     add_to_cleanup => [
