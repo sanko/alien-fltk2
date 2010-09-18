@@ -1,4 +1,14 @@
-Version 0.XXXXX | In the not too distant future | 4c1b0cc
+Version 0.07704 | 2010-09-12 03:22:02Z (Sun, 12 Sep 2010) | 68973d4
+
+    Resolved Issues/Bug Fixes:
+     * Possible undefined fix for Solaris. Eh, stranger things have happend...
+
+    Upstream Changes
+     * [r7703] Fixed STR #1902. (Critical bug under Win2k and VirtualBox)
+     * [r7702] Updated README.windows (STR #2245). Thanks to rgarcia.
+     * [r7698] Fixed double free of ValueSlider's label (STR #2412)
+
+Version 0.07680002 | 2010-09-12 03:22:02Z (Sun, 12 Sep 2010) | 68973d4
 
     Resolved Issues/Bug Fixes:
      * Correcting c+p bug in gl test
@@ -9,6 +19,7 @@ Version 0.XXXXX | In the not too distant future | 4c1b0cc
           adding the directory to $Config{incpath} or even $Config{userinc}.
           This was causing such systems to miss GL during configure.
      * Build against fltk2's mainline SVN revision 7680
+     * Improved (I hope) library archiver search for MinGW-based systems
 
 Version 0.06970024 | 2010-09-04 04:21:58Z (Sat, 04 Sep 2010) | 978608d
 
