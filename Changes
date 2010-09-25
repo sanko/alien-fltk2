@@ -1,3 +1,8 @@
+Version 0.07704001 | 2010-09-18 01:26:35Z (Sat, 18 Sep 2010) | 13f274e
+
+    Resolved Issues/Bug Fixes:
+     * #define symbols for dirent location were malformed
+
 Version 0.07704 | 2010-09-12 03:22:02Z (Sun, 12 Sep 2010) | 68973d4
 
     Resolved Issues/Bug Fixes:
