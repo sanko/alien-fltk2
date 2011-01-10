@@ -1,0 +1,161 @@
+diff -ur fltk-2.0.x-r7725.orig/src/win32/run.cxx fltk-2.0.x-r7725/src/win32/run.cxx
+--- fltk-2.0.x-r7725.orig/src/win32/run.cxx	2010-12-25 20:56:15 -0500
++++ fltk-2.0.x-r7725/src/win32/run.cxx	2010-12-25 21:03:51 -0500
+@@ -86,8 +86,25 @@
+ 
+ //
+ // USE_ASYNC_SELECT - define it non-zero if you have WSAAsyncSelect()...
+-//
+-#define USE_ASYNC_SELECT 1
++// USE_ASYNC_SELECT is OBSOLETED in 1.3 for the following reasons:
++/*
++  This feature was supposed to provide an efficient alternative to the current
++  polling method, but as it has been discussed (Thanks Albrecht!) :
++  - the async mode would imply to change the socket to non blocking mode.
++    This can have unexpected side effects for 3rd party apps, especially
++    if it is set on-the-fly when socket service is really needed, as it is 
++    done today and on purpose, but still the 3rd party developer wouldn't easily
++    control the sequencing of socket operations.
++  - Finer granularity of events furthered by the async select is a plus only 
++    for socket 3rd party impl., it is simply not needed for the 'light' fltk
++    use we make of wsock, so here it would also be a bad point, because of all
++    the logic add-ons necessary for using this functionality, without a clear
++    benefit.
++
++  So async mode select would not add benefits to fltk, worse, it can slowdown
++  fltk because of this finer granularity and instrumentation code to be added
++  for async mode proper operation, not mentioning the side effects...
++*/
+ 
+ // USE_IMM - define it non-zero if you want Input Method
+ #define USE_IMM 1
+@@ -274,9 +291,7 @@
+ // select function that sends a _WIN32 message when the select condition
+ // exists...
+ 
+-#ifndef USE_ASYNC_SELECT
+ static fd_set fdsets[3];
+-#endif // !USE_ASYNC_SELECT
+ 
+ #define POLLIN 1
+ #define POLLOUT 4
+@@ -304,17 +319,9 @@
+   fd[i].cb = cb;
+   fd[i].arg = v;
+ 
+-#ifdef USE_ASYNC_SELECT
+-  int mask = 0;
+-  if (events & POLLIN) mask |= FD_READ;
+-  if (events & POLLOUT) mask |= FD_WRITE;
+-  if (events & POLLERR) mask |= FD_CLOSE;
+-  WSAAsyncSelect(n, 0/*window*/, WM_FLSELECT, mask);
+-#else
+   if (events & POLLIN) FD_SET(n, &fdsets[0]);
+   if (events & POLLOUT) FD_SET(n, &fdsets[1]);
+   if (events & POLLERR) FD_SET(n, &fdsets[2]);
+-#endif // USE_ASYNC_SELECT
+ }
+ 
+ void fltk::add_fd(int fd, FileHandler cb, void* v) {
+@@ -337,13 +344,9 @@
+   }
+   nfds = j;
+ 
+-#ifdef USE_ASYNC_SELECT
+-  WSAAsyncSelect(n, 0, 0, 0);
+-#else
+   if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
+   if (events & POLLOUT) FD_CLR(unsigned(n), &fdsets[1]);
+   if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
+-#endif // USE_ASYNC_SELECT
+ }
+ 
+ // these pointers are set by the lock() function:
+@@ -361,18 +364,13 @@
+ // ready() is just like wait(0.0) except no callbacks are done:
+ static inline int fl_ready() {
+   if (__PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return 1;
+-#ifdef USE_ASYNC_SELECT
+-  return 0;
+-#else
++  if (!nfds) return 0;
+   timeval t;
+   t.tv_sec = 0;
+   t.tv_usec = 0;
+   fd_set fdt[3];
+-  fdt[0] = fdsets[0];
+-  fdt[1] = fdsets[1];
+-  fdt[2] = fdsets[2];
++  memcpy(fdt, fdsets, sizeof fdt);
+   return ::select(0,&fdt[0],&fdt[1],&fdt[2],&t);
+-#endif // USE_ASYNC_SELECT
+ }
+ 
+ /**
+@@ -391,8 +389,16 @@
+ // returns zero if nothing happens during a 0.0 timeout, otherwise
+ // it returns 1.
+ static inline int fl_wait(double time_to_wait) {
++  int have_message = 0;
++
++  // idle processing
++  static char in_idle;
++  if (fltk::idle && !in_idle) {
++    in_idle = 1;
++    fltk::idle();
++    in_idle = 0;
++  }
+ 
+-#ifndef USE_ASYNC_SELECT
+   if (nfds) {
+     // For _WIN32 we need to poll for socket input FIRST, since
+     // the event queue is not something we can select() on...
+@@ -401,10 +407,7 @@
+     t.tv_usec = 0;
+ 
+     fd_set fdt[3];
+-    fdt[0] = fdsets[0];
+-    fdt[1] = fdsets[1];
+-    fdt[2] = fdsets[2];
+-
++    memcpy(fdt, fdsets, sizeof fdt); // one shot faster fdt init
+     if (::select(0,&fdt[0],&fdt[1],&fdt[2],&t)) {
+       // We got something - do the callback!
+       for (int i = 0; i < nfds; i ++) {
+@@ -421,7 +424,9 @@
+       if (time_to_wait > .001) time_to_wait = .001;
+     }
+   }
+-#endif // USE_ASYNC_SELECT
++
++  if (fltk::idle || fltk::damage())
++    time_to_wait = 0.0;
+ 
+   if (!fl_ready()) {
+     fl_unlock_function();
+@@ -436,17 +441,6 @@
+   int ret = 0;
+   while (__PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) {
+     ret++;
+-#ifdef USE_ASYNC_SELECT
+-    if (msg.message == WM_FLSELECT) {
+-      // Got notification for socket
+-      for (int i = 0; i < nfds; i ++)
+-	if (fd[i].fd == (int)msg.wParam) {
+-	  (fd[i].cb)(fd[i].fd, fd[i].arg);
+-	  break;
+-	}
+-      // looks like it is best to do the dispatch-message anyway:
+-    } else
+-#endif
+     if (msg.message == WM_MAKEWAITRETURN) {
+       // save any data from fltk::awake() call:
+       if (msg.wParam) thread_message_ = (void*)msg.wParam;
+@@ -462,6 +456,7 @@
+       __DispatchMessage(&msg);
+     }
+   }
++  fltk::flush();
+ 
+   // This should return 0 for timeout, positive for events, and
+   // negative for errors.

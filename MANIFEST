@@ -17,6 +17,7 @@ lib/Alien/FLTK2.pm
 LICENSE
 MANIFEST			This list of files
 META.json
+patches/win32_remove_async_select.diff
 README
 t/0000_use/0001_use.t
 t/0000_use/0002_exe.t
