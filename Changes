@@ -1,4 +1,15 @@
-Version 0.07704001 | 2010-09-18 01:26:35Z (Sat, 18 Sep 2010) | 13f274e
+Version 0.07725 | 2011-01-10 04:57:25Z (Mon, 10 Jan 2011) | dc257a6
+
+    Resolved Issues/Bug Fixes:
+     * Disable (broken) async fh select on win32
+
+    Upstream Changes
+     * [r7723] Fixed STR #2431. Clipping region fix for fltk::TiledImage
+
+    Notes:
+     * Simple patch system added to build cycle
+
+Version 0.07704001 | 2010-09-25 14:04:33Z (Sat, 25 Sep 2010) | c262431
 
     Resolved Issues/Bug Fixes:
      * #define symbols for dirent location were malformed

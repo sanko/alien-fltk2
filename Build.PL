@@ -56,7 +56,8 @@ my $mb = $class->new(
                         : ('ExtUtils::MM' => 0)
                        ),
     },
-    add_to_cleanup => [
+    configure_requires => {'Module::Build' => 0.36},
+    add_to_cleanup     => [
                qw[Alien-FLTK2-* src/* share/*],
                map {"*$_"} ('.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'})
     ],
