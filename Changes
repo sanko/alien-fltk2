@@ -1,4 +1,9 @@
-Version 0.07725 | 2011-01-10 04:57:25Z (Mon, 10 Jan 2011) | dc257a6
+Version 0.07725001 | 2011-01-10 04:59:34Z (Mon, 10 Jan 2011) | 0546209
+
+    Resolved Issues/Bug Fixes:
+     * Add patch for "dynamic" select timeout on win32
+
+Version 0.07725 | 2011-01-10 04:59:34Z (Mon, 10 Jan 2011) | 0546209
 
     Resolved Issues/Bug Fixes:
      * Disable (broken) async fh select on win32

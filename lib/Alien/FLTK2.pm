@@ -3,7 +3,7 @@ package Alien::FLTK2;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    our $BASE = 0; our $SVN = 7725; our $DEV = -0; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
+    our $BASE = 0; our $SVN = 7725; our $DEV = -1; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
 
     sub _md5 {
         return {bz2 => '4d2680a65574e920becf968b899d5311',
