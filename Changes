@@ -1,3 +1,22 @@
+Version 0.08323 | 2011-02-02 20:38:34Z (Wed, 02 Feb 2011) | 1a9d34f
+
+    Upstream Changes:
+     * [r7723] Fixed STR #2431. Clipping region fix for fltk::TiledImage
+     * [r8317] Added in horizontal mouse scrolling for windows and resolves
+          STR #2325 and half of #1637 by including dirent.h on mingw compilers
+     * [r8316] Patch for FileChooser that allows it to keep the "suggested"
+          filename (STR #2488 and STR #1702) when both navigating and to begin
+          with.
+     * [r8313] Added in horizontal scrolling for Linux (STR #1964).
+     * [r8312] Fix to allow shared libraries to build under msys (STR #2487).
+     * [r8304] Added in a SONAME for shared objects (STR #2109) to aid
+          side-by-side 1.x and 2.x installations.
+     * [r8302] Committe a patch for STRs #2493 and #2318 regarding multiple
+          keyboard layouts and X.
+
+    Notes:
+     * select patch for win32 updated to apply cleanly against r8323
+
 Version 0.07725001 | 2011-01-10 04:59:34Z (Mon, 10 Jan 2011) | 0546209
 
     Resolved Issues/Bug Fixes:
@@ -24,7 +43,7 @@ Version 0.07704 | 2010-09-12 03:22:02Z (Sun, 12 Sep 2010) | 68973d4
     Resolved Issues/Bug Fixes:
      * Possible undefined fix for Solaris. Eh, stranger things have happend...
 
-    Upstream Changes
+    Upstream Changes:
      * [r7703] Fixed STR #1902. (Critical bug under Win2k and VirtualBox)
      * [r7702] Updated README.windows (STR #2245). Thanks to rgarcia.
      * [r7698] Fixed double free of ValueSlider's label (STR #2412)
