@@ -1,4 +1,9 @@
-Version 0.08323 | 2011-02-02 20:38:34Z (Wed, 02 Feb 2011) | 1a9d34f
+Version 0.08323001 | 2011-02-02 21:25:09Z (Wed, 02 Feb 2011) | 7285db6
+
+    Resolved Issues/Bug Fixes:
+     * Use YAML::Tiny directly when creating config during build
+
+Version 0.08323 | 2011-02-02 21:25:09Z (Wed, 02 Feb 2011) | 7285db6
 
     Upstream Changes:
      * [r7723] Fixed STR #2431. Clipping region fix for fltk::TiledImage

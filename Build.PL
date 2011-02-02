@@ -41,9 +41,9 @@ my $mb = $class->new(
                        'File::Temp'         => 0,
                        'TAP::Harness'       => 3.18,
                        'Test::More'         => 0.88,
-                       'Module::Build'      => 0.36,
+                       'Module::Build'      => 0.3624,
                        perl                 => 5.008000,
-                       'YAML::Tiny'         => 0,
+                       'YAML::Tiny'         => 1.46,
                        ($is_developer
                         ? ('CPAN::Meta::Converter' => 0,
                            'CPAN::Meta::Validator' => 0,
@@ -56,7 +56,7 @@ my $mb = $class->new(
                         : ('ExtUtils::MM' => 0)
                        ),
     },
-    configure_requires => {'Module::Build' => 0.36},
+    configure_requires => {'Module::Build' => 0.3624, 'YAML::Tiny' => 1.46},
     add_to_cleanup     => [
                qw[Alien-FLTK2-* src/* share/*],
                map {"*$_"} ('.' . $Config{'so'}, $Config{'_o'}, $Config{'_a'})
