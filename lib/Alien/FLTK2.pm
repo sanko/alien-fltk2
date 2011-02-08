@@ -3,13 +3,14 @@ package Alien::FLTK2;
     use strict;
     use warnings;
     use File::Spec::Functions qw[catdir rel2abs canonpath];
-    our $BASE = 0; our $SVN = 8323; our $DEV = -1; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
+    our $BASE = 0; our $SVN = 8365; our $DEV = 0; our $VERSION = sprintf('%d.%05d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $BASE, $SVN, abs $DEV);
 
     sub _md5 {
-        return {bz2 => 'd3dc8494c73bc3f0a7f0fed5a7ca0a8e',
-                gz  => 'b735071bf44398e1b8f8c1d9dad7ac30'
+        return {bz2 => 'a4a78694b8fc0e602cbc1c2a44267847',
+                gz  => 'f2c1144be28dadb0d2ef427f3392c4b5'
         };
     }
+
     sub _unique_file { return 'src/Widget.cxx' }
 
     sub new {

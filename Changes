@@ -1,4 +1,9 @@
-Version 0.08323001 | 2011-02-02 21:25:09Z (Wed, 02 Feb 2011) | 7285db6
+Version 0.08365 | 2011-02-08 03:21:50Z (Tue, 08 Feb 2011) | 84f2c1e
+
+    Upstream Changes:
+     * [r8328, r8329, r8350] Improves FileChooser's Unicode support on Win32
+
+Version 0.08323001 | 2011-02-02 23:58:04Z (Wed, 02 Feb 2011) | 8088b1a
 
     Resolved Issues/Bug Fixes:
      * Use YAML::Tiny directly when creating config during build

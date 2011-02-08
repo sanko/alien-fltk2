@@ -1,5 +1,5 @@
---- fltk-2.0.x-r8323.orig/src/win32/run.cxx	Wed Jan 26 10:16:17 2011
-+++ fltk-2.0.x-r8323/src/win32/run.cxx	Wed Feb 02 16:05:01 2011
+--- src/win32/run.cxx	Wed Jan 26 10:16:17 2011
++++ src/win32/run.cxx	Wed Jan 26 10:16:17 2011
 @@ -87,7 +87,2 @@
  
 -//
@@ -15,9 +15,8 @@
 -#endif // !USE_ASYNC_SELECT
 +static int maxfd = 0;
  
-@@ -310,10 +304,2 @@
-   fd[i].arg = v;
--
+@@ -311,9 +305,2 @@
+ 
 -#ifdef USE_ASYNC_SELECT
 -  int mask = 0;
 -  if (events & POLLIN) mask |= FD_READ;
@@ -26,32 +25,30 @@
 -  WSAAsyncSelect(n, 0/*window*/, WM_FLSELECT, mask);
 -#else
    if (events & POLLIN) FD_SET(n, &fdsets[0]);
-@@ -321,5 +307,4 @@
+@@ -321,3 +308,3 @@
    if (events & POLLERR) FD_SET(n, &fdsets[2]);
 -#endif // USE_ASYNC_SELECT
-+  if (n > maxfd) maxfd = n;
++  if (n > maxfd ) maxfd = n;
  }
--
- void fltk::add_fd(int fd, FileHandler cb, void* v) {
-@@ -343,6 +328,2 @@
-   nfds = j;
--
+@@ -344,5 +331,2 @@
+ 
 -#ifdef USE_ASYNC_SELECT
 -  WSAAsyncSelect(n, 0, 0, 0);
 -#else
    if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
-@@ -350,3 +331,2 @@
+@@ -350,3 +334,2 @@
    if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
 -#endif // USE_ASYNC_SELECT
  }
-@@ -368,5 +348,3 @@
+@@ -368,5 +351,4 @@
    if (__PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return 1;
 -#ifdef USE_ASYNC_SELECT
 -  return 0;
 -#else
++
 +  if (!nfds) return 0;
    timeval t;
-@@ -375,7 +353,4 @@
+@@ -375,7 +357,4 @@
    fd_set fdt[3];
 -  fdt[0] = fdsets[0];
 -  fdt[1] = fdsets[1];
@@ -60,9 +57,7 @@
    return ::select(0,&fdt[0],&fdt[1],&fdt[2],&t);
 -#endif // USE_ASYNC_SELECT
  }
-@@ -398,4 +373,11 @@
- static inline int fl_wait(double time_to_wait) {
-+  int have_message = 0;
+@@ -399,3 +378,9 @@
  
 -#ifndef USE_ASYNC_SELECT
 +  // idle processing
@@ -73,7 +68,7 @@
 +    in_idle = 0;
 +  }
    if (nfds) {
-@@ -408,7 +390,4 @@
+@@ -408,7 +393,5 @@
      fd_set fdt[3];
 -    fdt[0] = fdsets[0];
 -    fdt[1] = fdsets[1];
@@ -81,14 +76,14 @@
 -
 -    if (::select(0,&fdt[0],&fdt[1],&fdt[2],&t)) {
 +    memcpy(fdt, fdsets, sizeof fdt); // one shot faster fdt init
++
 +    if (::select(maxfd+1,&fdt[0],&fdt[1],&fdt[2],&t)) {
        // We got something - do the callback!
-@@ -428,4 +407,2 @@
+@@ -428,3 +411,2 @@
    }
 -#endif // USE_ASYNC_SELECT
--
-   if (!fl_ready()) {
-@@ -443,13 +420,3 @@
+ 
+@@ -443,13 +425,2 @@
      ret++;
 -#ifdef USE_ASYNC_SELECT
 -    if (msg.message == WM_FLSELECT) {
@@ -101,9 +96,9 @@
 -      // looks like it is best to do the dispatch-message anyway:
 -    } else
 -#endif
-+
      if (msg.message == WM_MAKEWAITRETURN) {
-@@ -469,2 +436,3 @@
+@@ -469,3 +440,3 @@
    }
+-
 +  fltk::flush();
- 
+   // This should return 0 for timeout, positive for events, and
