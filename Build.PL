@@ -68,31 +68,33 @@ my $mb = $class->new(
     tap_harness_args => {jobs  => 9,
                          rules => {par => ['*']}
     },
-    meta_merge => {
+     meta_merge => {
         keywords =>
             [qw[Alien FLTK Fast Light Toolkit widget FL GUI UI window 2.0.x]],
-        resources => {
-             bugtracker => {
-                          web => 'http://github.com/sanko/alien-fltk2/issues',
-                          mailto => 'sanko@cpan.org'
-             },
-             repository => {url  => 'git://github.com/sanko/alien-fltk2.git',
-                            web  => 'http://github.com/sanko/alien-fltk2',
-                            type => 'git'
-             },
+         resources => {
+              bugtracker => 'http://github.com/sanko/alien-fltk2/issues'
+              #{            web => 'http://github.com/sanko/alien-fltk2/issues',
+              #             mailto => 'sanko@cpan.org'
+              #}
+              ,
+              repository => 'git://github.com/sanko/alien-fltk2.git'
+              #{            url  => 'git://github.com/sanko/alien-fltk2.git',
+              #             web  => 'http://github.com/sanko/alien-fltk2',
+              #             type => 'git'
+              #}
+              ,
              ChangeLog => 'http://github.com/sanko/alien-fltk2/commits',
-             homepage  => 'http://sanko.github.com/fltk-perl/',
-             license => ['http://www.perlfoundation.org/artistic_license_2_0']
-        }
-    },
+             homepage  => 'http://sanko.github.com/fltk-perl/'
+         }
+     },
     needs_compiler => 1,        # adds ExtUtils::CBuilder to build_requires
     share_dir      => 'share'
 );
 
-#$mb->notes(use_x     => 0);           # TODO - find_lib
-#$mb->notes(use_glut  => 0);           # TODO
-#$mb->notes(use_gl    => 1);
-#$mb->notes(use_forms => 0);           # TODO
+#$mb->notes(use_x  => 0);   # TODO - find_lib
+#$mb->notes(use_glut => 0);   # TODO
+#$mb->notes(use_gl => 1);
+#$mb->notes(use_forms => 0);   # TODO
 ##################################################################### TODO ###
 $mb->notes(automated_testing => $automated_testing     ? 1 : 0);
 $mb->notes(release_testing   => $is_developer);
@@ -104,7 +106,7 @@ $mb->notes(extract_dir  => 'working/extract/');     # extracted source
 $mb->notes(config_yml   => 'share/config.yml');
 #################################### 'Dynamic' values used by build system ###
 $mb->notes(svn => $mb->dist_version =~ m[\.0?(\d{4})]);
-$mb->notes(branch                     => '2.0.x');
+$mb->notes(branch                     => '2.0.x-alpha');
 $mb->notes(include_path_images        => '/images');
 $mb->notes(include_path_compatability => '/fltk/compat');
 $mb->notes(headers_path               => 'fltk');
@@ -123,22 +125,25 @@ $mb->notes(
             directory => 'images/zlib',
             source    => [
                 map { $_ . '.c' }
-                    qw[adler32 compress crc32 gzio uncompr deflate trees zutil
-                    inflate inftrees inffast infblock infcodes infutil]
+                    qw[adler32 compress crc32 deflate gzclose gzlib gzread
+                    gzwrite infback inffast inflate inftrees trees uncompr
+                    zutil]
             ]
         },
         fltk2_jpeg => {
             directory => 'images/libjpeg',
             source    => [
                 map { $_ . '.c' }
-                    qw[jmemnobs jcapimin jcapistd jccoefct jccolor jcdctmgr
-                    jchuff jcinit jcmainct jcmarker jcmaster jcomapi jcparam
-                    jcphuff jcprepct jcsample jctrans jdapimin jdapistd
+                    qw[jaricom jmemnobs jcapimin jcapistd jccoefct jccolor
+                    jcdctmgr jchuff jcinit jcmainct jcmarker jcmaster jcomapi
+                    jcparam jcprepct jcsample jctrans jdapimin jdapistd
                     jdatadst jdatasrc jdcoefct jdcolor jddctmgr jdhuff jdinput
-                    jdmainct jdmarker jdmaster jdmerge jdphuff jdpostct
-                    jdsample jdtrans jerror jfdctflt jfdctfst jfdctint
-                    jidctflt jidctfst jidctint jidctred jquant1 jquant2 jutils
-                    jmemmgr]
+                    jdmainct jdmarker jdmaster jdmerge jdpostct jdsample
+                    jdtrans jerror jfdctflt jfdctfst jfdctint jmemmgr jidctflt
+                    jidctfst jidctint jquant1 jcarith jdarith jquant2 jutils]
+
+                    # Commented out of images\libjpeg\Makefile as of r8550
+                    #qw[jmemmac jmemdos]
             ]
         },
         fltk2_png => {
@@ -146,9 +151,9 @@ $mb->notes(
             include   => 'zlib',
             source    => [
                 map { $_ . '.c' }
-                    qw[png pngset pngget pngrutil pngtrans pngwutil pngread
-                    pngrio pngwio pngwrite pngrtran pngwtran pngmem pngerror
-                    pngpread]
+                    qw[png pngerror pngget pngmem pngread pngpread pngrio
+                    pngrtran pngrutil pngset pngtrans pngwio pngwrite
+                    pngwtran pngwutil]
             ]
         },
         fltk2 => {
@@ -250,16 +255,16 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009-2011 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of The Artistic License 2.0. See the F<LICENSE> file included with
-this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
+this distribution or http://www.perlfoundation.org/artistic_license_2_0. For
 clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
 
 When separated from the distribution, all POD documentation is covered by the
 Creative Commons Attribution-Share Alike 3.0 License. See
-http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
+http://creativecommons.org/licenses/by-sa/3.0/us/legalcode. For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
 =for git $Id$
