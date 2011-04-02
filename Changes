@@ -1,4 +1,19 @@
-Version 0.08365 | 2011-02-08 03:21:50Z (Tue, 08 Feb 2011) | 84f2c1e
+Version 0.08550 | 2011-04-02 02:10:58Z (Sat, 02 Apr 2011) | 3a8345d
+
+    Upstream Changes:
+     * [r8385] FileChooser now allows users to type absolute paths
+     * [r8369] Improves utf8 in fltk::fltk_fopen()
+     * [r8418] Upgrade libjpeg to latest version (as of 2011-02-13)
+     * [r8416] Upgrade zlib to the latest version (as of 2010-12-02)
+     * [r8414] Finishes upgrade of libpng
+     * [r8465] FileIcon now loads some defaults under Gnome
+
+    Notes:
+     * Mirrored fltk2 snapshots renamed from fltk-2.0.x-rXXXX.tar.ext to
+         fltk-2.0.x-alpha-rXXXX.tar.ext to make the unstable nature even more
+         evident
+
+Version 0.08365 | 2011-02-08 03:43:36Z (Tue, 08 Feb 2011) | ec4e842
 
     Upstream Changes:
      * [r8328, r8329, r8350] Improves FileChooser's Unicode support on Win32

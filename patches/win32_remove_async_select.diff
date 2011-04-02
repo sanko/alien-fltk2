@@ -1,21 +1,27 @@
---- src/win32/run.cxx	Wed Jan 26 10:16:17 2011
-+++ src/win32/run.cxx	Wed Jan 26 10:16:17 2011
-@@ -87,7 +87,2 @@
+--- src/win32/run.cxx	Sat Mar 26 03:37:57 2011
++++ src/win32/run.cxx	Fri Apr 01 13:58:16 2011
+@@ -89,8 +89,3 @@
  
 -//
 -// USE_ASYNC_SELECT - define it non-zero if you have WSAAsyncSelect()...
 -//
 -#define USE_ASYNC_SELECT 1
 -
- // USE_IMM - define it non-zero if you want Input Method
-@@ -281,5 +276,4 @@
+-// USE_IMM - define it non-zero if you want Input Method
++// USE_IMM - define it non-zero if you want Input Method
+ #define USE_IMM 1
+@@ -283,7 +278,5 @@
  
 -#ifndef USE_ASYNC_SELECT
- static fd_set fdsets[3];
+-static fd_set fdsets[3];
 -#endif // !USE_ASYNC_SELECT
+-
+-#define POLLIN 1
++static fd_set fdsets[3];
 +static int maxfd = 0;
- 
-@@ -311,9 +305,2 @@
++#define POLLIN 1
+ #define POLLOUT 4
+@@ -313,14 +306,7 @@
  
 -#ifdef USE_ASYNC_SELECT
 -  int mask = 0;
@@ -24,42 +30,68 @@
 -  if (events & POLLERR) mask |= FD_CLOSE;
 -  WSAAsyncSelect(n, 0/*window*/, WM_FLSELECT, mask);
 -#else
-   if (events & POLLIN) FD_SET(n, &fdsets[0]);
-@@ -321,3 +308,3 @@
-   if (events & POLLERR) FD_SET(n, &fdsets[2]);
+-  if (events & POLLIN) FD_SET(n, &fdsets[0]);
+-  if (events & POLLOUT) FD_SET(n, &fdsets[1]);
+-  if (events & POLLERR) FD_SET(n, &fdsets[2]);
 -#endif // USE_ASYNC_SELECT
+-}
++  if (events & POLLIN) FD_SET(n, &fdsets[0]);
++  if (events & POLLOUT) FD_SET(n, &fdsets[1]);
++  if (events & POLLERR) FD_SET(n, &fdsets[2]);
 +  if (n > maxfd ) maxfd = n;
- }
-@@ -344,5 +331,2 @@
++}
+ 
+@@ -346,12 +332,6 @@
  
 -#ifdef USE_ASYNC_SELECT
 -  WSAAsyncSelect(n, 0, 0, 0);
 -#else
-   if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
-@@ -350,3 +334,2 @@
-   if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
+-  if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
+-  if (events & POLLOUT) FD_CLR(unsigned(n), &fdsets[1]);
+-  if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
 -#endif // USE_ASYNC_SELECT
- }
-@@ -368,5 +351,4 @@
-   if (__PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return 1;
+-}
+-
+-// these pointers are set by the lock() function:
++  if (events & POLLIN) FD_CLR(unsigned(n), &fdsets[0]);
++  if (events & POLLOUT) FD_CLR(unsigned(n), &fdsets[1]);
++  if (events & POLLERR) FD_CLR(unsigned(n), &fdsets[2]);
++}
+ static void nothing() {}
+@@ -368,18 +348,13 @@
+ // ready() is just like wait(0.0) except no callbacks are done:
+-static inline int fl_ready() {
+-  if (__PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return 1;
 -#ifdef USE_ASYNC_SELECT
 -  return 0;
 -#else
-+
-+  if (!nfds) return 0;
-   timeval t;
-@@ -375,7 +357,4 @@
-   fd_set fdt[3];
+-  timeval t;
+-  t.tv_sec = 0;
+-  t.tv_usec = 0;
+-  fd_set fdt[3];
 -  fdt[0] = fdsets[0];
 -  fdt[1] = fdsets[1];
 -  fdt[2] = fdsets[2];
-+  memcpy(fdt, fdsets, sizeof fdt);
-   return ::select(0,&fdt[0],&fdt[1],&fdt[2],&t);
+-  return ::select(0,&fdt[0],&fdt[1],&fdt[2],&t);
 -#endif // USE_ASYNC_SELECT
- }
-@@ -399,3 +378,9 @@
+-}
+-
++static inline int fl_ready() {
++  if (__PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return 1;
++
++  if (!nfds) return 0;
++  timeval t;
++  t.tv_sec = 0;
++  t.tv_usec = 0;
++  fd_set fdt[3];
++  memcpy(fdt, fdsets, sizeof fdt);
++  return ::select(0,&fdt[0],&fdt[1],&fdt[2],&t);
++}
+ /**
+@@ -401,6 +376,12 @@
  
 -#ifndef USE_ASYNC_SELECT
+-  if (nfds) {
 +  // idle processing
 +  static char in_idle;
 +  if (fltk::idle && !in_idle) {
@@ -67,24 +99,43 @@
 +    fltk::idle();
 +    in_idle = 0;
 +  }
-   if (nfds) {
-@@ -408,7 +393,5 @@
-     fd_set fdt[3];
++  if (nfds) {
+     // For _WIN32 we need to poll for socket input FIRST, since
+-    // the event queue is not something we can select() on...
++    // the event queue is not something we can select() on...
+     timeval t;
+@@ -409,10 +390,8 @@
+ 
+-    fd_set fdt[3];
 -    fdt[0] = fdsets[0];
 -    fdt[1] = fdsets[1];
 -    fdt[2] = fdsets[2];
 -
 -    if (::select(0,&fdt[0],&fdt[1],&fdt[2],&t)) {
+-      // We got something - do the callback!
+-      for (int i = 0; i < nfds; i ++) {
++    fd_set fdt[3];
 +    memcpy(fdt, fdsets, sizeof fdt); // one shot faster fdt init
 +
 +    if (::select(maxfd+1,&fdt[0],&fdt[1],&fdt[2],&t)) {
-       // We got something - do the callback!
-@@ -428,3 +411,2 @@
-   }
++      // We got something - do the callback!
++      for (int i = 0; i < nfds; i ++) {
+ 	int f = fd[i].fd;
+@@ -428,7 +407,5 @@
+       if (time_to_wait > .001) time_to_wait = .001;
+-    }
+-  }
 -#endif // USE_ASYNC_SELECT
- 
-@@ -443,13 +425,2 @@
-     ret++;
+-
+-  if (!fl_ready()) {
++    }
++  }
++  if (!fl_ready()) {
+     fl_unlock_function();
+@@ -443,17 +420,6 @@
+   int ret = 0;
+-  while (__PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) {
+-    ret++;
 -#ifdef USE_ASYNC_SELECT
 -    if (msg.message == WM_FLSELECT) {
 -      // Got notification for socket
@@ -96,9 +147,23 @@
 -      // looks like it is best to do the dispatch-message anyway:
 -    } else
 -#endif
-     if (msg.message == WM_MAKEWAITRETURN) {
-@@ -469,3 +440,3 @@
-   }
+-    if (msg.message == WM_MAKEWAITRETURN) {
+-      // save any data from fltk::awake() call:
++  while (__PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) {
++    ret++;
++    if (msg.message == WM_MAKEWAITRETURN) {
++      // save any data from fltk::awake() call:
+       if (msg.wParam) thread_message_ = (void*)msg.wParam;
+@@ -469,7 +435,7 @@
+       __DispatchMessage(&msg);
+-    }
+-  }
 -
+-  // This should return 0 for timeout, positive for events, and
+-  // negative for errors.
++    }
++  }
 +  fltk::flush();
-   // This should return 0 for timeout, positive for events, and
++  // This should return 0 for timeout, positive for events, and
++  // negative for errors.
+   // ret_val is probably useful, what is in it?
