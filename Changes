@@ -1,4 +1,10 @@
-Version 0.08550 | 2011-04-02 02:10:58Z (Sat, 02 Apr 2011) | 3a8345d
+Version 0.09204 | 2011-04-02 02:11:40Z (Sat, 02 Apr 2011) | ef7ae5b
+
+    Upstream Changes:
+     * [r8638] New built-in XP theme
+     * [r9160] Keyboard support in ScrollGroup
+
+Version 0.08550 | 2011-04-02 02:11:40Z (Sat, 02 Apr 2011) | ef7ae5b
 
     Upstream Changes:
      * [r8385] FileChooser now allows users to type absolute paths
