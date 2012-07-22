@@ -41,19 +41,18 @@ my $mb = $class->new(
                        'File::Temp'         => 0,
                        'TAP::Harness'       => 3.18,
                        'Test::More'         => 0.88,
-                       'Module::Build'      => 0.3624,
+                       'Module::Build'      => 0.40,
                        perl                 => 5.008000,
-                       'YAML::Tiny'         => 1.46,
-                       ($is_developer
-                        ? ('CPAN::Meta::Converter' => 0,
-                           'CPAN::Meta::Validator' => 0,
-                           JSON                    => 0,
-                           'Perl::Tidy'            => 0
+                       'YAML::Tiny'         => 0,
+                       ($is_developer ? ('CPAN::Meta::Converter' => 0,
+                                         'CPAN::Meta::Validator' => 0,
+                                         JSON                    => 0,
+                                         'Perl::Tidy'            => 0
                             )
                         : ()
                        ),
                        (  ($^O eq 'VMS') ? ('VMS::DCLsym' => 0)
-                        : ('ExtUtils::MM' => 0)
+                        : ()
                        ),
     },
     configure_requires => {'Module::Build' => 0.3624, 'YAML::Tiny' => 1.46},
@@ -68,27 +67,30 @@ my $mb = $class->new(
     tap_harness_args => {jobs  => 9,
                          rules => {par => ['*']}
     },
-     meta_merge => {
+    meta_merge => {
         keywords =>
             [qw[Alien FLTK Fast Light Toolkit widget FL GUI UI window 2.0.x]],
-         resources => {
-              bugtracker => 'http://github.com/sanko/alien-fltk2/issues'
-              #{            web => 'http://github.com/sanko/alien-fltk2/issues',
-              #             mailto => 'sanko@cpan.org'
-              #}
-              ,
-              repository => 'git://github.com/sanko/alien-fltk2.git'
-              #{            url  => 'git://github.com/sanko/alien-fltk2.git',
-              #             web  => 'http://github.com/sanko/alien-fltk2',
-              #             type => 'git'
-              #}
-              ,
-             ChangeLog => 'http://github.com/sanko/alien-fltk2/commits',
-             homepage  => 'http://sanko.github.com/fltk-perl/'
-         }
-     },
-    needs_compiler => 1,        # adds ExtUtils::CBuilder to build_requires
-    share_dir      => 'share'
+        resources => {
+            bugtracker => 'http://github.com/sanko/alien-fltk2/issues'
+
+            #{            web => 'http://github.com/sanko/alien-fltk2/issues',
+            #             mailto => 'sanko@cpan.org'
+            #}
+            ,
+            repository => 'git://github.com/sanko/alien-fltk2.git'
+
+               #{            url  => 'git://github.com/sanko/alien-fltk2.git',
+               #             web  => 'http://github.com/sanko/alien-fltk2',
+               #             type => 'git'
+               #}
+            ,
+            ChangeLog => 'http://github.com/sanko/alien-fltk2/commits',
+            homepage  => 'http://sanko.github.com/fltk-perl/'
+        }
+    },
+    needs_compiler => 1,         # adds ExtUtils::CBuilder to build_requires
+    share_dir      => 'share',
+    create_readme  => 1
 );
 
 #$mb->notes(use_x  => 0);   # TODO - find_lib
@@ -255,7 +257,7 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009-2011 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009-2012 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of The Artistic License 2.0. See the F<LICENSE> file included with
